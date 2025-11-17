@@ -1,0 +1,33 @@
+package com.kh.eco.member.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kh.eco.member.model.dto.MemberSignUpDTO;
+import com.kh.eco.member.model.service.MemberService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequestMapping("members")
+@RequiredArgsConstructor
+public class MemberController {
+	
+	private final MemberService memberService;
+	
+	@PostMapping
+	public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignUpDTO member){
+		log.info("멤버 잘들어오는지 확인 : {}", member);
+		memberService.signUp(member);
+		
+		return ResponseEntity.status(201).build();
+	}
+	
+
+}
