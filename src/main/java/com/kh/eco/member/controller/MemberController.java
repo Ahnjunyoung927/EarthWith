@@ -23,9 +23,7 @@ public class MemberController {
 	
 	@PostMapping
 	public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignUpDTO member){
-		log.info("멤버 잘들어오는지 확인 : {}", member);
 		memberService.signUp(member);
-		
 		return ResponseEntity.status(201).build();
 	}
 	

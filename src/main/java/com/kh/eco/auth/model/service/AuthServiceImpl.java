@@ -1,5 +1,6 @@
 package com.kh.eco.auth.model.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,13 +39,19 @@ public class AuthServiceImpl implements AuthService {
 			throw new CustomAuthenticationException("비밀번호 미일치");
 		}
 		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-		// log.info("로그인 성공");
-		// log.info("인증에 성공한 사용자의 정보 : {}", user);
 		
 		Map<String, String> loginResponse = tokenService.generateToken(user.getUsername());
 		loginResponse.put("memberId", user.getUsername());
 		loginResponse.put("memberName", user.getMemberName());
-		loginResponse.put("role", user.getAuthorities().toString());		
+		loginResponse.put("role", user.getAuthorities().toString());
+		loginResponse.put("memberNo", String.valueOf(user.getMemberNo()));
+		loginResponse.put("phone", user.getPhone());
+		loginResponse.put("email", user.getEmail());
+		loginResponse.put("refRno", String.valueOf(user.getRefRno()));
+		loginResponse.put("memberImage", user.getMemberImage());
+		loginResponse.put("memberPoint", String.valueOf(user.getMemberPoint()));
+		// String userEnrollDate = new SimpleDateFormat("yyyy-MM-dd").format(user.getEnrollDate());
+		loginResponse.put("enrollDate", new SimpleDateFormat("yyyy-MM-dd").format(user.getEnrollDate()));
 		
 		return loginResponse;
 	}
@@ -57,9 +64,8 @@ public class AuthServiceImpl implements AuthService {
 		if(result == 1) {
 			return;
 		} else {
-			throw new LogoutFailureException("로그아웃 실패, 관리자에게 문의해주세요.");
+			throw new LogoutFailureException("로그아웃 오류 발생, 관리자에게 문의해주세요.");
 		}
-		
 	}
 
 }
