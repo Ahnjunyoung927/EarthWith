@@ -36,11 +36,8 @@ public class StatController {
     @GetMapping("/member-rank-10")
     public ResponseEntity<List<Map<String, Object>>> getMemberRankList() { 
         
-        // [중요] MemberService의 getMemberRank() 메소드 반환 타입도
-        // List<Map<String, Object>>로 변경해 주셔야 합니다.
     	List<Map<String, Object>> rankList = memberService.getMemberRank(); 
-    	
-        // List<Map>을 직접 반환
+    
     	return ResponseEntity.ok(rankList);
     }
 		
