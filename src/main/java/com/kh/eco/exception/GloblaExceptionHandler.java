@@ -36,8 +36,8 @@ public class GloblaExceptionHandler {
 	}
 	
 	
-	@ExceptionHandler(IdDuplicateException.class) // 아이디 중복시 에러반환
-	public ResponseEntity<?> handlerDuplicateId(IdDuplicateException e){
+	@ExceptionHandler(MemberInfoDuplicateException.class) // 회원정보 중복시 에러반환
+	public ResponseEntity<?> handlerDuplicateInfo(MemberInfoDuplicateException e){
 		Map<String, String> error = new HashMap();
 		error.put("error-message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);

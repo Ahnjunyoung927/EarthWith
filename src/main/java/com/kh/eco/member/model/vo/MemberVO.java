@@ -13,7 +13,7 @@ public class MemberVO {
 	private String memberPwd;
 	private String phone;
 	private String email;
-	private int regionNo;
-	private String memberImageUrl;
+	private int refRno;
+	private String memberImage;
 
 }
