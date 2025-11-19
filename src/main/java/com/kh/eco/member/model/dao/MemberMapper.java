@@ -1,5 +1,8 @@
 package com.kh.eco.member.model.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kh.eco.member.model.dto.MemberLoginDTO;
@@ -13,6 +16,10 @@ public interface MemberMapper {
 	int countByMemberId(String memberId);
 	
 	MemberLoginDTO loadUser(String memberId);
+
+	long getActiveMemberCount();
+
+	List<Map<String, Object>> getMemberRank();
 	
 
 }

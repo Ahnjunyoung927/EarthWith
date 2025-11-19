@@ -5,6 +5,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class MyRenamePolicy {
 	
 	// FileRenamePoliCy 인터페이스가 가지고 있는 rename추상메소드가 있음
@@ -31,5 +33,7 @@ public class MyRenamePolicy {
 		// 기존 파일명을 수정된 파일명으로 적용시켜서 반환
 		return new File(originFile.getParent(), changeName);
 	}
+	
+
 
 }
