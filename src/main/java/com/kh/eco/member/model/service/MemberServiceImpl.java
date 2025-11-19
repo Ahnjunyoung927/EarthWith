@@ -39,6 +39,7 @@ public class MemberServiceImpl implements MemberService {
 				                                  .memberPwd(passwordEncoder.encode(member.getMemberPwd()))
 						                          .phone(member.getPhone()).email(member.getEmail())
 						                          .refRno(member.getRefRno()).build();
+		
 		memberMapper.signUp(signUpMember);
 	}
 	
