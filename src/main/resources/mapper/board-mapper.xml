@@ -15,7 +15,7 @@
 	
 	<select id="getBoardCountForParticipation" parameterType="long">
 		<include refid="countBoard" />
-			WHERE
+		
 				  BOARD_CATEGORY = 'C2'
 			      
 		
