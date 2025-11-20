@@ -4,15 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.member.model.dao.MemberMapper">
 	
-
-	<sql id="countMember">
-		SELECT 
-		       COUNT(*)
-		  FROM 
-		       TB_MEMBER 
-		 WHERE 
-	</sql>
-	
 	<insert id="signUp"
 			parameterType="MemberVO">
 		INSERT
@@ -47,6 +38,18 @@
 		         , #{role}
 		       )
 	</insert>
+
+
+	<sql id="countMember">
+
+		SELECT 
+		       COUNT(*)
+		  FROM 
+		       TB_MEMBER 
+		 WHERE 
+	</sql>
+	
+	
 	
 
 	<select id="countByMemberId" parameterType="string">
