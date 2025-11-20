@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.eco.board.model.service.BoardService;
 import com.kh.eco.member.model.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class StatController {
 	
 	private final MemberService memberService;
+	private final BoardService boardService;
 	
 	@GetMapping("/member-count")
 	public ResponseEntity<Map<String, Object>> getMemberCount(){
@@ -35,13 +37,18 @@ public class StatController {
 	
     @GetMapping("/member-rank-10")
     public ResponseEntity<List<Map<String, Object>>> getMemberRankList() { 
-        
-        // [중요] MemberService의 getMemberRank() 메소드 반환 타입도
-        // List<Map<String, Object>>로 변경해 주셔야 합니다.
     	List<Map<String, Object>> rankList = memberService.getMemberRank(); 
-    	
-        // List<Map>을 직접 반환
     	return ResponseEntity.ok(rankList);
     }
-		
+    
+    @GetMapping("/boards-join")
+    public ResponseEntity<Map<String, Object>> getBoardCountForParticipation(){
+    	
+    	long boardParticipationCount  = boardService.getBoardCountForParticipation();
+    	
+		Map<String, Object> response = new HashMap<>();
+        response.put("boardParticipationCount", boardParticipationCount);
+    	
+        return ResponseEntity.ok(response);
+    }
 }

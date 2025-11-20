@@ -15,6 +15,4 @@ public interface MemberService {
 
 	List<Map<String, Object>> getMemberRank();
 	
-	
-
 }

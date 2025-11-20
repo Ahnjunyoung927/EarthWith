@@ -4,7 +4,16 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.member.model.dao.MemberMapper">
 	
-<insert id="signUp"
+
+	<sql id="countMember">
+		SELECT 
+		       COUNT(*)
+		  FROM 
+		       TB_MEMBER 
+		 WHERE 
+	</sql>
+	
+	<insert id="signUp"
 			parameterType="MemberVO">
 		INSERT
 		  INTO
@@ -30,7 +39,7 @@
 		         , #{memberPwd}
 		         , #{phone}
 		         , #{email}
-		         , #{regionNo}
+		         , #{refRno}
 		         , #{memberImageUrl}
 		         , #{memberPoint}
 		         , #{enrollDate}
@@ -39,21 +48,36 @@
 		       )
 	</insert>
 	
+
 	<select id="countByMemberId" parameterType="string">
-		SELECT 
-		       COUNT(*)
-		  FROM 
-		       TB_MEMBER 
-		 WHERE 
-		       MEMBER_ID = #{memberId}
+		<include refid="countMember" />
+		    MEMBER_ID = #{memberId}
 	</select>
+	
+	<select id="countByPhone" parameterType="string">
+    	<include refid="countMember" />
+    		   PHONE = #{phone}
+	</select>
+
+	<select id="countByEmail" parameterType="string">
+		<include refid="countMember" />
+		       EMAIL = #{email}
+	</select>
+
 	
 	<select id="loadUser" parameterType="MemberLoginDTO">
 		SELECT
 			   MEMBER_ID memberId
 		     , MEMBER_PWD memberPwd
 			 , MEMBER_NAME memberName
-		     , role
+		     , ROLE
+		     , MEMBER_NO memberNo
+		     , PHONE
+		     , EMAIL
+		     , REF_RNO refRno
+		     , MEMBER_IMAGE memberImage
+		     , MEMBER_POINT memberPoint
+		     , ENROLL_DATE enrollDate
 		  FROM
 			   TB_MEMBER
 		 WHERE
@@ -61,11 +85,7 @@
 	</select>
 	
 	<select id="getActiveMemberCount" resultType="long">
-        SELECT
-               COUNT(*)
-          FROM
-               TB_MEMBER
-         WHERE
+		<include refid="countMember" />
                STATUS = 'Y'
     </select>
     

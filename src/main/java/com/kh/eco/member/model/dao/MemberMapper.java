@@ -14,12 +14,13 @@ public interface MemberMapper {
 	int signUp(MemberVO member);
 	
 	int countByMemberId(String memberId);
+	int countByPhone(String phone);
+	int countByEmail(String email);
 	
 	MemberLoginDTO loadUser(String memberId);
 
 	long getActiveMemberCount();
-
+	
 	List<Map<String, Object>> getMemberRank();
 	
-
 }
