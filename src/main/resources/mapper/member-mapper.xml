@@ -4,6 +4,14 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.member.model.dao.MemberMapper">
 	
+	<sql id="countMember">
+		SELECT 
+		       COUNT(*)
+		  FROM 
+		       TB_MEMBER 
+		 WHERE 
+	</sql>
+	
 	<insert id="signUp"
 			parameterType="MemberVO">
 		INSERT
@@ -24,30 +32,20 @@
 		       )
 		VALUES
 		       (
-		           SEQ_MNO.NEXTVAL
-		         , #{memberName}
-		         , #{memberId}
-		         , #{memberPwd}
-		         , #{phone}
-		         , #{email}
-		         , #{refRno}
-		         , #{memberImageUrl}
-		         , #{memberPoint}
-		         , #{enrollDate}
-		         , #{status}
-		         , #{role}
+		       SEQ_MNO.NEXTVAL
+		     , #{memberName}
+		     , #{memberId}
+		     , #{memberPwd}
+		     , #{phone}
+		     , #{email}
+		     , #{refRno}
+		     , DEFAULT
+		     , DEFAULT
+		     , DEFAULT
+		     , DEFAULT
+		     , DEFAULT
 		       )
 	</insert>
-
-
-	<sql id="countMember">
-
-		SELECT 
-		       COUNT(*)
-		  FROM 
-		       TB_MEMBER 
-		 WHERE 
-	</sql>
 	
 	
 	
@@ -87,6 +85,63 @@
 			   MEMBER_ID = #{memberId}
 	</select>
 	
+
+	<update id="changePassword" parameterType="map">
+		UPDATE
+		 		TB_MEMBER
+		   SET
+		   		MEMBER_PWD = #{newPassword}
+		 WHERE
+		        MEMBER_ID = #{memberId}
+	</update>
+	
+	<select id="findById" resultType= "MemberVo">
+		SELECT
+			   MEMBER_NAME memberName
+			 , MEMBER_ID memberId
+			 , MEMBER_PWD memberPwd
+			 , PHONE
+			 , EMAIL
+			 , REF_RNO refRno
+			 , MEMBER_IMAGE memberImage
+	      FROM
+	           TB_MEMBER
+	     WHERE
+	           MEMBER_ID = #{memberId}
+		
+	</select>
+	
+	
+	<select id="findByEmail" resultType="MemberVo">
+		SELECT
+		       MEMBER_NO memberNo
+			 , MEMBER_NAME memberName
+			 , MEMBER_ID memberId
+			 , MEMBER_PWD memberPwd
+			 , PHONE
+			 , EMAIL
+			 , REF_RNO refRno
+			 , MEMBER_IMAGE memberImage
+			 , MEMBER_POINT memberPoint
+			 , ENROLL_DATE enrollDate
+			 , STATUS
+			 , ROLE
+	      FROM
+	           TB_MEMBER
+		 WHERE
+		       EMAIL = #{email}
+	</select>
+	
+	<update id="updateEmail">
+		UPDATE 
+			   TB_MEMBER
+		   SET 
+		       EMAIL = #{newEmail}
+		 WHERE
+		       MEMBER_ID = #{memberId}
+		
+	</update>
+	
 	<select id="getActiveMemberCount" resultType="long">
 		<include refid="countMember" />
                STATUS = 'Y'
@@ -107,5 +162,6 @@
          FETCH  
                FIRST 10 ROWS ONLY
     </select>
+
 	
 </mapper>
