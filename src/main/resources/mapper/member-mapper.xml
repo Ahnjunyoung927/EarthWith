@@ -16,7 +16,20 @@
 			parameterType="MemberVO">
 		INSERT
 		  INTO
-		       TB_MEMBER
+		       TB_MEMBER (
+		           MEMBER_NO
+		         , MEMBER_NAME
+		         , MEMBER_ID
+		         , MEMBER_PWD
+		         , PHONE
+		         , EMAIL
+		         , REF_RNO
+		         , MEMBER_IMAGE
+		         , MEMBER_POINT
+		         , ENROLL_DATE
+		         , STATUS
+		         , ROLE
+		       )
 		VALUES
 		       (
 		       SEQ_MNO.NEXTVAL
@@ -34,9 +47,12 @@
 		       )
 	</insert>
 	
+	
+	
+
 	<select id="countByMemberId" parameterType="string">
-    	<include refid="countMember" />
-		       MEMBER_ID = #{memberId}
+		<include refid="countMember" />
+		    MEMBER_ID = #{memberId}
 	</select>
 	
 	<select id="countByPhone" parameterType="string">
@@ -48,6 +64,7 @@
 		<include refid="countMember" />
 		       EMAIL = #{email}
 	</select>
+
 	
 	<select id="loadUser" parameterType="MemberLoginDTO">
 		SELECT
@@ -68,6 +85,7 @@
 			   MEMBER_ID = #{memberId}
 	</select>
 	
+
 	<update id="changePassword" parameterType="map">
 		UPDATE
 		 		TB_MEMBER
@@ -93,20 +111,25 @@
 		
 	</select>
 	
+	
 	<select id="findByEmail" resultType="MemberVo">
 		SELECT
-			   MEMBER_NAME memberName
+		       MEMBER_NO memberNo
+			 , MEMBER_NAME memberName
 			 , MEMBER_ID memberId
 			 , MEMBER_PWD memberPwd
 			 , PHONE
 			 , EMAIL
 			 , REF_RNO refRno
 			 , MEMBER_IMAGE memberImage
+			 , MEMBER_POINT memberPoint
+			 , ENROLL_DATE enrollDate
+			 , STATUS
+			 , ROLE
 	      FROM
 	           TB_MEMBER
 		 WHERE
 		       EMAIL = #{email}
-		
 	</select>
 	
 	<update id="updateEmail">
@@ -118,5 +141,27 @@
 		       MEMBER_ID = #{memberId}
 		
 	</update>
+	
+	<select id="getActiveMemberCount" resultType="long">
+		<include refid="countMember" />
+               STATUS = 'Y'
+    </select>
+    
+    	<select id="getMemberRank" resultType="map">
+        SELECT
+        	  ROWNUM as "rank"
+        	 , MEMBER_ID memberId
+             , MEMBER_POINT memberPoint
+          FROM
+               TB_MEMBER
+         WHERE
+               STATUS = 'Y'
+         ORDER 
+            by 
+               MEMBER_POINT desc
+         FETCH  
+               FIRST 10 ROWS ONLY
+    </select>
+
 	
 </mapper>

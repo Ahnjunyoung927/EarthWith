@@ -1,5 +1,6 @@
 package com.kh.eco.member.model.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -26,6 +27,10 @@ public interface MemberMapper {
 
 	void updateEmail(Map<String, String> changeRequest);
 	
-	//void updateEmail(Long memberId, String newEmail);
+	long getActiveMemberCount();
+	
+	List<Map<String, Object>> getMemberRank();
+	
+
 		
 }

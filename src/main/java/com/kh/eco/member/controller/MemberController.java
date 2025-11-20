@@ -6,12 +6,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.member.model.dto.ChangePasswordDTO;
 import com.kh.eco.member.model.dto.MemberSignUpDTO;
 import com.kh.eco.member.model.dto.UpdateEmailDTO;
 import com.kh.eco.member.model.service.MemberService;
+import com.kh.eco.member.model.vo.MemberVO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +28,30 @@ public class MemberController {
 	
 	private final MemberService memberService;
 	
-	@PostMapping
-	public ResponseEntity<?> signUp(@Valid @RequestBody MemberSignUpDTO member){
-		log.info("멤버 잘들어오는지 확인 : {}", member);
-		memberService.signUp(member);
-		
-		return ResponseEntity.status(201).build();
-	}
+    @PostMapping
+    public ResponseEntity<?> signUp(  		
+            @Valid MemberSignUpDTO member, 
+            @RequestParam(name = "profileImg", required = false) MultipartFile profileImg) {
+        
+        log.info("회원가입 요청 - 회원정보: {}", member);
+        
+        if (profileImg != null && !profileImg.isEmpty()) {
+            log.info("프로필 이미지: {} ({}bytes)", 
+                    profileImg.getOriginalFilename(), 
+                    profileImg.getSize());
+        } else {
+            log.info("프로필 이미지: 없음");
+        }
+        
+        
+        memberService.signUp(member, profileImg);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 	
-	// 비밀번호 변경 메소드
 	/**
-	 * 메소드명 - 기능설명 
+	 * changePassword - 비밀번호 변경 메소드
 	 * @param password
 	 * @return
 	 */
@@ -46,8 +62,13 @@ public class MemberController {
 		memberService.changePassword(password);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	// 지역, 이메일, 프로필, 번호
+	// 지역, 프로필, 번호
 	
+	/**
+	 * changeEmail - 이메일 변경 메소드
+	 * @param email
+	 * @return
+	 */
 	@PutMapping("email")
 	public ResponseEntity<?> changeEmail(@Valid @RequestBody UpdateEmailDTO email) {
 	
@@ -56,13 +77,5 @@ public class MemberController {
 		return ResponseEntity.ok("이메일 변경 완료");
 	}
 	
-//	@PutMapping("email")
-//	public ResponseEntity<?> changeEmail(
-//			@Valid Long memberId,
-//			@RequestBody String newEmail) {
-//	
-//		log.info("이메일 정보 : {}", newEmail);
-//		memberService.updateMemberEmail(memberId, newEmail);
-//		return ResponseEntity.ok("이메일 변경 완료");
-//	}
+
 }
