@@ -35,22 +35,26 @@ public class SecurityConfigure {
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		return httpSecurity.formLogin(AbstractHttpConfigurer::disable)
-						   .csrf(AbstractHttpConfigurer::disable)
-						   .cors(Customizer.withDefaults())
-						   .authorizeHttpRequests(requests -> {
-							   requests.requestMatchers(HttpMethod.POST, "/auth/login", "/members", "/auth/refresh", "/auth/logout").permitAll(); // 누구나 허용할 기능
-							   requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**").authenticated(); // 수정, 인증 필요한 기능
-							   requests.requestMatchers(HttpMethod.DELETE, "/members", "/boards/**").authenticated(); // 삭제, 인증 필요한 기능
-							   requests.requestMatchers(HttpMethod.POST, "/boards", "/comments").authenticated(); // 게시글 작성 시 로그인 필요
-							   requests.requestMatchers(HttpMethod.GET, "/boards/**", "/comments/**", "/uploads/**").permitAll(); // 게시글 전체조회 및 상세조회는 아무나
-							   requests.requestMatchers("/admin/**").hasRole("ADMIN");
-							   // 관리자 권한이 필요한 요청으로 연결 시 사용, DB상에 권한 컬럼에 ROLE_ADMIN이 있다면 패스, 아니면 아웃
-						   })
+							.csrf(AbstractHttpConfigurer::disable)
+							.cors(Customizer.withDefaults())
+							.authorizeHttpRequests(requests -> {
+								requests.requestMatchers(HttpMethod.POST, "/members").permitAll(); 
+								requests.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh", "/auth/logout").permitAll(); // 누구나 허용할 기능
+								requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**").authenticated(); // 수정, 인증 필요한 기능
+								requests.requestMatchers(HttpMethod.DELETE, "/members", "/boards/**").authenticated(); // 삭제, 인증 필요한 기능
+								requests.requestMatchers(HttpMethod.POST, "/boards", "/comments").authenticated(); // 게시글 작성 시 로그인 필요
+								requests.requestMatchers(HttpMethod.GET, "/boards/**", "/comments/**", "/uploads/**").permitAll(); // 게시글 전체조회 및 상세조회는 아무나
+								requests.requestMatchers(HttpMethod.GET, "/stats/**").permitAll();
+								requests.requestMatchers(HttpMethod.GET, "/api/**").permitAll();
+								requests.requestMatchers("/admin/**").hasRole("ADMIN");
+								
+								// 관리자 권한이 필요한 요청으로 연결 시 사용, DB상에 권한 컬럼에 ROLE_ADMIN이 있다면 패스, 아니면 아웃
+							})
 
-						   .sessionManagement(manager -> 
-								   				manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-						   .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // 관례적으로 jwt를 앞에다가
-						   .build();
+							.sessionManagement(manager -> 
+									manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+							.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // 관례적으로 jwt를 앞에다가
+							.build();
 	}
 	
 	@Bean

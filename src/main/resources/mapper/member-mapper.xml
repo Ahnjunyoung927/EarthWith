@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.member.model.dao.MemberMapper">
 	
+
 	<sql id="countMember">
 		SELECT 
 		       COUNT(*)
@@ -16,21 +17,34 @@
 			parameterType="MemberVO">
 		INSERT
 		  INTO
-		       TB_MEMBER
+		       TB_MEMBER (
+		           MEMBER_NO
+		         , MEMBER_NAME
+		         , MEMBER_ID
+		         , MEMBER_PWD
+		         , PHONE
+		         , EMAIL
+		         , REF_RNO
+		         , MEMBER_IMAGE
+		         , MEMBER_POINT
+		         , ENROLL_DATE
+		         , STATUS
+		         , ROLE
+		       )
 		VALUES
 		       (
-		       SEQ_MNO.NEXTVAL
-		     , #{memberName}
-		     , #{memberId}
-		     , #{memberPwd}
-		     , #{phone}
-		     , #{email}
-		     , #{refRno}
-		     , DEFAULT
-		     , DEFAULT
-		     , DEFAULT
-		     , DEFAULT
-		     , DEFAULT
+		           SEQ_MNO.NEXTVAL
+		         , #{memberName}
+		         , #{memberId}
+		         , #{memberPwd}
+		         , #{phone}
+		         , #{email}
+		         , #{refRno}
+		         , #{memberImageUrl}
+		         , #{memberPoint}
+		         , #{enrollDate}
+		         , #{status}
+		         , #{role}
 		       )
 	</insert>
 	
@@ -69,5 +83,26 @@
 		 WHERE
 			   MEMBER_ID = #{memberId}
 	</select>
+	
+	<select id="getActiveMemberCount" resultType="long">
+		<include refid="countMember" />
+               STATUS = 'Y'
+    </select>
+    
+    	<select id="getMemberRank" resultType="map">
+        SELECT
+        	  ROWNUM as "rank"
+        	 , MEMBER_ID memberId
+             , MEMBER_POINT memberPoint
+          FROM
+               TB_MEMBER
+         WHERE
+               STATUS = 'Y'
+         ORDER 
+            by 
+               MEMBER_POINT desc
+         FETCH  
+               FIRST 10 ROWS ONLY
+    </select>
 	
 </mapper>
