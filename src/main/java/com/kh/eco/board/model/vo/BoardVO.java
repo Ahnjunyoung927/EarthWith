@@ -2,6 +2,7 @@ package com.kh.eco.board.model.vo;
 
 import java.sql.Date;
 
+
 import lombok.Builder;
 import lombok.Value;
 
@@ -10,20 +11,12 @@ import lombok.Value;
 public class BoardVO {
 	
 	private Long boardNo;            // TB_BOARD 게시글번호
+	private int refMno;
+	private String boardCategory;    // TB_BOARD 게시글카테고리 C%
 	private String boardTitle;       // TB_BOARD 게시글제목
 	private String boardContent;     // TB_BOARD 게시글내용
-	private String boardCategory;    // TB_BOARD 게시글카테고리 C%
-	private String categoryName;     // TB_CATEGORY 카테고리이름 "인증"
-	
-	private Long boardAuthor;        // TB_BOARD 게시글 작성자 회원번호
-	private String memberId;         // TB_MEMBER 회원 아이디
-	private String memberImage;      // TB_MEMBER 프로필 사진
-	
-	private String attachmentPath;   // TB_ATTACHMENT 첨부파일 (선택)
-
-    private int regionNo;			 // TB_MEMBER 지역번호
-	private String regionName;       // TB_REGION 지역이름  ("사용자 지역")
-	
 	private Date regDate;            // TB_BOARD 작성일자
+	private long viewCount;
+	private char status;
 
 }

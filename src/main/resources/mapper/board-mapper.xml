@@ -109,7 +109,20 @@
 		       TRUNC(REG_DATE) = TRUNC(SYSDATE)         
 	</select>
 	
+	<sql id="countBoard">
+		SELECT 
+		       COUNT(*)
+		  FROM 
+		       TB_BOARD 
+		 WHERE 
+	</sql>
 	
+	<select id="getBoardCountForParticipation" parameterType="long">
+		<include refid="countBoard" />
+				  BOARD_CATEGORY = 'C2'
+			      
+		
+	</select>
 	
 	
 	

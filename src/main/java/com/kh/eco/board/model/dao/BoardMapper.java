@@ -21,26 +21,7 @@ public interface BoardMapper {
 	
 	int todayPost(@Param("category") String category);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	long getBoardCountForParticipation ();
+
 
 }

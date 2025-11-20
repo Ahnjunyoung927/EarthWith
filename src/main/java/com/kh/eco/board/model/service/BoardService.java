@@ -21,4 +21,8 @@ public interface BoardService {
 	int todayParticipants(String category);
 	
 	int todayPost(String category);
+
+	long getBoardCountForParticipation();
+
+
 }

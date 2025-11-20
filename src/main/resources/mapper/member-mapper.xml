@@ -8,43 +8,104 @@
 			parameterType="MemberVO">
 		INSERT
 		  INTO
-		       TB_MEMBER
+		       TB_MEMBER (
+		           MEMBER_NO
+		         , MEMBER_NAME
+		         , MEMBER_ID
+		         , MEMBER_PWD
+		         , PHONE
+		         , EMAIL
+		         , REF_RNO
+		         , MEMBER_IMAGE
+		         , MEMBER_POINT
+		         , ENROLL_DATE
+		         , STATUS
+		         , ROLE
+		       )
 		VALUES
 		       (
-		       SEQ_MNO.NEXTVAL
-		     , #{memberName}
-		     , #{memberId}
-		     , #{memberPwd}
-		     , #{phone}
-		     , #{email}
-		     , #{regionNo}
-		     , DEFAULT
-		     , 0
-		     , SYSDATE
-		     , 'Y'
-		     , 'ROLE_USER'
+		           SEQ_MNO.NEXTVAL
+		         , #{memberName}
+		         , #{memberId}
+		         , #{memberPwd}
+		         , #{phone}
+		         , #{email}
+		         , #{refRno}
+		         , #{memberImageUrl}
+		         , #{memberPoint}
+		         , #{enrollDate}
+		         , #{status}
+		         , #{role}
 		       )
 	</insert>
-	
-	<select id="countByMemberId" parameterType="string">
+
+
+	<sql id="countMember">
+
 		SELECT 
 		       COUNT(*)
 		  FROM 
 		       TB_MEMBER 
 		 WHERE 
-		       MEMBER_ID = #{memberId}
+	</sql>
+	
+	
+	
+
+	<select id="countByMemberId" parameterType="string">
+		<include refid="countMember" />
+		    MEMBER_ID = #{memberId}
 	</select>
+	
+	<select id="countByPhone" parameterType="string">
+    	<include refid="countMember" />
+    		   PHONE = #{phone}
+	</select>
+
+	<select id="countByEmail" parameterType="string">
+		<include refid="countMember" />
+		       EMAIL = #{email}
+	</select>
+
 	
 	<select id="loadUser" parameterType="MemberLoginDTO">
 		SELECT
 			   MEMBER_ID memberId
 		     , MEMBER_PWD memberPwd
 			 , MEMBER_NAME memberName
-		     , role
+		     , ROLE
+		     , MEMBER_NO memberNo
+		     , PHONE
+		     , EMAIL
+		     , REF_RNO refRno
+		     , MEMBER_IMAGE memberImage
+		     , MEMBER_POINT memberPoint
+		     , ENROLL_DATE enrollDate
 		  FROM
 			   TB_MEMBER
 		 WHERE
 			   MEMBER_ID = #{memberId}
 	</select>
+	
+	<select id="getActiveMemberCount" resultType="long">
+		<include refid="countMember" />
+               STATUS = 'Y'
+    </select>
+    
+    	<select id="getMemberRank" resultType="map">
+        SELECT
+        	  ROWNUM as "rank"
+        	 , MEMBER_ID memberId
+             , MEMBER_POINT memberPoint
+          FROM
+               TB_MEMBER
+         WHERE
+               STATUS = 'Y'
+         ORDER 
+            by 
+               MEMBER_POINT desc
+         FETCH  
+               FIRST 10 ROWS ONLY
+    </select>
 	
 </mapper>
