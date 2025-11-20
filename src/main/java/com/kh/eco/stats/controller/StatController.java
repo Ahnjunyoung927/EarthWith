@@ -38,6 +38,7 @@ public class StatController {
     @GetMapping("/member-rank-10")
     public ResponseEntity<List<Map<String, Object>>> getMemberRankList() { 
     	List<Map<String, Object>> rankList = memberService.getMemberRank(); 
+
     	return ResponseEntity.ok(rankList);
     }
     
