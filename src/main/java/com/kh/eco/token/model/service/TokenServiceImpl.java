@@ -44,7 +44,9 @@ public class TokenServiceImpl implements TokenService {
 	}
 	
 	private void saveToken(String refreshToken, String username) {
-		RefreshToken token = RefreshToken.builder().token(refreshToken).username(username)
+		RefreshToken token = RefreshToken.builder()
+												   .token(refreshToken)
+										           .username(username)
 				   								   .expiration(System.currentTimeMillis() + 3600000L * 72)
 				   								   .build();
 
@@ -56,7 +58,7 @@ public class TokenServiceImpl implements TokenService {
 		if(token == null || token.getExpiration() < System.currentTimeMillis()) {
 			throw new CustomAuthenticationException("유효하지 않은 요청입니다.");
 		}
-		Claims claims = tokenUtill.parseJwt(refreshToken);
+		Claims claims = tokenUtill.parseJwt(refreshToken); 
 		String username = claims.getSubject();
 		return createTokens(username);
 	}

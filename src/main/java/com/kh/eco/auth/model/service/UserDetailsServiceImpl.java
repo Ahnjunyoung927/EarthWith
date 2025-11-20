@@ -34,6 +34,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return CustomUserDetails.builder().username(user.getMemberId())
 				  						  .password(user.getMemberPwd())
 				  						  .memberName(user.getMemberName())
+				  						  .memberNo(user.getMemberNo())
+				  						  .phone(user.getPhone())
+				  						  .email(user.getEmail())
+				  						  .refRno(user.getRefRno())
+				  						  .memberImage(user.getMemberImage())
+				  						  .memberPoint(user.getMemberPoint())
+				  						  .enrollDate(user.getEnrollDate())
 				  						  .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
 				  						  .build();
 

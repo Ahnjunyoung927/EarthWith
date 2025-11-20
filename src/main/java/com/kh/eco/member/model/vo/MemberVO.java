@@ -1,5 +1,8 @@
 package com.kh.eco.member.model.vo;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
@@ -13,7 +16,7 @@ public class MemberVO {
 	private String memberPwd;
 	private String phone;
 	private String email;
-	private int regionNo;
-	private String memberImageUrl;
+	private int refRno;
+	private String memberImage;	
 
 }
