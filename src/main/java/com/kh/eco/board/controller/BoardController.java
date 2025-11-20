@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
-import com.kh.eco.board.model.dto.BoardDTO;
+import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.service.BoardService;
 
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class BoardController {
 	private final BoardService boardService;
 	
 	@GetMapping("/feed")
-	public ResponseEntity<List<BoardDTO>> getFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
+	public ResponseEntity<List<FeedBoardDTO>> getFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
 			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
 			                                      @RequestParam(name = "limit", defaultValue = "10") int limit) {
 		
@@ -43,7 +43,7 @@ public class BoardController {
 	}
 	
 	@PostMapping("/feed")
-	public ResponseEntity<?> saveFeed(@Valid BoardDTO feed, @RequestParam(name="file", required=false) MultipartFile file, 
+	public ResponseEntity<?> saveFeed(@Valid FeedBoardDTO feed, @RequestParam(name="file", required=false) MultipartFile file, 
 			                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
 		boardService.saveFeed(feed, file, userDetails.getUsername());

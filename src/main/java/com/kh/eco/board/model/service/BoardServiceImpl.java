@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.board.model.dao.BoardMapper;
-import com.kh.eco.board.model.dto.BoardDTO;
+import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.vo.BoardVO;
 import com.kh.eco.file.FileService;
 
@@ -24,7 +24,7 @@ public class BoardServiceImpl implements BoardService {
 	private final FileService fileService;
 	
 	@Override
-	public List<BoardDTO> getFeedList(String category, Long fetchOffset, int limit) {
+	public List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, int limit) {
 		
 		if("C".equals(category)) {
 			category = "C%";
@@ -34,7 +34,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public void saveFeed(BoardDTO feed, MultipartFile file, String username) {
+	public void saveFeed(FeedBoardDTO feed, MultipartFile file, String username) {
 		
 
 	}

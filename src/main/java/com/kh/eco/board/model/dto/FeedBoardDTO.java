@@ -16,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class BoardDTO {
+public class FeedBoardDTO {
 
 	private Long boardNo;            // TB_BOARD 게시글번호
 	private String boardTitle;       // TB_BOARD 게시글제목
