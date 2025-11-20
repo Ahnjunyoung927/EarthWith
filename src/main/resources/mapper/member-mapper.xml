@@ -19,10 +19,10 @@
 		     , #{email}
 		     , #{regionNo}
 		     , DEFAULT
-		     , DEFAULT
-		     , DEFAULT
-		     , DEFAULT
-		     , DEFAULT
+		     , 0
+		     , SYSDATE
+		     , 'Y'
+		     , 'ROLE_USER'
 		       )
 	</insert>
 	

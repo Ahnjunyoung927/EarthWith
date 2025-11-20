@@ -10,10 +10,11 @@
 		       TB_TOKEN
 		VALUES
 		       (
-		       #{token}
+		       SEQ_TNO.NEXTVAL
 		     , #{username}
-		     , #{expiration}
+		     , #{token}
 		     , DEFAULT
+		     , #{expiration}
 		       )
 	</insert>
 	
