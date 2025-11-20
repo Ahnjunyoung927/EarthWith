@@ -43,7 +43,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				  						  .enrollDate(user.getEnrollDate())
 				  						  .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole())))
 				  						  .build();
-
 	}
 
 }
