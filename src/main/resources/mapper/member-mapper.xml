@@ -47,9 +47,6 @@
 		       )
 	</insert>
 	
-	
-	
-
 	<select id="countByMemberId" parameterType="string">
 		<include refid="countMember" />
 		    MEMBER_ID = #{memberId}
@@ -94,6 +91,8 @@
 		 WHERE
 		        MEMBER_ID = #{memberId}
 	</update>
+	
+	
 	
 	<select id="findById" resultType= "MemberVo">
 		SELECT
@@ -140,6 +139,55 @@
 		 WHERE
 		       MEMBER_ID = #{memberId}
 		
+	</update>
+	
+	<select id="findByPhone" resultType="MemberVO">
+		SELECT
+		       MEMBER_NO memberNo
+			 , MEMBER_NAME memberName
+			 , MEMBER_ID memberId
+			 , MEMBER_PWD memberPwd
+			 , PHONE
+			 , EMAIL
+			 , REF_RNO refRno
+			 , MEMBER_IMAGE memberImage
+			 , MEMBER_POINT memberPoint
+			 , ENROLL_DATE enrollDate
+			 , STATUS
+			 , ROLE
+	      FROM
+	           TB_MEMBER
+	     WHERE
+	           PHONE = #{phone}
+	</select>
+	
+	<update id="updatePhone">
+		UPDATE
+			   TB_MEMBER
+		   SET
+		       PHONE = #{newPhone}
+		 WHERE
+		       MEMBER_ID = #{memberId}
+		       
+	</update>
+	
+	<update id="updateProfile">
+		UPDATE
+			   TB_MEMBER
+		   SET
+		       MEMBER_IMAGE = #{newImage}
+		 WHERE 
+		       MEMBER_ID = #{memberId}
+		       
+	</update>
+	
+	<update id="updateRegion">
+		UPDATE
+			   TB_MEMBER
+	       SET
+	           REF_RNO = #{newRegion}
+	     WHERE 
+	  		   MEMBER_ID = #{memberId}
 	</update>
 	
 	<select id="getActiveMemberCount" resultType="long">

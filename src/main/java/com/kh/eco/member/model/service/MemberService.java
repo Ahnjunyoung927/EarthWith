@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.member.model.dto.MemberSignUpDTO;
 import com.kh.eco.member.model.dto.UpdateEmailDTO;
+import com.kh.eco.member.model.dto.UpdatePhoneDTO;
+import com.kh.eco.member.model.dto.UpdateProfileDTO;
+import com.kh.eco.member.model.dto.UpdateRegionDTO;
 
 import jakarta.validation.Valid;
 
@@ -26,6 +29,12 @@ public interface MemberService {
 	long getActiveMemberCount();
 
 	List<Map<String, Object>> getMemberRank();
+
+	void updateMemberPhone(UpdatePhoneDTO phone);
+
+	void updateMemberProfile(MultipartFile file, UpdateProfileDTO profile);
+
+	void updateMemberRegion(UpdateRegionDTO region);
 	
 	
 

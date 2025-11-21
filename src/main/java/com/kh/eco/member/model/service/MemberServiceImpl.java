@@ -18,13 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.exception.CustomAuthenticationException;
 import com.kh.eco.exception.IdDuplicateException;
-
+import com.kh.eco.file.FileService;
 import com.kh.eco.member.model.dao.MemberMapper;
 import com.kh.eco.member.model.dto.ChangePasswordDTO;
 import com.kh.eco.member.model.dto.MemberSignUpDTO;
 import com.kh.eco.member.model.dto.UpdateEmailDTO;
+import com.kh.eco.member.model.dto.UpdatePhoneDTO;
+import com.kh.eco.member.model.dto.UpdateProfileDTO;
+import com.kh.eco.member.model.dto.UpdateRegionDTO;
+import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.vo.MemberVO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberMapper memberMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final MemberInfoDuplicateCheck midc;
-
+	private final FileService fileService;
 
     @Override
     public void signUp(MemberSignUpDTO member, MultipartFile profileImg) {
@@ -137,7 +142,7 @@ public class MemberServiceImpl implements MemberService {
 	
 	@Override
 	public void updateMemberEmail(UpdateEmailDTO email) {
-		CustomUserDetails user = validateEmail(email.getCurrentEmail());
+		CustomUserDetails user = validateEmail(email.getNewEmail());
 		log.info("serviceImpl email : {}" , email);
 		String newEmail = email.getNewEmail();
 		
@@ -151,16 +156,7 @@ public class MemberServiceImpl implements MemberService {
 	private CustomUserDetails validateEmail(String string) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-		// log.info("email : {}", email);
-		// 1) 이메일 유효성 체크(비어있거나 형식 이상)
-		if(string == null || string.trim().isEmpty()) {
-			throw new IllegalArgumentException("이메일은 비어 있을 수 없습니다");
-		}
-		
-		// 정규식
-		if(!string.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-			throw new IllegalArgumentException("올바른 이메일 형식이 아닙니다");
-		}
+		log.info("string : {}" , string);
 		
 		// 3) 이미 사용중인 이메일인지 체크
 		MemberVO duplicated = memberMapper.findByEmail(string);
@@ -171,6 +167,95 @@ public class MemberServiceImpl implements MemberService {
 		return user;
 		
 	}
+	
+	@Override
+	public void updateMemberPhone(UpdatePhoneDTO phone) {
+		CustomUserDetails user = validatePhone(phone.getNewPhone());
+		
+		String newPhone = phone.getNewPhone();
+		//log.info("newPhone, getUsername : {} {}", newPhone, user.getUsername());
+		Map<String, String> changeRequest = Map.of("memberId", user.getUsername(),
+												   "newPhone", newPhone);
+		
+		memberMapper.updatePhone(changeRequest);
+		
+	}
+	
+	private CustomUserDetails validatePhone(String phone) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
+		
+		if(phone == null || phone.trim().isEmpty()) {
+			throw new IllegalArgumentException("번호는 비어 있을 수 없습니다");
+		}
+		
+		if(!phone.matches("^0\\d{1,2}-\\d{3,4}-\\d{4}$")) {
+			throw new IllegalArgumentException("올바른 번호 형식이 아닙니다");
+		}
+		MemberVO duplicated = memberMapper.findByPhone(phone);
+		if(duplicated != null && !duplicated.getPhone().equals(phone)) {
+			throw new IllegalArgumentException("이미 사용중인 번호입니다");
+		}
+		
+		return user;
+	}
+	
+	@Override
+	public void updateMemberRegion(UpdateRegionDTO region) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
+		//user = region.get
+		
+		int newRegion = region.getNewRegion();
+		log.info("region : {}", region );
+		Map<String, Object> changeRequest = Map.of("memberId", user.getUsername(),
+												   "newRegion", newRegion);
+		log.info("changeRequest : {}", changeRequest);
+		memberMapper.updateRegion(changeRequest);
+		
+	}
+	
+	private CustomUserDetails validateRegion(String region) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
+		
+		if(region == null || region.trim().isEmpty()) {
+			throw new IllegalArgumentException("지역은 비어 있을 수 없습니다");
+		}
+	}
+	
+	@Override
+	public void updateMemberProfile(MultipartFile file, UpdateProfileDTO profile) {
+
+		String newImage = profile.getNewImage();
+		
+		memberMapper.updateProfile(profile);
+
+	}
+	
+//	@Override
+//	public void updateMemberProfile(MultipartFile file) {
+//		CustomUserDetails user = validateProfile(file.getCurrentImageUrl());
+//		
+//		String newImageUrl = file.getNewImageUrl();
+//		//log.info("newPhone, getUsername : {} {}", newPhone, user.getUsername());
+//		Map<String, String> changeRequest = Map.of("memberId", user.getUsername(),
+//												   "newImageUrl", newImageUrl);
+//		
+//		memberMapper.updateProfile(changeRequest);		
+//	}
+//	
+//	private CustomUserDetails validateProfile(String profile) {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
+//		
+//		if(profile == null || profile.trim().isEmpty()) {
+//			throw new IllegalArgumentException("번호는 비어 있을 수 없습니다");
+//		}
+//		
+//		return user;
+//	}
+	
 	
     @Override
     public long getActiveMemberCount() {
@@ -186,4 +271,6 @@ public class MemberServiceImpl implements MemberService {
     public List<Map<String, Object>> getMemberRank() {
         return memberMapper.getMemberRank();
     }
+
+
 }

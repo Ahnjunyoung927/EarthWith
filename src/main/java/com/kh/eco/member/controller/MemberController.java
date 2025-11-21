@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.eco.member.model.dto.ChangePasswordDTO;
 import com.kh.eco.member.model.dto.MemberSignUpDTO;
 import com.kh.eco.member.model.dto.UpdateEmailDTO;
+import com.kh.eco.member.model.dto.UpdatePhoneDTO;
+import com.kh.eco.member.model.dto.UpdateProfileDTO;
+import com.kh.eco.member.model.dto.UpdateRegionDTO;
 import com.kh.eco.member.model.service.MemberService;
 import com.kh.eco.member.model.vo.MemberVO;
 
@@ -62,7 +65,7 @@ public class MemberController {
 		memberService.changePassword(password);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	// 지역, 프로필, 번호
+	// 지역, 프로필
 	
 	/**
 	 * changeEmail - 이메일 변경 메소드
@@ -77,5 +80,22 @@ public class MemberController {
 		return ResponseEntity.ok("이메일 변경 완료");
 	}
 	
-
+	@PutMapping("phone")
+	public ResponseEntity<?> changePhone(@Valid @RequestBody UpdatePhoneDTO phone) {
+		memberService.updateMemberPhone(phone);
+		return ResponseEntity.ok("번호 변경 완료");
+	}
+	
+	@PostMapping("profile")
+	public ResponseEntity<?> changeProfile(@RequestParam(name="file", required=false)MultipartFile file, UpdateProfileDTO profile) {
+		log.info("file, profile : {}, {}",file, profile);
+		memberService.updateMemberProfile(file, profile);
+		return ResponseEntity.ok("프로필 변경 완료");
+	}
+	
+	@PutMapping("region")
+	public ResponseEntity<?> changeRegion(@Valid @RequestBody UpdateRegionDTO region) {
+		memberService.updateMemberRegion(region);
+		return ResponseEntity.ok("번호 변경 완료");
+	}
 }
