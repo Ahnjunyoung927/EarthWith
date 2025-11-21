@@ -65,5 +65,4 @@ public class GloblaExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
-	
 }
