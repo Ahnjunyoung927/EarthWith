@@ -24,7 +24,7 @@ mybatis:
   configuration:
     jdbc-type-for-null: VARCHAR
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  type-aliases-package: com.kh.eco.member.model.vo, com.kh.eco.member.model.dto, com.kh.eco.board.model.vo, com.kh.eco.board.model.dto, com.kh.eco.comment.model.vo, com.kh.eco.comment.model.dto, com.kh.eco.token.model.vo
+  type-aliases-package: com.kh.eco.member.model.vo, com.kh.eco.member.model.dto, com.kh.eco.board.model.vo, com.kh.eco.board.model.dto, com.kh.eco.comment.model.vo, com.kh.eco.comment.model.dto, com.kh.eco.token.model.vo, com.kh.eco.admin.model.dto, com.kh.eco.admin.model.vo
   mapper-locations: classpath:mapper/*.xml
   
 jwt:
