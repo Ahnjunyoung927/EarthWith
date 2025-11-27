@@ -42,7 +42,7 @@ public class SecurityConfigure {
 							   requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**").authenticated(); // 수정, 인증 필요한 기능
 							   requests.requestMatchers(HttpMethod.DELETE, "/members", "/boards/**").authenticated(); // 삭제, 인증 필요한 기능
 							   requests.requestMatchers(HttpMethod.POST, "/boards", "/comments", "/api/boards/**").authenticated(); // 게시글 작성 시 로그인 필요
-							   requests.requestMatchers(HttpMethod.GET, "/uploads/**", "/stats/**", "/api/**", "/api/boards/**", "/comments/**", "/uploads/**", "/feed/**", "/stats/today/**", "api/boards/stats/**" ).permitAll(); // 게시글 전체조회 및 상세조회는 아무나
+							   requests.requestMatchers(HttpMethod.GET, "/stats/**", "/api/**", "/api/boards/**", "/comments/**", "/uploads/**", "/feed/**", "/stats/today/**", "api/boards/stats/**" ).permitAll(); // 게시글 전체조회 및 상세조회는 아무나
 							   requests.requestMatchers("/admin/**").hasRole("ADMIN");
 							   // 관리자 권한이 필요한 요청으로 연결 시 사용, DB상에 권한 컬럼에 ROLE_ADMIN이 있다면 패스, 아니면 아웃
 						   })
@@ -55,7 +55,7 @@ public class SecurityConfigure {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() { 
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5174"));
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); 
 		configuration.setAllowCredentials(true);

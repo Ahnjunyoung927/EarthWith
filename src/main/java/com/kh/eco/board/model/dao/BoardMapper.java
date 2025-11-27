@@ -13,13 +13,17 @@ public interface BoardMapper {
 	
 	List<FeedBoardDTO> selectFeedList(@Param("category") String category,
 			                     @Param("fetchOffset") Long fetchOffset,
-			                     @Param("limit") int limit);
+			                     @Param("limit") Long limit);
 	
-	void saveFeed(BoardVO feed);
+	int saveFeed(BoardVO feed);
 	
-	int todayParticipants(@Param("category") String category);
+	void saveAttachment(@Param("boardNo") Long boardNo, @Param("file") String filePath);
 	
-	int todayPost(@Param("category") String category);
+	BoardVO findNewBoardNo(int memberNo);
+	
+	int todayParticipants(String category);
+	
+	int todayPost(String category);
 	
 	long getBoardCountForParticipation ();
 

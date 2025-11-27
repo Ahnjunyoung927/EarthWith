@@ -5,60 +5,63 @@
 <mapper namespace="com.kh.eco.board.model.dao.BoardMapper">
 
 	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
- 	   
-			  SELECT *
-        FROM (
-            SELECT
-                B.BOARD_NO       AS boardNo,
-                B.BOARD_TITLE    AS boardTitle,
-                B.BOARD_CONTENT  AS boardContent,
-                B.BOARD_CATEGORY AS boardCategory,
-                C.CATEGORY_NAME  AS categoryName,
-
-                B.REF_MNO   AS boardAuthor,
-                M.MEMBER_ID      AS memberId,
-                M.MEMBER_IMAGE   AS memberImage,
-
-                A.ATTACHMENT_PATH AS attachmentPath,
-
-                R.REGION_NO      AS regionNo,
-                R.REGION_NAME    AS regionName,
-
-                B.REG_DATE       AS regDate,
-
-                ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) AS RN
-            FROM TB_BOARD B
-            JOIN TB_MEMBER M
-              ON B.REF_MNO = M.MEMBER_NO
-            JOIN TB_CATEGORY C
-              ON B.BOARD_CATEGORY = C.CATEGORY_NO
-            LEFT JOIN TB_REGION R
-              ON M.REF_RNO = R.REGION_NO
-            LEFT JOIN (
-                -- 게시글별 대표 첨부파일 1개 (여기선 STATUS = 'Y' 중 첫 번째)
-                SELECT
-                    REF_BNO,
-                    MIN(ATTACHMENT_PATH) AS ATTACHMENT_PATH
-                FROM TB_ATTACHMENT
+    SELECT *
+    FROM (
+        SELECT
+           	    B.BOARD_NO       boardNo
+             ,  B.BOARD_TITLE    boardTitle
+             ,  B.BOARD_CONTENT  boardContent
+             ,  B.BOARD_CATEGORY boardCategory
+             ,  C.CATEGORY_NAME  categoryName
+             ,  B.REF_MNO        boardAuthor
+             ,  M.MEMBER_ID      memberId
+             ,  M.MEMBER_IMAGE   memberImage
+             ,  A.ATTACHMENT_PATH attachmentPath
+             ,  R.REGION_NO      regionNo
+             ,  R.REGION_NAME    regionName
+             ,  B.REG_DATE       regDate
+             , NVL(L.LIKE_COUNT, 0) likeCount
+             , ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) RN
+               
+          FROM TB_BOARD B
+          JOIN TB_MEMBER M
+            ON B.REF_MNO = M.MEMBER_NO
+          JOIN TB_CATEGORY C
+            ON B.BOARD_CATEGORY = C.CATEGORY_NO
+          LEFT JOIN TB_REGION R
+            ON M.REF_RNO = R.REGION_NO
+          LEFT JOIN (
+               SELECT
+		              REF_BNO
+		            , MIN(ATTACHMENT_PATH) AS ATTACHMENT_PATH
+                 FROM TB_ATTACHMENT
                 WHERE STATUS = 'Y'
-                GROUP BY REF_BNO
-            ) A
-              ON A.REF_BNO = B.BOARD_NO
-            WHERE B.STATUS = 'Y'
-              AND B.BOARD_CATEGORY LIKE #{category}
-            <if test="fetchOffset != null">
-              AND B.BOARD_NO &lt; #{fetchOffset}
-            </if>
-        )
-        WHERE RN &lt;= #{limit}
-			
+                GROUP
+                   BY REF_BNO
+		         ) A
+		           ON A.REF_BNO = B.BOARD_NO
 		
+		        
+		         LEFT JOIN TB_LIKE_COUNT L
+		           ON L.REF_NO = B.BOARD_NO
 		
-		
-		
-	</select>
+		        WHERE B.STATUS = 'Y'
+		          AND B.BOARD_CATEGORY LIKE #{category}
+		        <if test="fetchOffset != null">
+		          AND B.BOARD_NO &lt; #{fetchOffset}
+		        </if>
+		    )
+		        WHERE RN &lt;= #{limit}
+</select>
 
 	<insert id="saveFeed" parameterType="com.kh.eco.board.model.vo.BoardVO">
+		
+		<!-- INSERT 하기 전에 boardNo 뽑아오려는 용도
+		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+			SELECT SEQ_BNO.NEXTVAL FROM DUAL
+		</selectKey> -->
+		
+		
 		INSERT
 		  INTO
 		       TB_BOARD 
@@ -74,14 +77,46 @@
 		VALUES
 		       (
 		       SEQ_BNO.NEXTVAL
-		     , #{boardAuthor}
+		     , #{refMno}
 		     , #{boardCategory}
 		     , #{boardTitle}
 		     , #{boardContent}
 		     , SYSDATE
 		     , 'Y'  
-		       )       
+		       )             
 	</insert>
+	
+	<select id="findNewBoardNo" resultType="BoardVO">
+		SELECT
+		       BOARD_NO boardNo
+		  FROM
+		       TB_BOARD
+		 WHERE
+		       REF_MNO = #{refMno}
+		 ORDER
+		    BY
+		       BOARD_NO DESC
+		 FETCH
+		 FIRST 1 ROW ONLY                        	
+	</select>
+	
+	
+	
+	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
+    INSERT INTO TB_ATTACHMENT (
+          FILE_NO fileNo
+        , REF_BNO refBno
+        , ATTACHMENT_PATH attachmentPath
+        , REG_DATE regDate
+        , STATUS 
+    ) VALUES (
+          SEQ_FNO.NEXTVAL
+        , #{boardNo}
+        , #{file}
+        , SYSDATE
+        , 'Y'
+    )
+</insert>
 	
 	<select id="todayParticipants" resultType="int">
   SELECT 
