@@ -171,15 +171,14 @@
 		       
 	</update>
 	
-	<update id="updateProfile">
-		UPDATE
-			   TB_MEMBER
-		   SET
-		       MEMBER_IMAGE = #{newImage}
-		 WHERE 
-		       MEMBER_ID = #{memberId}
-		       
-	</update>
+	<update id="updateProfile" parameterType="com.kh.eco.member.model.dto.UpdateProfileDTO">
+        UPDATE 
+        	   TB_MEMBER
+           SET 
+               MEMBER_IMAGE = #{imagePath}
+         WHERE 
+          	   MEMBER_ID = #{memberId}
+    </update>
 	
 	<update id="updateRegion">
 		UPDATE

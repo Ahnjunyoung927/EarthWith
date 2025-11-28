@@ -1,7 +1,10 @@
 package com.kh.eco.member.controller;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -86,16 +89,29 @@ public class MemberController {
 		return ResponseEntity.ok("번호 변경 완료");
 	}
 	
+//	@PostMapping("profile")
+//	public ResponseEntity<?> changeProfile(@RequestParam(name="file", required=false)MultipartFile file, UpdateProfileDTO profile) {
+//		log.info("file, profile : {}, {}",file, profile);
+//		memberService.updateMemberProfile(file, profile);
+//		return ResponseEntity.ok("프로필 변경 완료");
+//	}
+	
 	@PostMapping("profile")
-	public ResponseEntity<?> changeProfile(@RequestParam(name="file", required=false)MultipartFile file, UpdateProfileDTO profile) {
-		log.info("file, profile : {}, {}",file, profile);
-		memberService.updateMemberProfile(file, profile);
-		return ResponseEntity.ok("프로필 변경 완료");
-	}
+    public ResponseEntity<?> updateProfileImage(@RequestParam UpdateProfileDTO profile) {
+	    System.out.println("====== Controller 시작 ======");
+	    System.out.println("profile 객체: " + profile);
+	    System.out.println("memberId: " + profile.getMemberId());
+	    System.out.println("newImage: " + profile.getNewImage());
+	    System.out.println("imagePath: " + profile.getImagePath());
+	    System.out.println("============================");
+	    
+		memberService.updateProfile(profile);
+        return ResponseEntity.ok("프로필 이미지 변경 완료");
+    }
 	
 	@PutMapping("region")
 	public ResponseEntity<?> changeRegion(@Valid @RequestBody UpdateRegionDTO region) {
 		memberService.updateMemberRegion(region);
-		return ResponseEntity.ok("번호 변경 완료");
+		return ResponseEntity.ok("지역 변경 완료");
 	}
 }

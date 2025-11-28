@@ -35,9 +35,12 @@ public interface MemberMapper {
 
 	MemberVO findByPhone(String phone);
 
-	void updateProfile(UpdateProfileDTO profile);
-
+	int updateProfile(UpdateProfileDTO profile);
+	
 	void updateRegion(Map<String, Object> changeRequest);
+
+
+	
 	
 
 		

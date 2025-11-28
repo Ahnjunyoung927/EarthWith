@@ -1,11 +1,15 @@
 package com.kh.eco.member.model.service;
 
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.Map;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
@@ -30,6 +35,7 @@ import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.vo.MemberVO;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -208,30 +214,111 @@ public class MemberServiceImpl implements MemberService {
 		
 		int newRegion = region.getNewRegion();
 		log.info("region : {}", region );
+		log.info("user.getRefRno, region.getCurrentRegion : {}, {}", user.getRefRno(), region.getCurrentRegion());
 		Map<String, Object> changeRequest = Map.of("memberId", user.getUsername(),
 												   "newRegion", newRegion);
 		log.info("changeRequest : {}", changeRequest);
-		memberMapper.updateRegion(changeRequest);
 		
+		memberMapper.updateRegion(changeRequest);
+
 	}
 	
-	private CustomUserDetails validateRegion(String region) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-		
-		if(region == null || region.trim().isEmpty()) {
-			throw new IllegalArgumentException("지역은 비어 있을 수 없습니다");
-		}
-	}
+//	@Override
+//	public void updateMemberProfile(MultipartFile file, UpdateProfileDTO profile) {
+//
+//		String newImage = profile.getNewImage();
+//		
+//		memberMapper.updateProfile(profile);
+//
+//	}
+	
+	@Value("${file.upload.path:C:/upload}")
+	private String uploadPath;
 	
 	@Override
-	public void updateMemberProfile(MultipartFile file, UpdateProfileDTO profile) {
-
-		String newImage = profile.getNewImage();
-		
-		memberMapper.updateProfile(profile);
-
-	}
+	public void updateProfile(UpdateProfileDTO profile) {
+        System.out.println("=== Service 시작 ===");
+        System.out.println("받은 profile: " + profile);
+        System.out.println("memberId: " + profile.getMemberId());
+        System.out.println("newImage: " + (profile.getNewImage() != null ? profile.getNewImage().getOriginalFilename() : "null"));
+        
+        try {
+            MultipartFile file = profile.getNewImage();
+            
+            // 1. 파일이 있으면 저장
+            if (file != null && !file.isEmpty()) {
+                // 업로드 폴더 없으면 생성
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+                
+                // 파일명 생성 (중복 방지)
+                String originalFilename = file.getOriginalFilename();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String savedFilename = System.currentTimeMillis() + extension;
+                
+                // 파일 저장
+                File dest = new File(uploadPath + File.separator + savedFilename);
+                file.transferTo(dest);
+                
+                // DB에 저장할 경로 설정
+                String dbPath = "/upload/" + savedFilename;
+                profile.setImagePath(dbPath);
+                
+                System.out.println("파일 저장 완료: " + dbPath);
+            } else {
+                System.out.println("파일이 null이거나 비어있음");
+            }
+            
+            // 2. DB 업데이트
+            int result = memberMapper.updateProfile(profile);
+            System.out.println("DB 업데이트 결과: " + result + "건");
+            
+            if (result == 0) {
+                throw new RuntimeException("프로필 업데이트 실패");
+            }
+            
+        } catch (IOException e) {
+            System.err.println("파일 업로드 실패: " + e.getMessage());
+            throw new RuntimeException("파일 업로드 실패", e);
+        }
+    }
+//    public void updateProfile(UpdateProfileDTO profile) {
+//        MultipartFile file = profile.getNewImage();
+//        if (file != null && !file.isEmpty()) {
+//            // 파일 확장자
+//            String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+//            String ext = "";
+//
+//            int idx = originalFilename.lastIndexOf(".");
+//            if (idx > 0) ext = originalFilename.substring(idx);
+//
+//            // 서버에 저장할 파일 이름 (UUID)
+//            String savedFileName = UUID.randomUUID().toString() + ext;
+//
+//            try {
+//                // 디렉토리 없으면 생성
+//                Files.createDirectories(Paths.get(uploadDir));
+//
+//                // 파일 저장
+//                File dest = new File(uploadDir + savedFileName);
+//                file.transferTo(dest);
+//
+//                // DB에 저장할 경로 세팅
+//                profile.setImagePath("/images/" + savedFileName);
+//
+//                // DB 업데이트
+//                memberMapper.updateProfileImage(profile);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                throw new RuntimeException("파일 업로드 실패");
+//            }
+//            
+//            
+//        }
+    
 	
 //	@Override
 //	public void updateMemberProfile(MultipartFile file) {

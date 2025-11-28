@@ -15,7 +15,6 @@ import com.kh.eco.member.model.dto.UpdatePhoneDTO;
 import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.dto.UpdateRegionDTO;
 
-import jakarta.validation.Valid;
 
 public interface MemberService {
 	
@@ -32,7 +31,7 @@ public interface MemberService {
 
 	void updateMemberPhone(UpdatePhoneDTO phone);
 
-	void updateMemberProfile(MultipartFile file, UpdateProfileDTO profile);
+	void updateProfile(UpdateProfileDTO profile);
 
 	void updateMemberRegion(UpdateRegionDTO region);
 	
