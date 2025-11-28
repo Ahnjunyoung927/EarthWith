@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.eco.admin.model.dto.AdminBoardDTO;
 import com.kh.eco.admin.model.dto.AdminCommentDTO;
+import com.kh.eco.admin.model.dto.CommentPageResponse;
+import com.kh.eco.admin.model.dto.PageResponse;
 import com.kh.eco.admin.model.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,15 +29,30 @@ public class AdminController {
 	
 
 	@GetMapping("boards")
-	public ResponseEntity<List<AdminBoardDTO>> findBoardAll(@RequestParam(name="page", defaultValue="0") int pageNo ){
-		List<AdminBoardDTO> boards = adminService.findBoardAll(pageNo);
-		return ResponseEntity.ok(boards);
+	public ResponseEntity<PageResponse> findBoardAll(@RequestParam(name="page", defaultValue="0") int pageNo ){
+	    PageResponse result = adminService.findBoardAll(pageNo);
+	    log.info("{}", result);
+	    return ResponseEntity.ok(result);
 	}
 	
+	@GetMapping("boards/reported")
+	public ResponseEntity<PageResponse> findReportedBoard(@RequestParam(name="page", defaultValue="0") int pageNo ){
+	    PageResponse result = adminService.findReportedBoard(pageNo);
+	    log.info("{}", result);
+	    return ResponseEntity.ok(result);
+	} 
+	
 	@GetMapping("comments")
-	public ResponseEntity<List<AdminCommentDTO>> findCommentAll(@RequestParam(name="page", defaultValue="0") int pageNo){
-		List<AdminCommentDTO> comments = adminService.findCommentAll(pageNo);
-		return ResponseEntity.ok(comments);
+	public ResponseEntity<CommentPageResponse> findCommentAll(@RequestParam(name="page", defaultValue="0") int pageNo){
+		CommentPageResponse result = adminService.findCommentAll(pageNo);
+		return ResponseEntity.ok(result);
+	}
+	
+	@GetMapping("comments/reported")
+	public ResponseEntity<CommentPageResponse> findReportedComment(@RequestParam(name="page", defaultValue="0") int pageNo ){
+	    CommentPageResponse result = adminService.findReportedComment(pageNo);
+	    log.info("{}", result);
+	    return ResponseEntity.ok(result);
 	}
 	
 	@DeleteMapping("boards")
@@ -44,7 +60,5 @@ public class AdminController {
 		adminService.deleteBoard(boardNo);
 		return ResponseEntity.ok("게시글이 비공개처리 되었습니다.");
 	}
-	
-	
 	
 }

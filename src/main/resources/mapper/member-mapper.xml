@@ -47,8 +47,6 @@
 		       )
 	</insert>
 	
-	
-	
 
 	<select id="countByMemberId" parameterType="string">
 		<include refid="countMember" />
