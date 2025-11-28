@@ -1,7 +1,5 @@
 package com.kh.eco.admin.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.eco.admin.model.dto.AdminCommentDTO;
 import com.kh.eco.admin.model.dto.CommentPageResponse;
 import com.kh.eco.admin.model.dto.PageResponse;
 import com.kh.eco.admin.model.service.AdminService;
