@@ -8,6 +8,7 @@ import lombok.Value;
 @Value
 @Builder
 public class RefreshToken {
+
 	private int tokenNo;
 	private String token;
 	private String username;

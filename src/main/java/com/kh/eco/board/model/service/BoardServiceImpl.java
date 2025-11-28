@@ -6,27 +6,33 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.board.model.dao.BoardMapper;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
+import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.common.PageInfo;
+import com.kh.eco.file.FileService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
-	
-	private final BoardMapper boardMapper;
 
+	private final BoardMapper boardMapper;
+	private final FileService fileService; 
+
+	//일반게시판 
 	@Override
 	public long getBoardCountForParticipation() {
 		return boardMapper.getBoardCountForParticipation();
 	}
-
+	
 	@Override
 	public List<BoardDTO> selectBoardAll() {
 		return boardMapper.selectBoardAll();
@@ -51,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
 		int startRow = (currentPage - 1) * boardLimit + 1;
 		int endRow = startRow + boardLimit - 1;
 
-		PageInfo pi = new PageInfo(listCount, currentPage, pageLimit, boardLimit, startPage, endPage, maxPage, startRow); 
+		PageInfo pi = new PageInfo(listCount, currentPage, pageLimit, boardLimit, startPage, endPage, maxPage); 
 		
 		List<BoardDTO> topPosts = boardMapper.selectTopBoardList();
 		
@@ -73,14 +79,47 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDetailDTO selectBoardDetail(int boardNo) {
         
-        // 1. 조회수 증가
         int result = boardMapper.increaseViewCount(boardNo);
-        
-        // 2. 상세 내용 조회 (댓글 포함)
+       
         if(result > 0) {
             return boardMapper.selectBoardDetail(boardNo);
         } else {
             return null;
         }
     }
+    
+    //피드게시판
+    
+	@Override
+	public List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, int limit) {
+		
+		if("C".equals(category)) {
+			category = "C%";
+		}
+		
+		return boardMapper.selectFeedList(category, fetchOffset, limit);
+	}
+	
+	@Override
+	public void saveFeed(FeedBoardDTO feed, MultipartFile file, String username) {
+		
+	}
+
+	@Override
+	public int todayParticipants(String category) {
+		return boardMapper.todayParticipants(category);
+	}
+	
+	@Override
+	public int todayPost(String category) {
+		return boardMapper.todayPost(category);
+	}
+	
+	
+	//
+
+	@Override
+	public int insertBoard(@Valid BoardDTO board, MultipartFile file, String userId) {
+		return boardMapper.insertBoard(board, file, userId);
+	}
 }
