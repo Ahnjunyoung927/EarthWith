@@ -13,6 +13,16 @@ public interface AdminMapper {
 	
 	List<AdminBoardDTO> findBoardAll(RowBounds rb);
 	
+	List<AdminBoardDTO> findReportedBoard(RowBounds rb);
+	
 	List<AdminCommentDTO> findCommentAll(RowBounds rb);
+	
+	List<AdminCommentDTO> findReportedComment(RowBounds rb);
+	
+	int countBoards();
+	int countReportedBoards();
+	
+	int countComments();
+	int countReportedComments();
 
 }

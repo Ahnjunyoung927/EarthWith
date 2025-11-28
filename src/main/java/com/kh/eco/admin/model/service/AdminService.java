@@ -1,19 +1,22 @@
 package com.kh.eco.admin.model.service;
 
-import java.util.List;
-
 import com.kh.eco.admin.model.dto.AdminBoardDTO;
 import com.kh.eco.admin.model.dto.AdminCommentDTO;
-import com.kh.eco.common.PageInfo;
+import com.kh.eco.admin.model.dto.CommentPageResponse;
+import com.kh.eco.admin.model.dto.PageResponse;
 
 public interface AdminService {
 	
 	
-	List<AdminBoardDTO> findBoardAll(int pageNo);
+	PageResponse findBoardAll(int pageNo);
+	
+	PageResponse findReportedBoard(int pageNo);
 	
 	AdminBoardDTO findByBoardNo(Long boardNo);
 	
-	List<AdminCommentDTO> findCommentAll(int pageNo);
+	CommentPageResponse findCommentAll(int pageNo);
+	
+	CommentPageResponse findReportedComment(int pageNo);
 	
 	AdminCommentDTO findByCommentNo(Long boardNo);
 	
