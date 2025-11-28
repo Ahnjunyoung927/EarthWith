@@ -50,7 +50,7 @@ public class StatController {
     @GetMapping("/boards-join")
     public ResponseEntity<Map<String, Object>> getBoardCountForParticipation(){
     	
-    	long boardParticipationCount  = statService.getBoardCountForParticipation();
+    	long boardParticipationCount  = boardService.getBoardCountForParticipation();
     	
 		Map<String, Object> response = new HashMap<>();
         response.put("boardParticipationCount", boardParticipationCount);

@@ -14,36 +14,6 @@ import com.kh.eco.board.model.dto.FeedBoardDTO;
 
 @Mapper
 public interface BoardMapper {
-	// 피드 게시판 (Feed Board)
-    /**
-     * 피드 목록을 조회합니다.
-     * @param category 카테고리 (LIKE 검색 패턴 포함)
-     * @param fetchOffset 페이징을 위한 기준 게시글 번호
-     * @param limit 가져올 개수
-     * @return 피드 목록
-     */
-
-	
-    /**
-     * 피드 게시글을 저장합니다.
-     * @param feed 피드 데이터 객체
-     */
-
-	
-    /**
-     * 오늘의 참여자 수를 카운트합니다.
-     * @param category 카테고리
-     * @return 참여자 수
-     */
-
-	
-    /**
-     * 오늘의 게시글 수를 카운트합니다.
-     * @param category 카테고리
-     * @return 게시글 수
-     */
-
-
 	// 일반 게시판 (General Board)
 
     /**

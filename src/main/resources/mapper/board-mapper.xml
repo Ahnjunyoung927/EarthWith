@@ -147,14 +147,6 @@
 	<!-- -->
 	
 	
-
-	<select id="findNewBoardNo" resultType="BoardVO">
-		SELECT
-		       BOARD_NO boardNo
-		  FROM
-	</select>
-	
-	
 	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
     INSERT INTO TB_ATTACHMENT (
           FILE_NO fileNo

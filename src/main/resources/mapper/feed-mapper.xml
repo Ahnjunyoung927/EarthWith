@@ -126,13 +126,7 @@
 		       TB_BOARD 
 		 WHERE 
 	</sql>
-	
-	<select id="getBoardCountForParticipation" parameterType="long">
-		<include refid="countBoard" />
-				  BOARD_CATEGORY = 'C2'
-			      
-		
-	</select>
+
 	
 	
 	

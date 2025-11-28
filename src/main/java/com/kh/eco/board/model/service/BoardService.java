@@ -23,7 +23,7 @@ public interface BoardService {
      * @return 전체 게시글 수
      */
 	long getBoardCountForParticipation();
-    
+	
     /**
      * 게시판의 모든 게시글을 조건 없이 조회합니다.
      *
