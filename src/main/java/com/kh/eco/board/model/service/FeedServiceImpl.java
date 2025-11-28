@@ -31,11 +31,21 @@ public class FeedServiceImpl implements FeedService {
 		return feedMapper.selectFeedList(category, fetchOffset, limit);
 	}
 	
+	
+	@Override
+	public List<FeedBoardDTO>  selectFeedList(Long boardNo) {
+		
+		return selectFeedList(null, null, boardNo);
+	}
+	
+	
+	
+	
 	@Override
 	public int insertFeed(FeedBoardDTO feed, MultipartFile file, String username) {
 		BoardVO b = null;
 	  //  String filePath = fileService.store(file);
-			
+			log.info("카테고리 값 : {}", feed.getBoardCategory());
 			b = BoardVO.builder()//.boardNo(feed.getBoardNo())
 					             .refMno(feed.getBoardAuthor())
 					             .boardCategory(feed.getBoardCategory())

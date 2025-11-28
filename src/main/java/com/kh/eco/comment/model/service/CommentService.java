@@ -8,7 +8,13 @@ import com.kh.eco.comment.model.vo.CommentVO;
 
 public interface CommentService {
 
+	/**
+	 * 댓글 작성
+	 */
 	CommentVO insertComment(CommentDTO comment, CustomUserDetails userDetails);
 	
+	/**
+	 * 댓글 조회
+	 */
 	List<CommentDTO> findAll(Long boardNo);
 }

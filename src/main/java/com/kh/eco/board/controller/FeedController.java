@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.service.FeedService;
+import com.kh.eco.exception.UsenameNotFoundException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("feeds")
 public class FeedController {
 	
-	private FeedService feedService;
+	private final FeedService feedService;
 	
 	@GetMapping
 	public ResponseEntity<List<FeedBoardDTO>> selectFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
 			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
-			                                      @RequestParam(name = "limit", defaultValue = "10") Long limit) {
+			                                      @RequestParam(name = "limit", defaultValue = "3") Long limit) {
 		
-		log.info("GET /boards/feed 요청 - category={}, fetchOffset={}, limit={}",
+		log.info("GET /feeds 요청 - category={}, fetchOffset={}, limit={}",
                 category, fetchOffset, limit);
 		
 		return ResponseEntity.ok(feedService.selectFeedList(category, fetchOffset, limit));
@@ -44,10 +45,23 @@ public class FeedController {
 	public ResponseEntity<?> insertFeed(@Valid FeedBoardDTO feed, @RequestParam(name="file", required=false) MultipartFile file, 
 			                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
-		int memberNo = userDetails.getMemberNo();
-		feed.setBoardAuthor(memberNo);
+		if(userDetails != null) {
 		
-		feedService.insertFeed(feed, file, userDetails.getUsername());
+		int memberNo = userDetails.getMemberNo();
+		
+		if(memberNo >= 1) {
+			
+			feed.setBoardAuthor(memberNo);
+			feedService.insertFeed(feed, file, userDetails.getUsername());
+			
+		} else {
+			throw new UsenameNotFoundException("잘못된 접근입니다.");
+		}
+		
+		
+		} else {
+			throw new UsenameNotFoundException("로그인 후 이용이 가능합니다.");
+		}
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

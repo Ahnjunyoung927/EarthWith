@@ -23,6 +23,9 @@ public class CommentServiceImpl implements CommentService {
 	private final FeedService feedService;
 	private final CommentMapper commentMapper;
 	
+	/**
+	 * 댓글 작성
+	 */
 	@Override
 	public CommentVO insertComment(CommentDTO comment, CustomUserDetails userDetails) { 
 		

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.eco.admin.model.dao.AdminMapper">
+	
+	<select id="findBoardAll" resultType="AdminBoardDTO">
+		SELECT
+               B.BOARD_NO boardNo
+             , B.BOARD_TITLE boardTitle
+             , B.REG_DATE regDate
+             , B.STATUS status
+             , COUNT(CASE WHEN BR.STATUS = 'Y' THEN 1 END) AS BOARD_REPORT_COUNT
+             , M.MEMBER_ID memberId
+          FROM 
+               TB_BOARD B
+          JOIN 
+               TB_MEMBER M ON B.REF_MNO = M.MEMBER_NO
+          LEFT 
+          JOIN 
+               TB_BOARD_REPORT BR ON BR.REF_BNO = B.BOARD_NO
+         GROUP 
+            BY
+               B.BOARD_NO, B.BOARD_TITLE, B.REG_DATE, B.STATUS, M.MEMBER_ID
+         ORDER
+            BY 
+               B.BOARD_NO DESC
+	</select>
+	
+	<select id="findCommentAll" resultType="AdminCommentDTO">
+		SELECT
+       		   C.COMMENT_NO commentNo
+     		 , C.COMMENT_CONTENT commentContent
+     		 , C.REG_DATE regDate
+     		 , C.STATUS status
+     		 , COUNT(CASE WHEN CR.STATUS = 'Y' THEN 1 END) AS COMMENT_REPORT_COUNT
+     		 , M.MEMBER_ID memberId
+  		  FROM 
+       		   TB_COMMENT C
+  		  JOIN 
+       		   TB_MEMBER M ON C.REF_MNO = M.MEMBER_NO
+  		  LEFT 
+  		  JOIN 
+       		   TB_COMMENT_REPORT CR ON CR.REF_CNO = C.COMMENT_NO
+ 		 GROUP 
+    		BY
+       		   C.COMMENT_NO, C.COMMENT_CONTENT, C.REG_DATE, C.STATUS, M.MEMBER_ID
+ 		 ORDER
+    		BY 
+    		   C.COMMENT_NO DESC
+	</select>
+
+
+	
+</mapper>

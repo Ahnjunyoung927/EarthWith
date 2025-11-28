@@ -1,4 +1,4 @@
-package com.kh.eco.comment.model.dto;
+package com.kh.eco.admin.model.dto;
 
 import java.sql.Date;
 
@@ -13,14 +13,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CommentDTO {
-
+public class AdminCommentDTO {
+	
 	private Long commentNo;
-	private Long refMno;
-	private Long refBno;
 	private String commentContent;
-	private Date regDate;
-	private char status;
-
+	private Date refDate;
+	private String status;
+	private int commentReportCount;
+	private String MemberId;
 
 }

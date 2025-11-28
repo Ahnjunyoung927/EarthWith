@@ -61,7 +61,6 @@
 			SELECT SEQ_BNO.NEXTVAL FROM DUAL
 		</selectKey> -->
 		
-		
 		INSERT
 		  INTO
 		       TB_BOARD 

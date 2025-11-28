@@ -28,8 +28,12 @@ public class CommentController {
 
 	private final CommentService commentService;
 	
-	
-	
+	/**
+	 * 댓글 작성
+	 * @param comment
+	 * @param userDetails
+	 * @return
+	 */
 	@PostMapping
 	public ResponseEntity<?> insertComment(@RequestBody CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
@@ -38,6 +42,9 @@ public class CommentController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(c);
 	}
 	
+	/**
+	 * 댓글 조회
+	 */
 	@GetMapping
 	public ResponseEntity<List<CommentDTO>> findAll(@RequestParam(name="boardNo") Long BoardNo) {
 		return ResponseEntity.ok(commentService.findAll(BoardNo));
