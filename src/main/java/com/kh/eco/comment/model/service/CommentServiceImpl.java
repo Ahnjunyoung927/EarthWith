@@ -24,7 +24,7 @@ public class CommentServiceImpl implements CommentService {
 	private final CommentMapper commentMapper;
 	
 	@Override
-	public CommentVO save(CommentDTO comment, CustomUserDetails userDetails) { 
+	public CommentVO insertComment(CommentDTO comment, CustomUserDetails userDetails) { 
 		
 		feedService.selectFeedList(null, null, comment.getRefBno());
 		String memberId = userDetails.getUsername();
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
 				               .commentContent(comment.getCommentContent())
 				               .build();
 		
-		commentMapper.save(c);
+		commentMapper.insertComment(c);
 		return c;
 		
 	}

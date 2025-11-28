@@ -118,31 +118,7 @@
     )
 </insert>
 	
-	<select id="todayParticipants" resultType="int">
-  SELECT 
-         COUNT(*)
-    FROM 
-         TB_BOARD
-   WHERE 
-         STATUS = 'Y'
-     AND 
-         BOARD_CATEGORY = #{category}
-     AND 
-         TRUNC(REG_DATE) = TRUNC(SYSDATE)
-    </select>
 	
-	<select id="todayPost" resultType="int">
-		SELECT 
-		       COUNT(*)
-		  FROM 
-		       TB_BOARD
-		 WHERE
-		       STATUS = 'Y'
-		   AND
-		       BOARD_CATEGORY LIKE #{category}
-		   AND
-		       TRUNC(REG_DATE) = TRUNC(SYSDATE)         
-	</select>
 	
 	<sql id="countBoard">
 		SELECT 

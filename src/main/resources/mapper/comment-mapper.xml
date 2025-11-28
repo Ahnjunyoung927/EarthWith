@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.comment.model.dao.CommentMapper">
 	
-	<insert id="save" parameterType="CommentVO">
+	<insert id="insertComment" parameterType="CommentVO">
 		INSERT
 		  INTO
 		       TB_COMMENT

@@ -10,7 +10,7 @@ import com.kh.eco.comment.model.vo.CommentVO;
 @Mapper
 public interface CommentMapper {
 
-	void save(CommentVO c);
+	void insertComment(CommentVO c);
 	
 	List<CommentDTO> findAll(Long boardNo);
 	

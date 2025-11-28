@@ -28,21 +28,7 @@ public class BoardServiceImpl implements BoardService {
 	
 
 	
-	@Override
-	public int todayParticipants(String category) {
-		return boardMapper.todayParticipants(category);
-	}
 	
-	@Override
-	public int todayPost(String category) {
-		return boardMapper.todayPost(category);
-	}
-
-	@Override
-	public long getBoardCountForParticipation() {
-		return 0;
-		
-	}
 	
 	
 	

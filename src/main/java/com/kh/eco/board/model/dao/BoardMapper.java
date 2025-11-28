@@ -12,11 +12,7 @@ import com.kh.eco.board.model.vo.BoardVO;
 public interface BoardMapper {
 	
 
-	int todayParticipants(String category);
-	
-	int todayPost(String category);
-	
-	long getBoardCountForParticipation ();
+
 
 
 }

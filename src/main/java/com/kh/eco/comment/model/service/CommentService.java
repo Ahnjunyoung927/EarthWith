@@ -8,7 +8,7 @@ import com.kh.eco.comment.model.vo.CommentVO;
 
 public interface CommentService {
 
-	CommentVO save(CommentDTO comment, CustomUserDetails userDetails);
+	CommentVO insertComment(CommentDTO comment, CustomUserDetails userDetails);
 	
 	List<CommentDTO> findAll(Long boardNo);
 }

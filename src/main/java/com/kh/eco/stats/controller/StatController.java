@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.eco.board.model.service.BoardService;
 import com.kh.eco.board.model.service.FeedService;
 import com.kh.eco.member.model.service.MemberService;
+import com.kh.eco.stats.model.service.StatService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ public class StatController {
 	private final MemberService memberService;
 	private final BoardService boardService;
 	private final FeedService feedService;
+	private final StatService statService;
 	
 	@GetMapping("/member-count")
 	public ResponseEntity<Map<String, Object>> getMemberCount(){
@@ -48,7 +50,7 @@ public class StatController {
     @GetMapping("/boards-join")
     public ResponseEntity<Map<String, Object>> getBoardCountForParticipation(){
     	
-    	long boardParticipationCount  = boardService.getBoardCountForParticipation();
+    	long boardParticipationCount  = statService.getBoardCountForParticipation();
     	
 		Map<String, Object> response = new HashMap<>();
         response.put("boardParticipationCount", boardParticipationCount);
@@ -60,7 +62,7 @@ public class StatController {
     @GetMapping("/today")
 	public ResponseEntity<Map<String, Object>> todayParticipants(@RequestParam(name="category") String category) {
 		
-		int count = boardService.todayParticipants(category);
+		int count = statService.todayParticipants(category);
 		
 		Map<String, Object> result = new HashMap<>();
 		result.put("category", category);
@@ -74,7 +76,7 @@ public class StatController {
 	@GetMapping("/todayPost")
 	public ResponseEntity<Map<String, Object>> todayPost(@RequestParam(name="category") String category) {
 		
-		int count = boardService.todayPost(category);
+		int count = statService.todayPost(category);
 		
 		Map<String, Object> result = new HashMap<>();
 		result.put("category", category);

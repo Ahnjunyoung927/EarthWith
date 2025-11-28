@@ -31,9 +31,9 @@ public class CommentController {
 	
 	
 	@PostMapping
-	public ResponseEntity<?> save(@RequestBody CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	public ResponseEntity<?> insertComment(@RequestBody CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
-		CommentVO c = commentService.save(comment, userDetails);
+		CommentVO c = commentService.insertComment(comment, userDetails);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(c);
 	}
