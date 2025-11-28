@@ -65,4 +65,11 @@ public class GloblaExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
+	@ExceptionHandler(PageNotFoundException.class)
+	public ResponseEntity<Map<String, String>> handlePageNotFound(PageNotFoundException e){
+		Map<String, String> error = new HashMap();
+		error.put("error-message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
 }
