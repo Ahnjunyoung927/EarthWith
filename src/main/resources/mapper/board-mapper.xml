@@ -3,7 +3,148 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.board.model.dao.BoardMapper">
+    <!-- 기존 BoardDTO 매핑 -->
+    <resultMap id="boardResultMap" type="BoardDTO">
+        <id property="boardNo" column="BOARD_NO"/>
+        <result property="boardTitle" column="BOARD_TITLE"/>
+        <result property="boardCategory" column="BOARD_CATEGORY"/>
+        <result property="boardContent" column="BOARD_CONTENT"/>
+        <result property="regDate" column="REG_DATE"/>
+        <result property="viewCount" column="VIEW_COUNT"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="likeCount" column="LIKE_COUNT"/>
+    </resultMap>
 
+    <!-- 댓글 매핑 -->
+    <resultMap id="commentResultMap" type="com.kh.eco.comment.model.dto.CommentDTO">
+        <id property="commentNo" column="COMMENT_NO"/>
+        <result property="commentContent" column="COMMENT_CONTENT"/>
+        <result property="memberName" column="COMMENT_WRITER"/>
+        <result property="regDate" column="COMMENT_DATE"/>
+    </resultMap>
+
+    <!-- 상세 조회용 매핑  -->
+    <resultMap id="boardDetailResultMap" type="com.kh.eco.board.model.dto.BoardDetailDTO" extends="boardResultMap">
+        <collection property="commentList" resultMap="commentResultMap"/>
+    </resultMap>
+
+    <sql id="commonCondition">
+        WHERE B.STATUS = 'Y'
+          AND (B.BOARD_CATEGORY LIKE 'A%' OR B.BOARD_CATEGORY LIKE 'B%')
+    </sql>
+
+    <!-- 1. 전체 게시물 수 조회 -->
+    <select id="selectListCount" resultType="_int">
+        SELECT COUNT(*)
+          FROM TB_BOARD B
+        <include refid="commonCondition"/>
+    </select>
+
+    <!-- 2. 조회수 상위 3개 -->
+    <select id="selectTopBoardList" resultMap="boardResultMap">
+        SELECT *
+          FROM (
+              SELECT 
+                   B.BOARD_NO
+                 , B.BOARD_TITLE
+                 , B.BOARD_CATEGORY
+                 , B.REG_DATE
+                 , B.VIEW_COUNT
+                 , M.MEMBER_NAME
+                 , (SELECT COUNT(*) FROM TB_BOARD_LIKE L WHERE L.REF_BNO = B.BOARD_NO) AS LIKE_COUNT
+              FROM TB_BOARD B
+              JOIN TB_MEMBER M ON M.MEMBER_NO = B.REF_MNO
+              <include refid="commonCondition"/>
+              ORDER BY B.VIEW_COUNT DESC, B.REG_DATE DESC
+          )
+         WHERE ROWNUM &lt;= 3
+    </select>
+
+    <!-- 3. 일반 리스트 조회 -->
+    <select id="selectBoardList" resultMap="boardResultMap">
+        SELECT * FROM (
+              SELECT ROWNUM RNUM, A.*
+                FROM (
+                    SELECT 
+                           B.BOARD_NO
+                         , B.BOARD_TITLE
+                         , B.BOARD_CATEGORY
+                         , B.REG_DATE
+                         , B.VIEW_COUNT
+                         , M.MEMBER_NAME
+                         , (SELECT COUNT(*) FROM TB_BOARD_LIKE L WHERE L.REF_BNO = B.BOARD_NO) AS LIKE_COUNT
+                      FROM TB_BOARD B
+                      JOIN TB_MEMBER M ON M.MEMBER_NO = B.REF_MNO
+                      <include refid="commonCondition"/>
+                      ORDER BY B.REG_DATE DESC
+                ) A
+          )
+         WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+    </select>
+    
+    <!-- 4. 조회수 증가 -->
+    <update id="increaseViewCount">
+        UPDATE TB_BOARD
+           SET VIEW_COUNT = VIEW_COUNT + 1
+         WHERE BOARD_NO = #{boardNo}
+           AND STATUS = 'Y'
+    </update>
+
+    <!-- 5. 상세 조회 -->
+    <select id="selectBoardDetail" resultMap="boardDetailResultMap">
+        SELECT 
+               B.BOARD_NO
+             , B.BOARD_TITLE
+             , B.BOARD_CATEGORY
+             , B.BOARD_CONTENT
+             , B.REG_DATE
+             , B.VIEW_COUNT
+             , M.MEMBER_NAME
+             , (SELECT COUNT(*) FROM TB_BOARD_LIKE L WHERE L.REF_BNO = B.BOARD_NO) AS LIKE_COUNT
+             
+             , C.COMMENT_NO
+             , C.COMMENT_CONTENT
+             , C.REG_DATE AS COMMENT_DATE
+             , CM.MEMBER_NAME AS COMMENT_WRITER
+             
+          FROM TB_BOARD B
+          JOIN TB_MEMBER M ON M.MEMBER_NO = B.REF_MNO
+          
+          LEFT JOIN TB_COMMENT C ON C.REF_BNO = B.BOARD_NO AND C.STATUS = 'Y'
+          LEFT JOIN TB_MEMBER CM ON CM.MEMBER_NO = C.REF_MNO
+          
+         WHERE B.BOARD_NO = #{boardNo}
+           AND B.STATUS = 'Y'
+         ORDER BY C.REG_DATE ASC 
+    </select>
+    
+    <!-- 6. 게시글 작성 (일반) -->
+    <insert id="insertBoard" parameterType="BoardDTO">
+        INSERT INTO TB_BOARD
+        (
+            BOARD_NO
+          , REF_MNO
+          , BOARD_CATEGORY
+          , BOARD_TITLE
+          , BOARD_CONTENT
+          , REG_DATE
+          , STATUS
+          , VIEW_COUNT
+        )
+        VALUES
+        (
+            SEQ_BNO.NEXTVAL
+          , (SELECT MEMBER_NO FROM TB_MEMBER WHERE MEMBER_ID = #{boardWriter})
+          , #{boardCategory}
+          , #{boardTitle}
+          , #{boardContent}
+          , SYSDATE
+          , 'Y'
+          , 0
+        )
+    </insert>
+	
+	<!-- -->
 	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
  	   
 			  SELECT *
@@ -51,13 +192,8 @@
             </if>
         )
         WHERE RN &lt;= #{limit}
-			
-		
-		
-		
-		
 	</select>
-
+	
 	<insert id="saveFeed" parameterType="com.kh.eco.board.model.vo.BoardVO">
 		INSERT
 		  INTO
@@ -84,16 +220,16 @@
 	</insert>
 	
 	<select id="todayParticipants" resultType="int">
-  SELECT 
-         COUNT(*)
-    FROM 
-         TB_BOARD
-   WHERE 
-         STATUS = 'Y'
-     AND 
-         BOARD_CATEGORY = #{category}
-     AND 
-         TRUNC(REG_DATE) = TRUNC(SYSDATE)
+		  SELECT 
+		         COUNT(*)
+		    FROM 
+		         TB_BOARD
+		   WHERE 
+		         STATUS = 'Y'
+		     AND 
+		         BOARD_CATEGORY = #{category}
+		     AND 
+		         TRUNC(REG_DATE) = TRUNC(SYSDATE)
     </select>
 	
 	<select id="todayPost" resultType="int">
@@ -121,7 +257,6 @@
 		<include refid="countBoard" />
 				  BOARD_CATEGORY = 'C2'
 	</select>
-	
 	
 	
 </mapper>  

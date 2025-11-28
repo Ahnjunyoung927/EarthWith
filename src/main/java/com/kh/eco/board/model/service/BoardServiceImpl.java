@@ -1,17 +1,21 @@
 package com.kh.eco.board.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.board.model.dao.BoardMapper;
+import com.kh.eco.board.model.dto.BoardDTO;
+import com.kh.eco.board.model.dto.BoardDetailDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
-import com.kh.eco.board.model.vo.BoardVO;
+import com.kh.eco.common.PageInfo;
 import com.kh.eco.file.FileService;
 
-import org.springframework.stereotype.Service;
-import com.kh.eco.board.model.dao.BoardMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,8 +25,71 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService {
 
 	private final BoardMapper boardMapper;
-	private final FileService fileService;
+	private final FileService fileService; 
+
+	//일반게시판 
+	@Override
+	public long getBoardCountForParticipation() {
+		return boardMapper.getBoardCountForParticipation();
+	}
 	
+	@Override
+	public List<BoardDTO> selectBoardAll() {
+		return boardMapper.selectBoardAll();
+	}
+
+	@Override
+	public Map<String, Object> selectBoardList(int currentPage) {
+		
+		int listCount = boardMapper.selectListCount();
+		
+		int pageLimit = 10;
+		int boardLimit = 10;
+		
+		int maxPage = (int)Math.ceil((double)listCount / boardLimit);
+		int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
+		int endPage = startPage + pageLimit - 1;
+		
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		int startRow = (currentPage - 1) * boardLimit + 1;
+		int endRow = startRow + boardLimit - 1;
+
+		PageInfo pi = new PageInfo(listCount, currentPage, pageLimit, boardLimit, startPage, endPage, maxPage); 
+		
+		List<BoardDTO> topPosts = boardMapper.selectTopBoardList();
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startRow", startRow);
+		paramMap.put("endRow", endRow);
+		
+		List<BoardDTO> listPosts = boardMapper.selectBoardList(paramMap);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("topPosts", topPosts);
+		map.put("list", listPosts);
+		map.put("pi", pi);
+		
+		return map;
+	}
+
+    @Transactional
+    @Override
+    public BoardDetailDTO selectBoardDetail(int boardNo) {
+        
+        int result = boardMapper.increaseViewCount(boardNo);
+       
+        if(result > 0) {
+            return boardMapper.selectBoardDetail(boardNo);
+        } else {
+            return null;
+        }
+    }
+    
+    //피드게시판
+    
 	@Override
 	public List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, int limit) {
 		
@@ -36,10 +103,8 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void saveFeed(FeedBoardDTO feed, MultipartFile file, String username) {
 		
-
 	}
 
-	
 	@Override
 	public int todayParticipants(String category) {
 		return boardMapper.todayParticipants(category);
@@ -49,9 +114,12 @@ public class BoardServiceImpl implements BoardService {
 	public int todayPost(String category) {
 		return boardMapper.todayPost(category);
 	}
+	
+	
+	//
 
 	@Override
-	public long getBoardCountForParticipation() {
-		return 0;
+	public int insertBoard(@Valid BoardDTO board, MultipartFile file, String userId) {
+		return boardMapper.insertBoard(board, file, userId);
 	}
 }
