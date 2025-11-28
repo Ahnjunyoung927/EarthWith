@@ -1,0 +1,54 @@
+package com.kh.eco.comment.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kh.eco.auth.model.vo.CustomUserDetails;
+import com.kh.eco.comment.model.dto.CommentDTO;
+import com.kh.eco.comment.model.service.CommentService;
+import com.kh.eco.comment.model.vo.CommentVO;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequestMapping("comments")
+@RequiredArgsConstructor
+public class CommentController {
+
+	private final CommentService commentService;
+	
+	/**
+	 * 댓글 작성
+	 * @param comment
+	 * @param userDetails
+	 * @return
+	 */
+	@PostMapping
+	public ResponseEntity<?> insertComment(@RequestBody CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
+		
+		CommentVO c = commentService.insertComment(comment, userDetails);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(c);
+	}
+	
+	/**
+	 * 댓글 조회
+	 */
+	@GetMapping
+	public ResponseEntity<List<CommentDTO>> findAll(@RequestParam(name="boardNo") Long BoardNo) {
+		return ResponseEntity.ok(commentService.findAll(BoardNo));
+	}
+	
+	
+}

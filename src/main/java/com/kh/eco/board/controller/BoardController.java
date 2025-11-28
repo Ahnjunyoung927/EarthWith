@@ -17,6 +17,7 @@ import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
 import com.kh.eco.board.model.service.BoardService;
+import com.kh.eco.like.model.vo.LikeResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -145,105 +145,25 @@
     </insert>
 	
 	<!-- -->
-	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
- 	   
-			  SELECT *
-        FROM (
-            SELECT
-                B.BOARD_NO       AS boardNo,
-                B.BOARD_TITLE    AS boardTitle,
-                B.BOARD_CONTENT  AS boardContent,
-                B.BOARD_CATEGORY AS boardCategory,
-                C.CATEGORY_NAME  AS categoryName,
-
-                B.REF_MNO   AS boardAuthor,
-                M.MEMBER_ID      AS memberId,
-                M.MEMBER_IMAGE   AS memberImage,
-
-                A.ATTACHMENT_PATH AS attachmentPath,
-
-                R.REGION_NO      AS regionNo,
-                R.REGION_NAME    AS regionName,
-
-                B.REG_DATE       AS regDate,
-
-                ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) AS RN
-            FROM TB_BOARD B
-            JOIN TB_MEMBER M
-              ON B.REF_MNO = M.MEMBER_NO
-            JOIN TB_CATEGORY C
-              ON B.BOARD_CATEGORY = C.CATEGORY_NO
-            LEFT JOIN TB_REGION R
-              ON M.REF_RNO = R.REGION_NO
-            LEFT JOIN (
-                -- 게시글별 대표 첨부파일 1개 (여기선 STATUS = 'Y' 중 첫 번째)
-                SELECT
-                    REF_BNO,
-                    MIN(ATTACHMENT_PATH) AS ATTACHMENT_PATH
-                FROM TB_ATTACHMENT
-                WHERE STATUS = 'Y'
-                GROUP BY REF_BNO
-            ) A
-              ON A.REF_BNO = B.BOARD_NO
-            WHERE B.STATUS = 'Y'
-              AND B.BOARD_CATEGORY LIKE #{category}
-            <if test="fetchOffset != null">
-              AND B.BOARD_NO &lt; #{fetchOffset}
-            </if>
-        )
-        WHERE RN &lt;= #{limit}
-	</select>
 	
-	<insert id="saveFeed" parameterType="com.kh.eco.board.model.vo.BoardVO">
-		INSERT
-		  INTO
-		       TB_BOARD 
-		       (
-		       BOARD_NO
-		     , REF_MNO
-		     , BOARD_CATEGORY
-		     , BOARD_TITLE
-		     , BOARD_CONTENT
-		     , REG_DATE
-		     , STATUS  
-		       )
-		VALUES
-		       (
-		       SEQ_BNO.NEXTVAL
-		     , #{boardAuthor}
-		     , #{boardCategory}
-		     , #{boardTitle}
-		     , #{boardContent}
-		     , SYSDATE
-		     , 'Y'  
-		       )       
-	</insert>
 	
-	<select id="todayParticipants" resultType="int">
-		  SELECT 
-		         COUNT(*)
-		    FROM 
-		         TB_BOARD
-		   WHERE 
-		         STATUS = 'Y'
-		     AND 
-		         BOARD_CATEGORY = #{category}
-		     AND 
-		         TRUNC(REG_DATE) = TRUNC(SYSDATE)
-    </select>
+	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
+    INSERT INTO TB_ATTACHMENT (
+          FILE_NO fileNo
+        , REF_BNO refBno
+        , ATTACHMENT_PATH attachmentPath
+        , REG_DATE regDate
+        , STATUS 
+    ) VALUES (
+          SEQ_FNO.NEXTVAL
+        , #{boardNo}
+        , #{file}
+        , SYSDATE
+        , 'Y'
+    )
+</insert>
 	
-	<select id="todayPost" resultType="int">
-		SELECT 
-		       COUNT(*)
-		  FROM 
-		       TB_BOARD
-		 WHERE
-		       STATUS = 'Y'
-		   AND
-		       BOARD_CATEGORY LIKE #{category}
-		   AND
-		       TRUNC(REG_DATE) = TRUNC(SYSDATE)         
-	</select>
+	
 	
 	<sql id="countBoard">
 		SELECT 

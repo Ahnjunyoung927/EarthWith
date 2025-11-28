@@ -32,7 +32,7 @@ public class SecurityConfigure {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
+		
 		return httpSecurity
 				.formLogin(AbstractHttpConfigurer::disable) 	// Form Login 비활성화
 				.csrf(AbstractHttpConfigurer::disable) 	 	// CSRF 비활성화
@@ -60,7 +60,7 @@ public class SecurityConfigure {
 					
 					// [2] 인증(로그인)이 필요한 기능
 					// POST: 작성 (HEAD, DEVELOP 통합)
-					requests.requestMatchers(HttpMethod.POST, "/boards", "/comments", "/api/boards/**").authenticated();
+					requests.requestMatchers(HttpMethod.POST, "/boards", "/comments", "/api/boards/**", "/feeds").authenticated();
 					
 					// PUT: 수정 (HEAD, DEVELOP 통합)
 					requests.requestMatchers(HttpMethod.PUT, "/members", "/members/password", "/members/email", "/boards/**").authenticated();
@@ -77,6 +77,7 @@ public class SecurityConfigure {
 				
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 적용
 				.build();
+
 	}
 	
 	@Bean
@@ -103,4 +104,7 @@ public class SecurityConfigure {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
 	}
+	
+	
+	
 }

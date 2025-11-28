@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.eco.board.model.dao.BoardMapper;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
-import com.kh.eco.board.model.dto.FeedBoardDTO;
+
 import com.kh.eco.common.PageInfo;
 import com.kh.eco.file.FileService;
 
@@ -88,38 +88,12 @@ public class BoardServiceImpl implements BoardService {
         }
     }
     
-    //피드게시판
-    
-	@Override
-	public List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, int limit) {
-		
-		if("C".equals(category)) {
-			category = "C%";
-		}
-		
-		return boardMapper.selectFeedList(category, fetchOffset, limit);
-	}
-	
-	@Override
-	public void saveFeed(FeedBoardDTO feed, MultipartFile file, String username) {
-		
-	}
-
-	@Override
-	public int todayParticipants(String category) {
-		return boardMapper.todayParticipants(category);
-	}
-	
-	@Override
-	public int todayPost(String category) {
-		return boardMapper.todayPost(category);
-	}
-	
-	
-	//
 
 	@Override
 	public int insertBoard(@Valid BoardDTO board, MultipartFile file, String userId) {
 		return boardMapper.insertBoard(board, file, userId);
 	}
+	
+	
 }
+
