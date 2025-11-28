@@ -7,9 +7,11 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.eco.board.model.service.BoardService;
+import com.kh.eco.board.model.service.FeedService;
 import com.kh.eco.member.model.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class StatController {
 	
 	private final MemberService memberService;
 	private final BoardService boardService;
+	private final FeedService feedService;
 	
 	@GetMapping("/member-count")
 	public ResponseEntity<Map<String, Object>> getMemberCount(){
@@ -52,4 +55,34 @@ public class StatController {
     	
         return ResponseEntity.ok(response);
     }
+    
+   // 오늘의 참여태그 수
+    @GetMapping("/today")
+	public ResponseEntity<Map<String, Object>> todayParticipants(@RequestParam(name="category") String category) {
+		
+		int count = boardService.todayParticipants(category);
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("category", category);
+		result.put("todayParticipants", result);
+		
+		
+		return ResponseEntity.ok(result);
+	}
+	
+    // 오늘의 새 글
+	@GetMapping("/todayPost")
+	public ResponseEntity<Map<String, Object>> todayPost(@RequestParam(name="category") String category) {
+		
+		int count = boardService.todayPost(category);
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("category", category);
+		result.put("todayPost", count);
+		
+		return ResponseEntity.ok(result);
+	}
+    
+    
+    
 }

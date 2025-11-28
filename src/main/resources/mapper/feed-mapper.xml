@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.eco.board.model.dao.FeedMapper">
+
+	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
+    SELECT *
+    FROM (
+        SELECT
+           	    B.BOARD_NO       boardNo
+             ,  B.BOARD_TITLE    boardTitle
+             ,  B.BOARD_CONTENT  boardContent
+             ,  B.BOARD_CATEGORY boardCategory
+             ,  C.CATEGORY_NAME  categoryName
+             ,  B.REF_MNO        boardAuthor
+             ,  M.MEMBER_ID      memberId
+             ,  M.MEMBER_IMAGE   memberImage
+             ,  A.ATTACHMENT_PATH attachmentPath
+             ,  R.REGION_NO      regionNo
+             ,  R.REGION_NAME    regionName
+             ,  B.REG_DATE       regDate
+             , NVL(L.LIKE_COUNT, 0) likeCount
+             , ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) RN
+               
+          FROM TB_BOARD B
+          JOIN TB_MEMBER M
+            ON B.REF_MNO = M.MEMBER_NO
+          JOIN TB_CATEGORY C
+            ON B.BOARD_CATEGORY = C.CATEGORY_NO
+          LEFT JOIN TB_REGION R
+            ON M.REF_RNO = R.REGION_NO
+          LEFT JOIN (
+               SELECT
+		              REF_BNO
+		            , MIN(ATTACHMENT_PATH) AS ATTACHMENT_PATH
+                 FROM TB_ATTACHMENT
+                WHERE STATUS = 'Y'
+                GROUP
+                   BY REF_BNO
+		         ) A
+		           ON A.REF_BNO = B.BOARD_NO
+		
+		        
+		         LEFT JOIN TB_LIKE_COUNT L
+		           ON L.REF_NO = B.BOARD_NO
+		
+		        WHERE B.STATUS = 'Y'
+		          AND B.BOARD_CATEGORY LIKE #{category}
+		        <if test="fetchOffset != null">
+		          AND B.BOARD_NO &lt; #{fetchOffset}
+		        </if>
+		    )
+		        WHERE RN &lt;= #{limit}
+</select>
+
+	<insert id="insertFeed" parameterType="com.kh.eco.board.model.vo.BoardVO">
+		
+		<!-- INSERT 하기 전에 boardNo 뽑아오려는 용도
+		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+			SELECT SEQ_BNO.NEXTVAL FROM DUAL
+		</selectKey> -->
+		
+		
+		INSERT
+		  INTO
+		       TB_BOARD 
+		       (
+		       BOARD_NO
+		     , REF_MNO
+		     , BOARD_CATEGORY
+		     , BOARD_TITLE
+		     , BOARD_CONTENT
+		     , REG_DATE
+		     , STATUS  
+		       )
+		VALUES
+		       (
+		       SEQ_BNO.NEXTVAL
+		     , #{refMno}
+		     , #{boardCategory}
+		     , #{boardTitle}
+		     , #{boardContent}
+		     , SYSDATE
+		     , 'Y'  
+		       )             
+	</insert>
+	
+	<select id="findNewBoardNo" resultType="BoardVO">
+		SELECT
+		       BOARD_NO boardNo
+		  FROM
+		       TB_BOARD
+		 WHERE
+		       REF_MNO = #{refMno}
+		 ORDER
+		    BY
+		       BOARD_NO DESC
+		 FETCH
+		 FIRST 1 ROW ONLY                        	
+	</select>
+	
+	
+	
+	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
+    INSERT INTO TB_ATTACHMENT (
+          FILE_NO fileNo
+        , REF_BNO refBno
+        , ATTACHMENT_PATH attachmentPath
+        , REG_DATE regDate
+        , STATUS 
+    ) VALUES (
+          SEQ_FNO.NEXTVAL
+        , #{boardNo}
+        , #{file}
+        , SYSDATE
+        , 'Y'
+    )
+</insert>
+	
+	<select id="todayParticipants" resultType="int">
+  SELECT 
+         COUNT(*)
+    FROM 
+         TB_BOARD
+   WHERE 
+         STATUS = 'Y'
+     AND 
+         BOARD_CATEGORY = #{category}
+     AND 
+         TRUNC(REG_DATE) = TRUNC(SYSDATE)
+    </select>
+	
+	<select id="todayPost" resultType="int">
+		SELECT 
+		       COUNT(*)
+		  FROM 
+		       TB_BOARD
+		 WHERE
+		       STATUS = 'Y'
+		   AND
+		       BOARD_CATEGORY LIKE #{category}
+		   AND
+		       TRUNC(REG_DATE) = TRUNC(SYSDATE)         
+	</select>
+	
+	<sql id="countBoard">
+		SELECT 
+		       COUNT(*)
+		  FROM 
+		       TB_BOARD 
+		 WHERE 
+	</sql>
+	
+	<select id="getBoardCountForParticipation" parameterType="long">
+		<include refid="countBoard" />
+				  BOARD_CATEGORY = 'C2'
+			      
+		
+	</select>
+	
+	
+	
+</mapper>  

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.service.BoardService;
+import com.kh.eco.board.model.service.FeedService;
 import com.kh.eco.comment.model.dao.CommentMapper;
 import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.comment.model.vo.CommentVO;
@@ -19,12 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 	private final BoardService boardService;
+	private final FeedService feedService;
 	private final CommentMapper commentMapper;
 	
 	@Override
 	public CommentVO save(CommentDTO comment, CustomUserDetails userDetails) { 
 		
-		boardService.getFeedList(null, null, comment.getRefBno());
+		feedService.selectFeedList(null, null, comment.getRefBno());
 		String memberId = userDetails.getUsername();
 		
 		CommentVO c = CommentVO.builder()
@@ -41,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public List<CommentDTO> findAll(Long boardNo) {
 		
-		boardService.getFeedList(null, null, boardNo);
+		feedService.selectFeedList(null, null, boardNo);
 		
 		List<CommentDTO> resultSet =  commentMapper.findAll(boardNo);
 		log.info("결과들: ", resultSet);

@@ -11,16 +11,7 @@ import com.kh.eco.board.model.vo.BoardVO;
 @Mapper
 public interface BoardMapper {
 	
-	List<FeedBoardDTO> selectFeedList(@Param("category") String category,
-			                     @Param("fetchOffset") Long fetchOffset,
-			                     @Param("limit") Long limit);
-	
-	int saveFeed(BoardVO feed);
-	
-	void saveAttachment(@Param("boardNo") Long boardNo, @Param("file") String filePath);
-	
-	BoardVO findNewBoardNo(int memberNo);
-	
+
 	int todayParticipants(String category);
 	
 	int todayPost(String category);

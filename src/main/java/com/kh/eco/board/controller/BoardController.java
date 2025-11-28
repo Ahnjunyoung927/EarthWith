@@ -27,68 +27,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/boards")
+@RequestMapping("boards")
 public class BoardController {
 
 	private final BoardService boardService;
 	
-	@GetMapping("/feed")
-	public ResponseEntity<List<FeedBoardDTO>> getFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
-			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
-			                                      @RequestParam(name = "limit", defaultValue = "10") Long limit) {
-		
-		log.info("GET /api/boards/feed 요청 - category={}, fetchOffset={}, limit={}",
-                category, fetchOffset, limit);
-		
-		return ResponseEntity.ok(boardService.getFeedList(category, fetchOffset, limit));
-		
-	}
 	
-	@PostMapping("/feed")
-	public ResponseEntity<?> saveFeed(@Valid FeedBoardDTO feed, @RequestParam(name="file", required=false) MultipartFile file, 
-			                          @AuthenticationPrincipal CustomUserDetails userDetails) {
-		
-		int memberNo = userDetails.getMemberNo();
-		feed.setBoardAuthor(memberNo);
-		
-		boardService.saveFeed(feed, file, userDetails.getUsername());
-		
-		return ResponseEntity.status(HttpStatus.CREATED).build();
-	}
 	
-	@GetMapping("/stats/today")
-	public ResponseEntity<Map<String, Object>> todayParticipants(@RequestParam(name="category") String category) {
-		
-		int count = boardService.todayParticipants(category);
-		
-		Map<String, Object> result = new HashMap<>();
-		result.put("category", category);
-		result.put("todayParticipants", result);
-		
-		
-		return ResponseEntity.ok(result);
-	}
 	
-	@GetMapping("/stats/todayPost")
-	public ResponseEntity<Map<String, Object>> todayPost(@RequestParam(name="category") String category) {
-		
-		int count = boardService.todayPost(category);
-		
-		Map<String, Object> result = new HashMap<>();
-		result.put("category", category);
-		result.put("todayPost", count);
-		
-		return ResponseEntity.ok(result);
-	}
 	
-	@PostMapping("/{boardNo}/like")
-	public LikeResponse toggleLike(@PathVariable("boardNo") Long boardNo, @AuthenticationPrincipal CustomUserDetails userDetails) {
-		
-		int memberNo = userDetails.getMemberNo();
-		
-		return boardService.toggleLike(boardNo, memberNo);
-		
-	}
+	
 
 			
 			

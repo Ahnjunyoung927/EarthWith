@@ -15,9 +15,7 @@ public interface BoardService {
      * @param fetchOffset 마지막으로 조회한 게시글 번호 (이 번호보다 작은 글만 조회), 처음이면 null
      * @param limit       한 번에 가져올 개수
      */
-	List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, Long limit);
 	
-	int saveFeed(FeedBoardDTO feed, MultipartFile file, String username);
 	
 	int todayParticipants(String category);
 	
@@ -25,7 +23,7 @@ public interface BoardService {
 
 	long getBoardCountForParticipation();
 	
-	LikeResponse toggleLike(Long boardNo, int memberNo);
+	
 
 
 }
