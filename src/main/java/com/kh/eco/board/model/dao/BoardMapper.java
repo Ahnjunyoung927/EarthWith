@@ -98,6 +98,6 @@ public interface BoardMapper {
      * @param board 게시글 정보 DTO (제목, 내용, 작성자 등)
      * @return 삽입된 행의 수
      */
-	int insertBoard(BoardDTO board);
+	int insertBoard(BoardDTO board, MultipartFile file, String userId);
 
 }
