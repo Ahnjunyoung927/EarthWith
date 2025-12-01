@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
+import com.kh.eco.board.model.dto.FeedBoardDTO;
+import com.kh.eco.common.PageInfo;
+import com.kh.eco.common.Pagination;
 import com.kh.eco.exception.CustomAuthenticationException;
 import com.kh.eco.exception.IdDuplicateException;
 import com.kh.eco.file.FileService;
@@ -49,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberInfoDuplicateCheck midc;
 	private final FileService fileService;
-
+	
     @Override
     public void signUp(MemberSignUpDTO member, MultipartFile profileImg) {
 
@@ -223,15 +227,6 @@ public class MemberServiceImpl implements MemberService {
 
 	}
 	
-//	@Override
-//	public void updateMemberProfile(MultipartFile file, UpdateProfileDTO profile) {
-//
-//		String newImage = profile.getNewImage();
-//		
-//		memberMapper.updateProfile(profile);
-//
-//	}
-	
 	@Value("${file.upload.path:C:/upload}")
 	private String uploadPath;
 	
@@ -284,66 +279,43 @@ public class MemberServiceImpl implements MemberService {
             throw new RuntimeException("파일 업로드 실패", e);
         }
     }
-//    public void updateProfile(UpdateProfileDTO profile) {
-//        MultipartFile file = profile.getNewImage();
-//        if (file != null && !file.isEmpty()) {
-//            // 파일 확장자
-//            String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
-//            String ext = "";
-//
-//            int idx = originalFilename.lastIndexOf(".");
-//            if (idx > 0) ext = originalFilename.substring(idx);
-//
-//            // 서버에 저장할 파일 이름 (UUID)
-//            String savedFileName = UUID.randomUUID().toString() + ext;
-//
-//            try {
-//                // 디렉토리 없으면 생성
-//                Files.createDirectories(Paths.get(uploadDir));
-//
-//                // 파일 저장
-//                File dest = new File(uploadDir + savedFileName);
-//                file.transferTo(dest);
-//
-//                // DB에 저장할 경로 세팅
-//                profile.setImagePath("/images/" + savedFileName);
-//
-//                // DB 업데이트
-//                memberMapper.updateProfileImage(profile);
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                throw new RuntimeException("파일 업로드 실패");
-//            }
-//            
-//            
-//        }
-    
+
+//	@Override
+//	public List<FeedBoardDTO> getMyPosts(String memberId, int page) {
+//		int offset = (page - 1) * 10;
+//		return memberMapper.selectMyPosts(memberId, offset, 10);
+//	}
 	
 //	@Override
-//	public void updateMemberProfile(MultipartFile file) {
-//		CustomUserDetails user = validateProfile(file.getCurrentImageUrl());
+//	public Map<String, Object> getMyPosts(String memberIdStr, int currentPage) {
+//		if (memberIdStr == null || memberIdStr.trim().isEmpty() || !memberIdStr.trim().matches("\\d+")) {
+//	        throw new IllegalArgumentException("memberId must be numeric");
+//	    }
 //		
-//		String newImageUrl = file.getNewImageUrl();
-//		//log.info("newPhone, getUsername : {} {}", newPhone, user.getUsername());
-//		Map<String, String> changeRequest = Map.of("memberId", user.getUsername(),
-//												   "newImageUrl", newImageUrl);
+//		int memberId;
 //		
-//		memberMapper.updateProfile(changeRequest);		
+//		 try {
+//		        memberId = Integer.parseInt(memberIdStr.trim());
+//		    } catch (NumberFormatException e) {
+//		        throw new IllegalArgumentException("memberId는 숫자이여야 함", e);
+//		    }
+//
+//		int boardLimit = 10;
+//		int pageLimit = 5;
+//		
+//		int listCount = memberMapper.countMyPosts(memberId);
+//		
+//		PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+//	
+//		List<FeedBoardDTO> posts = memberMapper.selectMyPosts(memberId, pageInfo.getOffset(), boardLimit);
+//	
+//		Map<String, Object> response = new HashMap<>();
+//		response.put("pageInfo", pageInfo);
+//		response.put("list", posts);
+//		
+//		return response;
 //	}
 //	
-//	private CustomUserDetails validateProfile(String profile) {
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		CustomUserDetails user = (CustomUserDetails)auth.getPrincipal();
-//		
-//		if(profile == null || profile.trim().isEmpty()) {
-//			throw new IllegalArgumentException("번호는 비어 있을 수 없습니다");
-//		}
-//		
-//		return user;
-//	}
-	
-	
     @Override
     public long getActiveMemberCount() {
         try {

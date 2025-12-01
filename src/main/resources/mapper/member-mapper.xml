@@ -82,7 +82,7 @@
 			   MEMBER_ID = #{memberId}
 	</select>
 	
-
+	<!-- 비밀번호 변경 -->
 	<update id="changePassword" parameterType="map">
 		UPDATE
 		 		TB_MEMBER
@@ -93,7 +93,7 @@
 	</update>
 	
 	
-	
+	<!-- 아이디 조회 -->
 	<select id="findById" resultType= "MemberVo">
 		SELECT
 			   MEMBER_NAME memberName
@@ -110,7 +110,7 @@
 		
 	</select>
 	
-	
+	<!-- 이메일 조회 -->
 	<select id="findByEmail" resultType="MemberVo">
 		SELECT
 		       MEMBER_NO memberNo
@@ -131,6 +131,7 @@
 		       EMAIL = #{email}
 	</select>
 	
+	<!-- 이메일 변경 -->
 	<update id="updateEmail">
 		UPDATE 
 			   TB_MEMBER
@@ -141,6 +142,7 @@
 		
 	</update>
 	
+	<!-- 번호 조회 -->
 	<select id="findByPhone" resultType="MemberVO">
 		SELECT
 		       MEMBER_NO memberNo
@@ -161,6 +163,7 @@
 	           PHONE = #{phone}
 	</select>
 	
+	<!-- 번호 변경 -->
 	<update id="updatePhone">
 		UPDATE
 			   TB_MEMBER
@@ -171,6 +174,7 @@
 		       
 	</update>
 	
+	<!-- 프로필 변경 -->
 	<update id="updateProfile" parameterType="com.kh.eco.member.model.dto.UpdateProfileDTO">
         UPDATE 
         	   TB_MEMBER
@@ -179,7 +183,8 @@
          WHERE 
           	   MEMBER_ID = #{memberId}
     </update>
-	
+    
+	<!-- 지역 번호 변경 -->
 	<update id="updateRegion">
 		UPDATE
 			   TB_MEMBER
@@ -188,6 +193,32 @@
 	     WHERE 
 	  		   MEMBER_ID = #{memberId}
 	</update>
+	
+	<!-- <select id="selectMyPosts" resultType="FeedBoardDTO" parameterType="map">
+		SELECT *
+        FROM (
+            SELECT 
+                A.*,
+                ROWNUM AS RNUM
+            FROM (
+                SELECT *
+                FROM TB_BOARD
+                WHERE REF_MNO = #{memberId}
+                ORDER BY REG_DATE DESC
+            ) A
+            WHERE ROWNUM &lt;= (#{offset} + #{limit})
+        )
+        WHERE RNUM &gt; #{offset}
+	</select>
+	
+	<select id="countMyPosts" parameterType="int" resultType="int">
+		SELECT
+		       COUNT(*)
+		  FROM
+		       TB_BOARD
+		 WHERE
+		       REF_MNO = #{memberId, jdbcType=INTEGER}
+	</select> -->
 	
 	<select id="getActiveMemberCount" resultType="long">
 		<include refid="countMember" />

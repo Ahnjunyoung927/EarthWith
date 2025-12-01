@@ -1,9 +1,12 @@
 package com.kh.eco.member.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.member.model.dto.ChangePasswordDTO;
 import com.kh.eco.member.model.dto.MemberSignUpDTO;
 import com.kh.eco.member.model.dto.UpdateEmailDTO;
@@ -68,7 +72,6 @@ public class MemberController {
 		memberService.changePassword(password);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	// 지역, 프로필
 	
 	/**
 	 * changeEmail - 이메일 변경 메소드
@@ -83,21 +86,22 @@ public class MemberController {
 		return ResponseEntity.ok("이메일 변경 완료");
 	}
 	
+	/**
+	 * changePhone - 번호 변경 메소드
+	 * @param phone
+	 * @return
+	 */
 	@PutMapping("phone")
 	public ResponseEntity<?> changePhone(@Valid @RequestBody UpdatePhoneDTO phone) {
 		memberService.updateMemberPhone(phone);
 		return ResponseEntity.ok("번호 변경 완료");
 	}
 	
-//	@PostMapping("profile")
-//	public ResponseEntity<?> changeProfile(@RequestParam(name="file", required=false)MultipartFile file, UpdateProfileDTO profile) {
-//		log.info("file, profile : {}, {}",file, profile);
-//		memberService.updateMemberProfile(file, profile);
-//		return ResponseEntity.ok("프로필 변경 완료");
-//	}
-	
+	/**
+	 * updateProfileImage - 프로필 변경 메소드
+	 */
 	@PostMapping("profile")
-    public ResponseEntity<?> updateProfileImage(@RequestParam UpdateProfileDTO profile) {
+    public ResponseEntity<?> updateProfileImage(@ModelAttribute UpdateProfileDTO profile) {
 	    System.out.println("====== Controller 시작 ======");
 	    System.out.println("profile 객체: " + profile);
 	    System.out.println("memberId: " + profile.getMemberId());
@@ -109,9 +113,27 @@ public class MemberController {
         return ResponseEntity.ok("프로필 이미지 변경 완료");
     }
 	
+	
+	/**
+	 *  changeRegion - 지역 변경 메소드
+	 */
 	@PutMapping("region")
 	public ResponseEntity<?> changeRegion(@Valid @RequestBody UpdateRegionDTO region) {
 		memberService.updateMemberRegion(region);
 		return ResponseEntity.ok("지역 변경 완료");
 	}
+//	
+//	@GetMapping("posts")
+//	public ResponseEntity<?> getMyPosts(@RequestParam (value="memberId") String memberId,
+//										@RequestParam (value="page", defaultValue = "1") int page) {
+//		
+//		System.out.println("========== Controller 도달 ==========");
+//        System.out.println("memberId: " + memberId);
+//        System.out.println("page: " + page);
+//		
+//        Map<String, Object> response = memberService.getMyPosts(memberId, page);
+//		return ResponseEntity.ok(response);
+//	}
+	
+	
 }

@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.member.model.dto.MemberLoginDTO;
 import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.vo.MemberVO;
@@ -39,6 +41,11 @@ public interface MemberMapper {
 	
 	void updateRegion(Map<String, Object> changeRequest);
 
+//	List<FeedBoardDTO> selectMyPosts(@Param("memberId") int memberId,
+//									 @Param("offset") int offset, 
+//									 @Param("limit") int limit);
+//
+//	int countMyPosts(@Param("memberId") int memberId);
 
 	
 	

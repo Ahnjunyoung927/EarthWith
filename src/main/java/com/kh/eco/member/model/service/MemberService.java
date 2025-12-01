@@ -1,6 +1,7 @@
 package com.kh.eco.member.model.service;
 
 
+import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.member.model.dto.ChangePasswordDTO;
 
 import java.util.List;
@@ -34,6 +35,8 @@ public interface MemberService {
 	void updateProfile(UpdateProfileDTO profile);
 
 	void updateMemberRegion(UpdateRegionDTO region);
+
+//	Map<String, Object> getMyPosts(String memberId, int currentPage);
 	
 	
 
