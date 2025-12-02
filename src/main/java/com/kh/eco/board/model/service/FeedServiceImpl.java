@@ -1,6 +1,8 @@
 package com.kh.eco.board.model.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,26 +76,33 @@ public class FeedServiceImpl implements FeedService {
 				throw new PageNotFoundException("게시글 작성에 실패했습니다.");
 			}
 			
-			if(result == 1 && file != null && !file.isEmpty()) {
-
-		        // 3) 파일 저장 → 경로 얻기
-		        String filePath = fileService.store(file);
-		        log.info("filePath : {}", filePath);
-		        
-		        // 4) 방금 생성된 게시글 번호 사용
-		       BoardVO res = feedMapper.findNewBoardNo(b.getRefMno());
-		       Long newBoardNo = res.getBoardNo(); 
-		        //Integer boardNo = b.getBoardNo();
-		        //log.info("보드넘버 : {}", String.valueOf(boardNo));
-		       
-		       FeedBoardDTO feedBoardDTO = new FeedBoardDTO();
-		       feedBoardDTO.setBoardNo(newBoardNo);
-		       feedBoardDTO.setAttachmentPath(filePath);
-		       saveAttachment(feedBoardDTO);
+			if(file != null && !file.isEmpty()) {
+				String changeName = fileService.store(file);
+				String originName = file.getOriginalFilename();
+				String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+				
+				Map<String, Object> fileMap = new HashMap<>();
+				fileMap.put("refBno", b.getBoardNo());
+				fileMap.put("originName", originName);
+				fileMap.put("changeName", changeName);
+				fileMap.put("attachmentPath", attachmentPath);
+				
+				feedMapper.saveAttachment(fileMap);
 		    }
 
 		    return result;
 	}
+	
+	/*
+ 
+  
+            
+            boardMapper.insertAttachment(fileMap);
+        }
+        
+        return result; 
+	 
+	 */
 	
 	/**
 	 * 게시글 파일첨부 하기 (수정중)
