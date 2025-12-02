@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kh.eco.admin.model.dao.AdminMapper">
+<mapper namespace="com.kh.eco.admin.model.dao.AdminBoardMapper">
 	
 	<sql id="findAdminBoardDTO">
 		SELECT
@@ -19,33 +19,21 @@
           LEFT 
           JOIN 
                TB_BOARD_REPORT BR ON BR.REF_BNO = B.BOARD_NO
-         GROUP 
-            BY
-               B.BOARD_NO, B.BOARD_TITLE, B.REG_DATE, B.STATUS, M.MEMBER_ID
 	</sql>
 	
-	<sql id="findAdminCommentDTO">
-				SELECT
-       		   C.COMMENT_NO commentNo
-     		 , C.COMMENT_CONTENT commentContent
-     		 , C.REG_DATE regDate
-     		 , C.STATUS status
-     		 , COUNT(CASE WHEN CR.STATUS = 'Y' THEN 1 END) AS commentReportCount
-     		 , M.MEMBER_ID memberId
-  		  FROM 
-       		   TB_COMMENT C
-  		  JOIN 
-       		   TB_MEMBER M ON C.REF_MNO = M.MEMBER_NO
-  		  LEFT 
-  		  JOIN 
-       		   TB_COMMENT_REPORT CR ON CR.REF_CNO = C.COMMENT_NO
- 		 GROUP 
-    		BY
-       		   C.COMMENT_NO, C.COMMENT_CONTENT, C.REG_DATE, C.STATUS, M.MEMBER_ID
+	<sql id="groupByAdminBoardDTO">
+         GROUP 
+            BY
+               B.BOARD_NO
+             , B.BOARD_TITLE
+             , B.REG_DATE
+             , B.STATUS
+             , M.MEMBER_ID		
 	</sql>
 	
 	<select id="findBoardAll" resultType="AdminBoardDTO">
 		<include refid="findAdminBoardDTO" />
+		<include refid="groupByAdminBoardDTO" />
          ORDER
             BY 
                B.BOARD_NO DESC
@@ -53,6 +41,7 @@
 	
 	<select id="findReportedBoard" resultType="AdminBoardDTO">
 		<include refid="findAdminBoardDTO" />
+		<include refid="groupByAdminBoardDTO" />
 		HAVING
        		   COUNT(CASE WHEN BR.STATUS = 'Y' THEN 1 END) > 0
  		 ORDER
@@ -60,24 +49,22 @@
        		   B.BOARD_NO DESC
 	</select>
 	
-	
-	
-	<select id="findCommentAll" resultType="AdminCommentDTO">
-		<include refid="findAdminCommentDTO" />
- 		 ORDER
-    		BY 
-    		   C.COMMENT_NO DESC
+	<select id="selectBoard" resultType="AdminBoardDTO">
+		<include refid="findAdminBoardDTO" />
+		 WHERE
+       		   B.BOARD_NO = #{boardNo}
+ 	    <include refid="groupByAdminBoardDTO" />
 	</select>
 	
-	<select id="findReportedComment" parameterType="AdminCommentDTO">
-		<include refid="findAdminCommentDTO" />
-		HAVING
-       		   COUNT(CASE WHEN CR.STATUS = 'Y' THEN 1 END) > 0
- 		 ORDER
-   			BY 
-	   		   C.COMMENT_NO DESC
+	<select id="selectAttachemnt" resultType="AttachmentDTO">
+		SELECT
+       		   ATTACHMENT_PATH attachmentPath
+  		  FROM
+       		   TB_ATTACHMENT
+ 		 WHERE
+       		   REF_BNO = #{boardNo}
 	</select>
-
+	
 	<select id="countBoards" resultType="int">
         SELECT 
         	   COUNT(*)
@@ -92,22 +79,49 @@
        		   TB_BOARD_REPORT
  		 WHERE 
        		   STATUS = 'Y'
-	</select>
-    
-    <select id="countComments" resultType="int">
-		SELECT
-		       COUNT(*)
-		  FROM
-		       TB_COMMENT
+	</select>	
+	
+	<update id="deleteBoard">
+		UPDATE
+       		   TB_BOARD
+   		   SET
+       		   STATUS = 'N'
+ 		 WHERE
+       		   BOARD_NO = #{boardNo}
+	</update>
+
+	<update id="restoreBoard">
+		UPDATE
+		       TB_BOARD
+		   SET
+		       STATUS = 'Y'
+		 WHERE
+		       BOARD_NO = #{boardNo}
+	</update>
+	
+	<select id="selectReport">
+        SELECT 
+        	   COUNT(*)
+          FROM 
+               TB_BOARD_REPORT
+         WHERE
+               REF_BNO = #{boardNo}
+           AND
+               STATUS = 'Y'		
 	</select>
 	
-	<select id="countReportedComments" resultType="int">
-		SELECT 
-       		   COUNT(DISTINCT REF_CNO)
-  		  FROM 
-       		   TB_COMMENT_REPORT
- 		 WHERE 
+	<update id="handleReport">
+		UPDATE 
+       		   TB_BOARD_REPORT
+   		   SET
+       		   STATUS = 'N'
+ 		 WHERE
+      		   REF_BNO = #{boardNo}
+   		   AND
        		   STATUS = 'Y'
-	</select>
+	</update>
+	
+	
+	
 	
 </mapper>
