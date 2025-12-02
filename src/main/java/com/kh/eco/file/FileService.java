@@ -1,5 +1,6 @@
 package com.kh.eco.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,43 +16,42 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class FileService {
 
-    private final Path fileLocation;
-    private final MyRenamePolicy renamePolicy = new MyRenamePolicy();
+	
+	private final MyRenamePolicy myRenamePolicy; 
+	private final Path fileLocation;
+	
+	public FileService(MyRenamePolicy myRenamePolicy) {
+		this.myRenamePolicy = myRenamePolicy;
+		this.fileLocation = Paths.get("uploads").toAbsolutePath().normalize();
+		try {
+			Files.createDirectories(this.fileLocation);
+		} catch (IOException e) {
+			throw new RuntimeException("파일 저장소 생성 실패", e);
+		}
+	}
+	
+	/**
+	 * 파일을 저장 changeName 반환
+	 */
+	public String store(MultipartFile file) {
+		
+		String originalFilename = file.getOriginalFilename();
 
-    public FileService() {
-        this.fileLocation = Paths.get("uploads").toAbsolutePath().normalize();
-        try {
-            Files.createDirectories(this.fileLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("업로드 폴더 생성 실패", e);
-        }
-    }
+		File originFile = new File(originalFilename);
+		
+		File renamedFile = myRenamePolicy.rename(originFile);
+		String changeName = renamedFile.getName();
+		
+		Path targetLocation = this.fileLocation.resolve(changeName);
+		
+		try {
+			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-    public String store(MultipartFile file) {
+			return changeName;
 
-        if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("파일이 비어 있습니다.");
-        }
+		} catch (IOException e) {
+			throw new RuntimeException("파일 저장 실패: " + e.getMessage());
+		}
+	}
 
-        try {
-            // 1) 새 파일명 생성
-            String newFilename = renamePolicy.rename(file);
-
-            // 2) 저장할 경로
-            Path targetPath = this.fileLocation.resolve(newFilename);
-
-            // 3) 파일 저장
-            Files.copy(
-                file.getInputStream(),
-                targetPath,
-                StandardCopyOption.REPLACE_EXISTING
-            );
-
-            // 4) URL 또는 경로 반환
-            return "http://localhost:8081/uploads/" + newFilename;
-
-        } catch (IOException e) {
-            throw new RuntimeException("파일 저장 중 오류", e);
-        }
-    }
 }
