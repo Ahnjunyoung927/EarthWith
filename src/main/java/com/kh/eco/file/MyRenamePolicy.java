@@ -5,8 +5,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+@Component
 public class MyRenamePolicy {
 	
 	// FileRenamePoliCy 인터페이스가 가지고 있는 rename추상메소드가 있음
