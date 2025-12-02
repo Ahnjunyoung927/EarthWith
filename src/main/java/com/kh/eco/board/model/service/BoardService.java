@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
-import com.kh.eco.board.model.dto.FeedBoardDTO;
 
 import jakarta.validation.Valid;
 
@@ -16,55 +15,7 @@ import jakarta.validation.Valid;
  * 일반 게시글 및 피드형 게시글의 조회, 작성, 통계 기능을 정의합니다.
  */
 public interface BoardService {
-
-    /**
-     * 피드형 게시글 목록을 무한 스크롤 방식으로 조회합니다.
-     *
-     * @param category    게시판 카테고리 코드 (예: "C" - 챌린지/피드)
-     * @param fetchOffset 이전에 조회한 마지막 게시글의 번호 (이 번호보다 작은 글을 조회, 첫 조회 시 null)
-     * @param limit       한 번의 요청으로 가져올 게시글의 개수
-     * @return 조건에 맞는 피드 게시글 목록 (FeedBoardDTO 리스트)
-     */
-	List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, int limit);
 	
-    /**
-     * 새로운 피드 게시글을 저장합니다.
-     *
-     * @param feed     저장할 피드 게시글 정보 (내용, 태그 등)
-     * @param file     함께 업로드할 첨부 파일 (이미지 등)
-     * @param username 작성자의 사용자명(ID)
-     */
-	void saveFeed(FeedBoardDTO feed, MultipartFile file, String username);
-	
-    /**
-     * 특정 카테고리의 오늘의 참여자 수를 조회합니다.
-     *
-     * @param category 카테고리 코드
-     * @return 오늘의 참여자 수
-     */
-	int todayParticipants(String category);
-	
-    /**
-     * 특정 카테고리의 오늘의 게시글 작성 수를 조회합니다.
-     *
-     * @param category 카테고리 코드
-     * @return 오늘의 게시글 수
-     */
-	int todayPost(String category);
-
-    /**
-     * 참여형 게시판의 전체 게시글 수를 조회합니다.
-     *
-     * @return 전체 게시글 수
-     */
-	long getBoardCountForParticipation();
-    
-    /**
-     * 게시판의 모든 게시글을 조건 없이 조회합니다.
-     *
-     * @return 전체 게시글 목록 (BoardDTO 리스트)
-     */
-    List<BoardDTO> selectBoardAll();
     
     /**
      * 페이징 처리된 일반 게시글 목록을 조회합니다.
@@ -96,5 +47,7 @@ public interface BoardService {
 	int updateBoard(@Valid BoardDTO board, MultipartFile file, String userId);
 
 	int deleteBoard(Long boardNo, String userId);
+
+	long getBoardCountForParticipation();
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.eco.board.model.dao.BoardMapper;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
-import com.kh.eco.board.model.dto.FeedBoardDTO;
+
 import com.kh.eco.common.PageInfo;
 import com.kh.eco.common.Pagination;
 import com.kh.eco.file.FileService;
@@ -30,31 +30,42 @@ public class BoardServiceImpl implements BoardService {
     private final Pagination pagination;
 
     // 1. 게시글 목록 조회
-    @Override
-    public Map<String, Object> selectBoardList(int currentPage) {
-        int listCount = boardMapper.selectListCount();
-        int pageLimit = 10;
-        int boardLimit = 10;
-        PageInfo pi = pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-        
-        int startRow = (pi.getCurrentPage() - 1) * pi.getBoardLimit() + 1;
-        int endRow = startRow + pi.getBoardLimit() - 1;
-        
-        List<BoardDTO> topPosts = boardMapper.selectTopBoardList();
-        
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("startRow", startRow);
-        paramMap.put("endRow", endRow);
-        
-        List<BoardDTO> listPosts = boardMapper.selectBoardList(paramMap);
+	@Override
+	public Map<String, Object> selectBoardList(int currentPage) {
+		
+		int listCount = boardMapper.selectListCount();
+		
+		int pageLimit = 10;
+		int boardLimit = 10;
+		
+		int maxPage = (int)Math.ceil((double)listCount / boardLimit);
+		int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
+		int endPage = startPage + pageLimit - 1;
+		int offset = (currentPage - 1) * boardLimit;
+		if(endPage > maxPage) {
+			endPage = maxPage;
+		}
+		
+		int startRow = (currentPage - 1) * boardLimit + 1;
+		int endRow = startRow + boardLimit - 1;
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("topPosts", topPosts);
-        map.put("list", listPosts);
-        map.put("pi", pi);
-        
-        return map;
-    }
+		PageInfo pi = new PageInfo(listCount, currentPage, pageLimit, boardLimit, startPage, endPage, maxPage, offset); 
+		
+		List<BoardDTO> topPosts = boardMapper.selectTopBoardList();
+		
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("startRow", startRow);
+		paramMap.put("endRow", endRow);
+		
+		List<BoardDTO> listPosts = boardMapper.selectBoardList(paramMap);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("topPosts", topPosts);
+		map.put("list", listPosts);
+		map.put("pi", pi);
+		
+		return map;
+	}
 
     // 2. 상세 조회
     @Transactional
@@ -140,17 +151,13 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.deleteBoard(map);
     }
 
- 
 	@Override
-	public List<FeedBoardDTO> getFeedList(String category, Long fetchOffset, int limit) { return null; }
-	@Override
-	public void saveFeed(FeedBoardDTO feed, MultipartFile file, String username) { }
-	@Override
-	public int todayParticipants(String category) { return 0; }
-	@Override
-	public int todayPost(String category) { return 0; }
-	@Override
-	public long getBoardCountForParticipation() { return 0; }
-	@Override
-	public List<BoardDTO> selectBoardAll() { return null; }
+	public long getBoardCountForParticipation() {
+		// TODO Auto-generated method stub
+		return boardMapper.getBoardCountForParticipation();
+	}
+    
+    
+
 }
+

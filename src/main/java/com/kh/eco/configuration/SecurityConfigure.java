@@ -34,7 +34,7 @@ public class SecurityConfigure {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
+		
 		return httpSecurity
 				.formLogin(AbstractHttpConfigurer::disable) 	// Form Login 비활성화
 				.csrf(AbstractHttpConfigurer::disable) 	 	    // CSRF 비활성화
@@ -43,31 +43,50 @@ public class SecurityConfigure {
 					manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 미사용 (JWT)
 				
 				.authorizeHttpRequests(requests -> {
-					// [1] 누구나 접근 가능한 기능 (Public)
 					
-					// POST: 로그인, 회원가입, 리프레시 토큰
-					requests.requestMatchers(HttpMethod.POST, "/members", "/auth/login", "/auth/refresh", "/auth/logout").permitAll();
+					// [1] 누구나 접근 가능한 기능 (PermitAll)
 					
-					// GET: 게시글 조회, 댓글 조회, 이미지 파일, 통계 등은 비회원도 가능
+					// POST: 로그인, 회원가입, 토큰 갱신, 로그아웃
+					requests.requestMatchers(HttpMethod.POST,
+							"/members", 
+							"/auth/login", 
+							"/auth/refresh", 
+							"/auth/logout", 
+							"/members/profile", 
+							"/members/**").permitAll(); 
+					
+					// GET: 게시글/댓글 조회, 파일, 통계, 피드 등 비회원 접근 가능
 					requests.requestMatchers(HttpMethod.GET, 
 							"/boards/**", 
 							"/comments/**", 
 							"/uploads/**", 
 							"/stats/**", 
 							"/api/**", 
-							"/feed/**"
-					).permitAll();
+							"/feed/**",
+							"/stats/today/**", 
+							"/api/boards/stats/**",
+							"/members/**" // Incoming 브랜치 반영
+					).permitAll(); 
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
-					// POST: 게시글 작성, 댓글 작성 (충돌 해결: /boards는 여기서만 허용)
-					requests.requestMatchers(HttpMethod.POST, "/boards", "/comments", "/api/boards/**").authenticated();
+					// POST: 게시글 작성, 댓글 작성, 피드 작성
+					requests.requestMatchers(HttpMethod.POST, 
+							"/boards", 
+							"/comments", 
+							"/api/boards/**", 
+							"/feeds").authenticated();
 					
 					// PUT: 회원 정보 수정, 게시글 수정
-					requests.requestMatchers(HttpMethod.PUT, "/members/**", "/boards/**").authenticated();
+					// (/members/** 와일드카드가 password, email 등을 모두 포함하므로 통합)
+					requests.requestMatchers(HttpMethod.PUT, 
+							"/members/**", 
+							"/boards/**").authenticated();
 					
 					// DELETE: 회원 탈퇴, 게시글 삭제
-					requests.requestMatchers(HttpMethod.DELETE, "/members/**", "/boards/**").authenticated();
+					requests.requestMatchers(HttpMethod.DELETE, 
+							"/members/**", 
+							"/boards/**").authenticated();
 					
 					// [3] 관리자 전용
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");
@@ -78,13 +97,14 @@ public class SecurityConfigure {
 				
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 적용
 				.build();
+
 	}
 	
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		
-		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA)
+		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA) - HEAD 설정 유지 (더 포괄적)
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
@@ -106,4 +126,5 @@ public class SecurityConfigure {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
 	}
+	
 }

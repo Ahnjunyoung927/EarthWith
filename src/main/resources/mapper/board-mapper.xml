@@ -207,6 +207,7 @@
            AND REF_MNO = (SELECT MEMBER_NO FROM TB_MEMBER WHERE MEMBER_ID = #{userId})
     </update>
 	
+<<<<<<< HEAD
 	<!-- 피드 관련 -->
 	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
 		SELECT *
@@ -293,6 +294,28 @@
 		   AND BOARD_CATEGORY LIKE #{category}
 		   AND TRUNC(REG_DATE) = TRUNC(SYSDATE)         
 	</select>
+=======
+	<!-- -->
+	
+	
+	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
+    INSERT INTO TB_ATTACHMENT (
+          FILE_NO fileNo
+        , REF_BNO refBno
+        , ATTACHMENT_PATH attachmentPath
+        , REG_DATE regDate
+        , STATUS 
+    ) VALUES (
+          SEQ_FNO.NEXTVAL
+        , #{boardNo}
+        , #{file}
+        , SYSDATE
+        , 'Y'
+    )
+</insert>
+	
+	
+>>>>>>> 89f91bb26a7b556b5852488ee62c8fdd5e7b6d5d
 	
 	<sql id="countBoard">
 		SELECT COUNT(*)

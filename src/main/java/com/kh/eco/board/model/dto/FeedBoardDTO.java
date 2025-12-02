@@ -24,7 +24,7 @@ public class FeedBoardDTO {
 	private String boardCategory;    // TB_BOARD 게시글카테고리 C%
 	private String categoryName;     // TB_CATEGORY 카테고리이름 "인증"
 	
-	private Long boardAuthor;        // TB_BOARD 게시글 작성자 회원번호
+	private Integer boardAuthor;        // TB_BOARD 게시글 작성자 회원번호
 	private String memberId;         // TB_MEMBER 회원 아이디
 	private String memberImage;      // TB_MEMBER 프로필 사진
 	
@@ -35,4 +35,5 @@ public class FeedBoardDTO {
 	
 	private Date regDate;            // TB_BOARD 작성일자
 	
+	private Integer likeCount; // 좋아요 개수
 }
