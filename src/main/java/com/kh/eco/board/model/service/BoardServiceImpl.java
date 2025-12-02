@@ -49,7 +49,7 @@ public class BoardServiceImpl implements BoardService {
 		int maxPage = (int)Math.ceil((double)listCount / boardLimit);
 		int startPage = (currentPage - 1) / pageLimit * pageLimit + 1;
 		int endPage = startPage + pageLimit - 1;
-		
+		int offset = (currentPage - 1) * boardLimit;
 		if(endPage > maxPage) {
 			endPage = maxPage;
 		}
@@ -57,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
 		int startRow = (currentPage - 1) * boardLimit + 1;
 		int endRow = startRow + boardLimit - 1;
 
-		PageInfo pi = new PageInfo(listCount, currentPage, pageLimit, boardLimit, startPage, endPage, maxPage); 
+		PageInfo pi = new PageInfo(listCount, currentPage, pageLimit, boardLimit, startPage, endPage, maxPage, offset); 
 		
 		List<BoardDTO> topPosts = boardMapper.selectTopBoardList();
 		

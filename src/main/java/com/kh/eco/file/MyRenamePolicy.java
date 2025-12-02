@@ -1,12 +1,13 @@
 package com.kh.eco.file;
 
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+@Component
 public class MyRenamePolicy {
 
     public String rename(MultipartFile file) {
