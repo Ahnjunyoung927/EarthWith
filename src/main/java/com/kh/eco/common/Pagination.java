@@ -1,5 +1,8 @@
 package com.kh.eco.common;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Pagination {
     
     public static PageInfo getPageInfo(int listCount, int currentPage, int pageLimit, int boardLimit) {
