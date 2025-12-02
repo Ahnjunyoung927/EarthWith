@@ -76,7 +76,7 @@ public interface BoardService {
     Map<String, Object> selectBoardList(int currentPage);
    
     /**
-     * 특정 게시글의 상세 정보를 조회합니다.
+     * 특정 게시글의 상세 정보를 조회
      * 조회수 증가 로직이 포함될 수 있습니다.
      *
      * @param boardNo 조회할 게시글 번호
@@ -85,12 +85,16 @@ public interface BoardService {
     BoardDetailDTO selectBoardDetail(int boardNo);
     
     /**
-     * 새로운 일반 게시글을 등록합니다.
+     * 새로운 일반 게시글을 등록
      * * @param board  등록할 게시글 정보 (제목, 내용, 카테고리 등)
      * @param file   첨부 파일 (선택 사항)
      * @param userId 작성자 ID
      * @return 등록 성공 시 1, 실패 시 0
      */
 	int insertBoard(@Valid BoardDTO board, MultipartFile file, String userId);
+
+	int updateBoard(@Valid BoardDTO board, MultipartFile file, String userId);
+
+	int deleteBoard(Long boardNo, String userId);
 
 }

@@ -45,6 +45,11 @@ public class AdminController {
 		return ResponseEntity.ok("게시글이 비공개처리 되었습니다.");
 	}
 	
+	@GetMapping("dashboard")
+	public ResponseEntity<?> getDashBoard(){
+		return null;
+	}
+	
 	
 	
 }

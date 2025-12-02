@@ -36,4 +36,6 @@ public class BoardDTO {
 	private int likeCount;        
 	
 	private String boardWriter;
+	
+	private String attachmentPath;
 }
