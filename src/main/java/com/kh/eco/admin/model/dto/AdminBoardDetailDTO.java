@@ -1,6 +1,6 @@
 package com.kh.eco.admin.model.dto;
 
-import java.sql.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AdminCommentDTO {
+public class AdminBoardDetailDTO {
 	
-	private Long commentNo;
-	private String commentContent;
-	private Date regDate;
-	private String status;
-	private int commentReportCount;
-	private String MemberId;
+	private AdminBoardDTO board;
+	private List<AttachmentDTO> attchment;
 
 }

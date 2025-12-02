@@ -72,4 +72,19 @@ public class GloblaExceptionHandler {
 		return ResponseEntity.badRequest().body(error);
 	}
 	
+	@ExceptionHandler(DeleteFailureException.class)
+	public ResponseEntity<Map<String, String>> handleDeleteFail(DeleteFailureException e){
+		Map<String, String> error = new HashMap();
+		error.put("error-message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(RestoreFailureException.class)
+	public ResponseEntity<Map<String, String>> handleRestoreFail(RestoreFailureException e){
+		Map<String, String> error = new HashMap();
+		error.put("error-message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+
+	
 }
