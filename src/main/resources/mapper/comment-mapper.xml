@@ -45,9 +45,74 @@
 	        BY C.COMMENT_NO DESC                       		    
 	</select>
 	
+	<select id="existById" parameterType="Long" resultType="int">
+		SELECT
+		       COUNT(1)
+		  FROM
+		       TB_COMMENT
+		 WHERE
+		       COMMENT_NO = #{commentNo}
+		   AND
+		       STATUS = 'Y'                  
+	</select>
 	
+	<insert id="commentReport" parameterType="CommentReportDTO">
+		INSERT
+		  INTO
+		       TB_COMMENT_REPORT
+		       (
+		       COMMENT_REPORT_NO
+		     , REF_CNO
+			 , REF_RCNO
+             , REPORT_CONTENT
+             , REG_DATE
+             , STATUS
+		       )
+	    VALUES
+	           (
+	           SEQ_CRNO.NEXTVAL
+	         , #{refCno}
+	         , #{refRcno}
+	         , #{reportContent}
+	         , SYSDATE
+	         , DEFAULT
+	           )	       
+	</insert>
 	
+	<select id="isOwner" parameterType="Long" resultType="boolean">
+		SELECT
+		       COUNT(1)
+		  FROM
+		       TB_COMMENT
+		 WHERE
+		       COMMENT_NO = #{commentNo}
+		   AND
+		       REF_MNO = #{memberNo}
+		   AND
+		       STATUS = 'Y'                    
+	</select>
 	
+	<update id="deleteComment"> 
+		UPDATE
+		       TB_COMMENT
+		   SET
+		       STATUS = 'N'
+		 WHERE
+		       COMMENT_NO = #{commentNo}
+		   AND
+		       STATUS = 'Y'                     
+	</update>
+	
+	<update id="updateComment" parameterType="CommentDTO">
+		UPDATE
+		       TB_COMMENT
+		   SET
+		       COMMENT_CONTENT = #{commentContent}
+		 WHERE
+		       COMMENT_NO = #{commentNo}
+		   AND
+		       STATUS = 'Y'             
+	</update>
 	
 	
 </mapper>

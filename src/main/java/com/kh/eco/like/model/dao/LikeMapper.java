@@ -30,7 +30,68 @@ public interface LikeMapper {
 	int decreaseBoardLikeCount(Long boardNo);
 	
 	// 좋아요 개수
-	int getBoardLikeCount(Long boardNo); 
+	int getBoardLikeCount(Long boardNo);
+	
+	/**
+	 * 댓글 좋아요 중복 여부 
+	 */
+	int existsCommentLike(@Param("commentNo") Long commentNo, @Param("memberNo") int memberNo);
+	
+	/**
+	 * 댓글 좋아요 행 존재 여부
+	 */
+	int existsCommentLikeRow(Long commentNo);
+	
+	/**
+	 * 댓글 좋아요 행 INSERT
+	 */
+	int insertCommentLikeRow(Long commentNo);
+	
+	/**
+	 * 댓글 좋아요 추가
+	 * @param boardNo
+	 * @param memberNo
+	 * @return
+	 */
+	int insertCommentLike(@Param("commentNo")Long commentNo, @Param("memberNo")int memberNo);
+		
+	/**
+	 * 댓글 좋아요 증가
+	 * @param boardNo
+	 * @return
+	 */
+	int increaseCommentLikeCount(Long commentNo);
+		
+	/**
+	 * 댓글 좋아요 취소
+	 * @param boardNo
+	 * @param memberNo
+	 * @return
+	 */
+	int deleteCommentLike(@Param("commentNo")Long commentNo, @Param("memberNo")int memberNo);
+		
+	/**
+	 * 댓글 좋아요 감소
+	 * @param boardNo
+	 * @return
+	 */
+	int decreaseCommentLikeCount(Long commentNo);
+		
+	/**
+	 * 댓글 좋아요 개수
+	 * @param boardNo
+	 * @return
+	 */
+	int getCommentLikeCount(Long commentNo);
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/* 
 	 int result = likeMapper.existsBoardLike(boardNo, memberNo);

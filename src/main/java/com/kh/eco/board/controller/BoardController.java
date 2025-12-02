@@ -66,7 +66,7 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<?> insertBoard(@RequestPart("board") @Valid BoardDTO board,
     								     @RequestPart(value="file", required = false) MultipartFile file,
-    								     @AuthenticationPrincipal CustomUserDetails user ){
+    								     @AuthenticationPrincipal CustomUserDetails user){
     	//로그인 유저 아이디 추출
     	String userId = user.getUsername();
     	
