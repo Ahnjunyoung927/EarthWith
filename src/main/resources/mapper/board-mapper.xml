@@ -206,8 +206,7 @@
          WHERE BOARD_NO = #{boardNo}
            AND REF_MNO = (SELECT MEMBER_NO FROM TB_MEMBER WHERE MEMBER_ID = #{userId})
     </update>
-	
-<<<<<<< HEAD
+
 	<!-- 피드 관련 -->
 	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
 		SELECT *
@@ -294,7 +293,7 @@
 		   AND BOARD_CATEGORY LIKE #{category}
 		   AND TRUNC(REG_DATE) = TRUNC(SYSDATE)         
 	</select>
-=======
+
 	<!-- -->
 	
 	
@@ -315,7 +314,6 @@
 </insert>
 	
 	
->>>>>>> 89f91bb26a7b556b5852488ee62c8fdd5e7b6d5d
 	
 	<sql id="countBoard">
 		SELECT COUNT(*)
@@ -328,4 +326,44 @@
 		BOARD_CATEGORY = 'C2'
 	</select>
 	
-</mapper>
+
+	<!-- 게시글 신고하기 -->
+	<insert id="boardReport" parameterType="BoardReportDTO">
+		INSERT
+		  INTO
+		       TB_BOARD_REPORT
+		       (
+		       BOARD_REPORT_NO
+		     , REF_BNO
+		     , REF_RCNO
+		     , REPORT_CONTENT
+		     , REG_DATE
+		     , STATUS
+		       )
+	    VALUES
+	           (
+	           SEQ_BRNO.NEXTVAL
+	         , #{refBno}
+	         , #{refRcno}
+	         , #{reportContent}
+	         , SYSDATE
+	         , DEFAULT  
+	           )	           
+	</insert>
+	
+	<!-- 신고된 게시글 존재여부 조회용 -->
+	<select id="selectBoardOne" resultType="BoardDTO">
+		SELECT
+		       BOARD_NO boardNo
+		     , BOARD_TITLE boardTitle
+		     , STATUS
+		  FROM
+		       TB_BOARD
+		 WHERE
+		       BOARD_NO = #{boardNo}
+		   AND
+		       STATUS = 'Y'              
+	</select>
+	
+</mapper>  
+

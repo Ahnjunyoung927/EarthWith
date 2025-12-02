@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 
 public interface FeedService {
@@ -29,7 +30,22 @@ public interface FeedService {
      *
      * @param feed     저장할 피드 게시글 정보 (내용, 태그 등)
      * @param file     함께 업로드할 첨부 파일 (이미지 등)
-     * @param username 작성자의 사용자명(ID)
      */
-	int insertFeed(FeedBoardDTO feed, MultipartFile file, String username);
+	int insertFeed(FeedBoardDTO feed, MultipartFile file);
+	
+	/**
+	 * 피드를 삭제합니다.
+	 * @param boardNo	게시글 번호
+	 * @param userDetails	회원번호를 꺼내올 정보
+	 * @return
+	 */
+	int deleteFeed(int boardNo, CustomUserDetails userDetails);
+	
+	/**
+	 * 삭제하고자 하는 피드의 본인여부를 검증합니다.
+	 * @param boardNo	게시글 번호
+	 * @param userDetails	회원번호를 꺼내올 정보
+	 * @return
+	 */
+	int isOwner(int boardNo, CustomUserDetails userDetails);
 }

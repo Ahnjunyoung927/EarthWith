@@ -4,9 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
+import com.kh.eco.board.model.dto.BoardReportDTO;
+
+
+import com.kh.eco.board.model.dto.BoardDTO;
+import com.kh.eco.board.model.dto.BoardDetailDTO;
+
 
 @Mapper
 public interface BoardMapper {
@@ -64,6 +72,19 @@ public interface BoardMapper {
      * @param board 게시글 정보 DTO
      * @return 삽입된 행의 수
      */
+
+	int insertBoard(BoardDTO board, MultipartFile file, String userId);
+	
+	/**
+	 * 게시글을 신고합니다.
+	 */
+	int boardReport(BoardReportDTO reportDTO);
+	
+	/**
+	 * 신고된 게시글 존재 여부
+	 */
+	BoardDTO selectBoardOne(int boardNo);
+
     int insertBoard(BoardDTO board);
 
     /**
@@ -85,4 +106,5 @@ public interface BoardMapper {
     int insertAttachment(Map<String, Object> fileMap);
     
     int updateAttachment(Map<String, Object> fileMap);
+    
 }
