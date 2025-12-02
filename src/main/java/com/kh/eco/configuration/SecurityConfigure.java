@@ -43,7 +43,13 @@ public class SecurityConfigure {
 				.authorizeHttpRequests(requests -> {
 					// [1] 누구나 접근 가능한 기능 (가장 먼저 체크)
 					// POST: 로그인, 회원가입, 토큰 갱신, 로그아웃 (HEAD, DEVELOP 통합)
-					requests.requestMatchers(HttpMethod.POST, "/members", "/auth/login", "/auth/refresh", "/auth/logout").permitAll(); 
+					requests.requestMatchers(HttpMethod.POST,
+							"/members", 
+							"/auth/login", 
+							"/auth/refresh", 
+							"/auth/logout", 
+							"/members/profile", 
+							"/members/**").permitAll(); 
 					
 					// GET: 조회 기능 (HEAD, DEVELOP 통합 및 구체화)
 					requests.requestMatchers(
@@ -55,7 +61,8 @@ public class SecurityConfigure {
 							"/api/**", 
 							"/feed/**",
 							"/stats/today/**", 
-							"api/boards/stats/**" 
+							"api/boards/stats/**",
+							"/members/**"
 					).permitAll(); 
 					
 					// [2] 인증(로그인)이 필요한 기능
@@ -63,7 +70,7 @@ public class SecurityConfigure {
 					requests.requestMatchers(HttpMethod.POST, "/boards", "/comments", "/api/boards/**", "/feeds").authenticated();
 					
 					// PUT: 수정 (HEAD, DEVELOP 통합)
-					requests.requestMatchers(HttpMethod.PUT, "/members", "/members/password", "/members/email", "/boards/**").authenticated();
+					requests.requestMatchers(HttpMethod.PUT, "/members", "/members/password", "/members/email", "/boards/**", "/members/**").authenticated();
 					
 					// DELETE: 삭제 (HEAD, DEVELOP 통합)
 					requests.requestMatchers(HttpMethod.DELETE, "/members", "/boards/**").authenticated();
