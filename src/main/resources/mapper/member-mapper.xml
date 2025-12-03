@@ -46,6 +46,7 @@
 		     , DEFAULT
 		       )
 	</insert>
+	
 	<select id="countByMemberId" parameterType="string">
 		<include refid="countMember" />
 		    MEMBER_ID = #{memberId}

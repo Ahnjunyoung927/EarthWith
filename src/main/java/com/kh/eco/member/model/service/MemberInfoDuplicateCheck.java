@@ -14,22 +14,22 @@ public class MemberInfoDuplicateCheck {
 	
 	private final MemberMapper memberMapper;
 	
-	public void idDuplicateCheck(MemberSignUpDTO member) {
-		int count = memberMapper.countByMemberId(member.getMemberId());
+	public void idDuplicateCheck(String memberId) {
+		int count = memberMapper.countByMemberId(memberId);
 		if(1 <= count) {
 			throw new MemberInfoDuplicatedException("이미 존재하는 아이디입니다.");
 		} 
 	}
 	
-	public void phoneDuplicateCheck(MemberSignUpDTO member) {
-		int count = memberMapper.countByPhone(member.getPhone());
+	public void phoneDuplicateCheck(String phone) {
+		int count = memberMapper.countByPhone(phone);
 		if(1 <= count) {
 			throw new MemberInfoDuplicatedException("사용 불가능한 휴대전화 번호입니다.");
 		} 
 	}
 	
-	public void emailDuplicateCheck(MemberSignUpDTO member) {
-		int count = memberMapper.countByEmail(member.getEmail());
+	public void emailDuplicateCheck(String email) {
+		int count = memberMapper.countByEmail(email);
 		if(1 <= count) {
 			throw new MemberInfoDuplicatedException("사용 불가능한 이메일입니다.");
 		} 

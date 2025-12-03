@@ -1,0 +1,27 @@
+package com.kh.eco.admin.model.service;
+
+import com.kh.eco.admin.model.dto.AdminMemberDTO;
+import com.kh.eco.admin.model.dto.UpdateEmailByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdateIdByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdatePasswordByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdatePhoneByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdatePointByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdateRegionByAdminDTO;
+
+public interface AdminMemberService {
+	
+	AdminMemberDTO findMemberById(String memberId);
+	
+	void updateMemberIdByAdmin(UpdateIdByAdminDTO member);
+	
+	void updatePasswordByAdmin(UpdatePasswordByAdminDTO member);
+	
+	void updatePhoneByAdmin(UpdatePhoneByAdminDTO member);
+	
+	void updateEmailByAdmin(UpdateEmailByAdminDTO member);
+	
+	void updateRegionByAdmin(UpdateRegionByAdminDTO member);
+	
+	void updatePointByAdmin(UpdatePointByAdminDTO member);
+
+}
