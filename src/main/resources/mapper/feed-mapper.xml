@@ -122,6 +122,29 @@
         )
     </insert>
     
+    <!-- 피드 수정하기 -->
+    <update id="updateFeed" parameterType="FeedBoardDTO"> 
+		UPDATE
+		       TB_BOARD
+		   SET
+		       BOARD_TITLE = #{boardTitle}
+		     , BOARD_CONTENT = #{boardContent}
+		     , BOARD_CATEGORY = #{boardCategory}
+		 WHERE
+		       BOARD_NO = #{boardNo}
+		   AND
+		       REF_MNO = #{boardAuthor}
+		   AND
+		       STATUS = 'Y'     
+	</update>
+	
+	<delete id="deleteAttachment">
+		DELETE
+		       TB_ATTACHMENT
+		 WHERE
+		       REF_BNO = #{boardNo}
+	</delete>
+    
     <!-- 9. 첨부파일 수정 -->
     <update id="updateAttachment" parameterType="map">
         UPDATE TB_ATTACHMENT

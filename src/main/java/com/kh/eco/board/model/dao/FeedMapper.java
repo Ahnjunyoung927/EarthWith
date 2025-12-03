@@ -59,6 +59,8 @@ public interface FeedMapper {
 	int isOwner(@Param("boardNo")int boardNo, @Param("memberNo")int memberNo);
 	
 	int saveAttachment(Map<String, Object> fileMap);
+	
+	int updateFeed(FeedBoardDTO feed);
     
-    int updateAttachment(Map<String, Object> fileMap);
+    int deleteAttachment(Long boardNo);
 }

@@ -58,7 +58,7 @@ public class FeedServiceImpl implements FeedService {
 	 */
 	@Override
 	@Transactional
-	public int insertFeed(FeedBoardDTO feed, MultipartFile file) {
+	public int insertFeed(FeedBoardDTO feed, List<MultipartFile> files) {
 		BoardVO b = null;
 	  //  String filePath = fileService.store(file);
 			log.info("카테고리 값 : {}", feed.getBoardCategory());
@@ -73,22 +73,30 @@ public class FeedServiceImpl implements FeedService {
 			int result = feedMapper.insertFeed(b);
 			
 			if(result <= 0) {
-				throw new PageNotFoundException("게시글 작성에 실패했습니다.");
+				throw new RuntimeException("게시글 작성에 실패했습니다.");
 			}
 			
-			if(file != null && !file.isEmpty()) {
-				String changeName = fileService.store(file);
-				String originName = file.getOriginalFilename();
-				String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+			if(files != null) {
 				
-				Map<String, Object> fileMap = new HashMap<>();
-				fileMap.put("refBno", b.getBoardNo());
-				fileMap.put("originName", originName);
-				fileMap.put("changeName", changeName);
-				fileMap.put("attachmentPath", attachmentPath);
-				
-				feedMapper.saveAttachment(fileMap);
-		    }
+				for(MultipartFile file : files) {
+					
+					if(file != null && !file.isEmpty()) {
+						String changeName = fileService.store(file);
+						String originName = file.getOriginalFilename();
+						String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+						
+						Map<String, Object> fileMap = new HashMap<>();
+						fileMap.put("refBno", b.getBoardNo());
+						fileMap.put("originName", originName);
+						fileMap.put("changeName", changeName);
+						fileMap.put("attachmentPath", attachmentPath);
+						
+						feedMapper.saveAttachment(fileMap);
+				    }
+				}
+			}
+			
+			
 
 		    return result;
 	}
@@ -148,5 +156,85 @@ public class FeedServiceImpl implements FeedService {
 		return result;
 	}
 	
+	/**
+	 * 게시글 수정하기
+	 */
+	@Transactional
+	@Override
+	public int updateFeed(Long boardNo, FeedBoardDTO feed, List<MultipartFile> files, CustomUserDetails userDetails) {
+		
+		feed.setBoardAuthor(userDetails.getMemberNo());
+		feed.setBoardNo(boardNo);
+		
+		int result = feedMapper.updateFeed(feed);
+		if(result == 0) {
+			throw new RuntimeException("게시글 수정을 실패했습니다.");
+		}
+		
+		
+		   if(files != null) {
+			// 게시글 삭제하기 -- 0행이든 N행이든 삭제는 성공한다.
+			    feedMapper.deleteAttachment(boardNo);
+		   for(MultipartFile file : files) {
+			
+		
+			if(file == null || file.isEmpty()) {
+				continue;
+			}
+		
+			String changeName = fileService.store(file);
+			String originName = file.getOriginalFilename();
+			String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+			
+			Map<String, Object> fileMap = new HashMap<>();
+			fileMap.put("refBno", feed.getBoardNo());
+			fileMap.put("originName", originName);
+			fileMap.put("changeName", changeName);
+			fileMap.put("attachmentPath", attachmentPath);
+			
+			int isOk = feedMapper.saveAttachment(fileMap);
+			if(isOk <= 0) {
+				throw new RuntimeException("게시글 수정에 실패했습니다.");
+			}
+		}
+		}
+		   
+		return result;
+	}
+	
+	/*
+public int updateFeed(Long boardNo, FeedBoardDTO feed, MultipartFile file, CustomUserDetails userDetails) {
+		
+		feed.setBoardAuthor(userDetails.getMemberNo());
+		feed.setBoardNo(boardNo);
+		
+		int result = feedMapper.updateFeed(feed);
+		if(result == 0) {
+			throw new PageNotFoundException("게시글 수정을 실패했습니다.");
+		}
+		
+		// 게시글 삭제하기 -- 0행이든 N행이든 삭제는 성공한다.
+		    feedMapper.deleteAttachment(boardNo);
+		
+		if(file != null && !file.isEmpty()) {
+			String changeName = fileService.store(file);
+			String originName = file.getOriginalFilename();
+			String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+			
+			Map<String, Object> fileMap = new HashMap<>();
+			fileMap.put("refBno", feed.getBoardNo());
+			fileMap.put("originName", originName);
+			fileMap.put("changeName", changeName);
+			fileMap.put("attachmentPath", attachmentPath);
+			
+			int isOk = feedMapper.saveAttachment(fileMap);
+			if(isOk <= 0) {
+				throw new IllegalArgumentException("게시글 수정에 실패했습니다.");
+			}
+	    }
+		
+		return result;
+	}
+	 */
 	
 }

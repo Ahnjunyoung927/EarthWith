@@ -31,7 +31,7 @@ public interface FeedService {
      * @param feed     저장할 피드 게시글 정보 (내용, 태그 등)
      * @param file     함께 업로드할 첨부 파일 (이미지 등)
      */
-	int insertFeed(FeedBoardDTO feed, MultipartFile file);
+	int insertFeed(FeedBoardDTO feed, List<MultipartFile> files);
 	
 	/**
 	 * 피드를 삭제합니다.
@@ -48,4 +48,15 @@ public interface FeedService {
 	 * @return
 	 */
 	int isOwner(int boardNo, CustomUserDetails userDetails);
+	
+	/**
+	 * 피드를 수정합니다.
+	 * @param feed	수정할 내용
+	 * @param file	수정할 파일
+	 * @param userDetails	회원번호를 꺼내올 정보
+	 * @return
+	 */
+	int updateFeed(Long boardNo, FeedBoardDTO feed, List<MultipartFile> files, CustomUserDetails userDetails);
+	
+	
 }
