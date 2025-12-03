@@ -339,6 +339,23 @@ public class MemberServiceImpl implements MemberService {
     }
     
     @Override
+    public Map<String, Object> getMyBookmarks(long memberNo, int currentPage) {
+    	int boardLimit = 10;
+    	int pageLimit = 5;
+    	
+    	int listCount = memberMapper.countMyBookmarks(memberNo);
+    	PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	List<FeedBoardDTO> bookmarks = memberMapper.selectMyBookmarks(memberNo, pageInfo.getOffset(), boardLimit);
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	response.put("pageInfo", pageInfo);
+    	response.put("list", bookmarks);
+    	
+    	return response;
+    }
+    
+    @Override
     public long getActiveMemberCount() {
         try {
             return memberMapper.getActiveMemberCount();

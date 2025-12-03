@@ -70,7 +70,7 @@ public class SecurityConfigure {
 					requests.requestMatchers(HttpMethod.POST, "/boards", "/comments", "/api/boards/**", "/feeds").authenticated();
 					
 					// PUT: 수정 (HEAD, DEVELOP 통합)
-					requests.requestMatchers(HttpMethod.PUT, "/members", "/members/password", "/members/email", "/boards/**", "/members/**").authenticated();
+					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
 					
 					// DELETE: 삭제 (HEAD, DEVELOP 통합)
 					requests.requestMatchers(HttpMethod.DELETE, "/members", "/boards/**").authenticated();

@@ -57,11 +57,16 @@ public interface MemberMapper {
 
 
 	List<FeedBoardDTO> selectMyLikes(@Param("memberNo") long memberNo, 
-								      @Param("offset") int offset, 
-								      @Param("limit") int boardLimit);
+								     @Param("offset") int offset, 
+								     @Param("limit") int boardLimit);
 
 	int countMyLikes(@Param("memberNo") long memberNo);
 
+	List<FeedBoardDTO> selectMyBookmarks(@Param("memberNo") long memberNo, 
+										 @Param("offset") int offset,
+										 @Param("limit") int boardLimit);
+
+	int countMyBookmarks(@Param("memberNo") long memberNo);
 	
 	
 

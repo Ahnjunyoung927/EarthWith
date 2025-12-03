@@ -279,6 +279,37 @@
                REF_MNO = #{memberNo}
     </select>
 	
+	<select id="selectMyBookmarks" resultType="FeedBoardDTO">
+		<![CDATA[
+        SELECT *
+        FROM (
+            SELECT
+                A.*,
+                ROWNUM AS RNUM
+            FROM (
+                SELECT 
+                    B.*
+                FROM TB_BOARD B
+                JOIN TB_BOOKMARK BM ON B.BOARD_NO = BM.REF_BNO
+                WHERE BM.REF_MNO = #{memberNo}
+                ORDER BY BM.REG_DATE DESC
+            ) A
+            WHERE ROWNUM <= (#{offset} + #{limit})
+        )
+        WHERE RNUM > #{offset}
+        ]]>
+		
+	</select>
+	
+	<select id="countMyBookmarks" resultType="int">
+        SELECT 
+        	   COUNT(*)
+          FROM 
+          	   TB_BOOKMARK
+         WHERE 
+               REF_MNO = #{memberNo}
+    </select>	
+	
 	<select id="getActiveMemberCount" resultType="long">
 		<include refid="countMember" />
                STATUS = 'Y'

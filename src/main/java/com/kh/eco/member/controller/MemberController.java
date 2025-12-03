@@ -148,4 +148,13 @@ public class MemberController {
 		Map<String, Object> response = memberService.getMyLikes(memberNo, page);
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/bookmarks")
+	public ResponseEntity<?> getMyBookmarks(
+			@RequestParam(value = "memberNo") long memberNo,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+		
+		Map<String, Object> response = memberService.getMyBookmarks(memberNo, page);
+		return ResponseEntity.ok(response);
+	}
 }

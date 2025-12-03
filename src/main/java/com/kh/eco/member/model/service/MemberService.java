@@ -38,9 +38,11 @@ public interface MemberService {
 
 	Map<String, Object> getMyPosts(long memberNo, int currentPage);
 
-	Map<String, Object> getMyComments(long memberNo, int currentpage);
+	Map<String, Object> getMyComments(long memberNo, int currentPage);
 
-	Map<String, Object> getMyLikes(long memberNo, int currentpage);
+	Map<String, Object> getMyLikes(long memberNo, int currentPage);
+
+	Map<String, Object> getMyBookmarks(long memberNo, int currentPage);
 	
 	
 
