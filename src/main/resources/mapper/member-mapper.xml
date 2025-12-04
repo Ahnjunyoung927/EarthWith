@@ -46,6 +46,7 @@
 		     , DEFAULT
 		       )
 	</insert>
+	
 	<select id="countByMemberId" parameterType="string">
 		<include refid="countMember" />
 		    MEMBER_ID = #{memberId}
@@ -75,6 +76,7 @@
 		     , MEMBER_IMAGE memberImage
 		     , MEMBER_POINT memberPoint
 		     , ENROLL_DATE enrollDate
+		     , STATUS status
 		  FROM
 			   TB_MEMBER
 		 WHERE
