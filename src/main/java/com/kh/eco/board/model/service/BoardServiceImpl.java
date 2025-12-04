@@ -109,16 +109,16 @@ public class BoardServiceImpl implements BoardService {
         return result;
     }
     
-    // 4. 게시글 수정 
+ // 4. 게시글 수정 
     @Transactional
     @Override
     public int updateBoard(@Valid BoardDTO board, MultipartFile file, String userId) {
         
         board.setBoardWriter(userId);
-        
+
         int result = boardMapper.updateBoard(board);
         
-        if(file != null && !file.isEmpty()) {
+        if(result > 0 && file != null && !file.isEmpty()) {
             
             String changeName = fileService.store(file);
             String originalName = file.getOriginalFilename();
@@ -150,7 +150,6 @@ public class BoardServiceImpl implements BoardService {
         
         return boardMapper.deleteBoard(map);
     }
-
 	@Override
 	public long getBoardCountForParticipation() {
 		// TODO Auto-generated method stub

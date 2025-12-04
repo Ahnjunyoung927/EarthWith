@@ -206,8 +206,7 @@
          WHERE BOARD_NO = #{boardNo}
            AND REF_MNO = (SELECT MEMBER_NO FROM TB_MEMBER WHERE MEMBER_ID = #{userId})
     </update>
-	
-<<<<<<< HEAD
+    
 	<!-- 피드 관련 -->
 	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
 		SELECT *
@@ -294,7 +293,6 @@
 		   AND BOARD_CATEGORY LIKE #{category}
 		   AND TRUNC(REG_DATE) = TRUNC(SYSDATE)         
 	</select>
-=======
 	<!-- -->
 	
 	
@@ -314,8 +312,6 @@
     )
 </insert>
 	
-	
->>>>>>> 89f91bb26a7b556b5852488ee62c8fdd5e7b6d5d
 	
 	<sql id="countBoard">
 		SELECT COUNT(*)
