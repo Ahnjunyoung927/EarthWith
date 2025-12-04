@@ -55,7 +55,7 @@ public class SecurityConfigure {
 							"/members/profile", 
 							"/members/**").permitAll(); 
 					
-					// GET: 게시글/댓글 조회, 파일, 통계, 피드 등 비회원 접근 가능
+					// GET: (관리자)게시글/댓글 조회, 파일, 통계, 피드 등 비회원 접근 가능
 					requests.requestMatchers(HttpMethod.GET, 
 							"/boards/**", 
 							"/comments/**", 
@@ -65,7 +65,8 @@ public class SecurityConfigure {
 							"/feed/**",
 							"/stats/today/**", 
 							"/api/boards/stats/**",
-							"/members/**" // Incoming 브랜치 반영
+							"/members/**",
+							"/admin/notices/**"
 					).permitAll(); 
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
