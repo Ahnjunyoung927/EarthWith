@@ -12,7 +12,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class AttachmentDTO {
-	
-	private String attachmentPath;
-
+    
+    private Long fileNo;             // FILE_NO
+    private Long refBno;             // REF_BNO
+    private String originalFileName; // ORIGINAL_FILE_NAME
+    private String modifiedFileName; // MODIFIED_FILE_NAME
+    private String attachmentPath;   // ATTACHMENT_PATH
+    private String status;           // STATUS
 }
