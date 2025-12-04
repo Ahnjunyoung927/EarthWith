@@ -6,4 +6,6 @@ public interface LikeService {
 
 	LikeResponse toggleLike(Long boardNo, int memberNo);
 	
+	LikeResponse commentLike(Long commentNo, int memberNo);
+	
 }

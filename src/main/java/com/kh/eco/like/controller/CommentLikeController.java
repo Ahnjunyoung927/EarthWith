@@ -10,24 +10,23 @@ import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.like.model.service.LikeService;
 import com.kh.eco.like.model.vo.LikeResponse;
 
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping({"boards", "feeds"})
-public class LikeController {
-
+@RequestMapping("comments")
+public class CommentLikeController {
+	
 	private final LikeService likeService;
 	
-	@PostMapping("/{boardNo}/like")
-	public LikeResponse toggleLike(@PathVariable("boardNo") Long boardNo, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	@PostMapping("/{commentNo}/like")
+	public LikeResponse commentLike(@PathVariable(name = "commentNo") @Min(value = 1, message = "잘못된 접근입니다.") Long commentNo, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
 		int memberNo = userDetails.getMemberNo();
 		
-		return likeService.toggleLike(boardNo, memberNo);
-		
+		return likeService.commentLike(commentNo, memberNo);
 	}
-	
 }
