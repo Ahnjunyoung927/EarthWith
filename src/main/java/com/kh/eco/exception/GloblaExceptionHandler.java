@@ -1,9 +1,11 @@
 package com.kh.eco.exception;
 
 import java.security.InvalidParameterException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +20,7 @@ public class GloblaExceptionHandler {
 
 	private ResponseEntity<Map<String, String>> createResponseEntity(RuntimeException e, HttpStatus status){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.status(status).body(error);
 	}
 
@@ -31,7 +33,7 @@ public class GloblaExceptionHandler {
 	@ExceptionHandler(UsenameNotFoundException.class)
 	public ResponseEntity<?> handlerUsenameNotFound(UsenameNotFoundException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
 	
@@ -39,7 +41,7 @@ public class GloblaExceptionHandler {
 	@ExceptionHandler(MemberInfoDuplicatedException.class) // 회원정보 중복시 에러반환
 	public ResponseEntity<?> handlerDuplicateInfo(MemberInfoDuplicatedException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
 	
@@ -54,35 +56,63 @@ public class GloblaExceptionHandler {
 	@ExceptionHandler(InvalidParameterException.class)
 	public ResponseEntity<Map<String, String>> handleInvalidParameter(InvalidParameterException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
 	
 	@ExceptionHandler(LogoutFailureException.class)
 	public ResponseEntity<Map<String, String>> handleLogoutFailure(LogoutFailureException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
 	
 	@ExceptionHandler(PageNotFoundException.class)
 	public ResponseEntity<Map<String, String>> handlePageNotFound(PageNotFoundException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
 	
 	@ExceptionHandler(DeleteFailureException.class)
 	public ResponseEntity<Map<String, String>> handleDeleteFail(DeleteFailureException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
 		return ResponseEntity.badRequest().body(error);
 	}
 	
 	@ExceptionHandler(RestoreFailureException.class)
 	public ResponseEntity<Map<String, String>> handleRestoreFail(RestoreFailureException e){
 		Map<String, String> error = new HashMap();
-		error.put("error-message", e.getMessage());
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(FindFailureException.class)
+	public ResponseEntity<Map<String, String>> handleFindFail(FindFailureException e){
+		Map<String, String> error = new HashMap();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(SQLResponseException.class)
+	public ResponseEntity<Map<String, String>> handleSQLResponse(SQLResponseException e){
+		Map<String, String> error = new HashMap();
+		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(SQLException.class)
+	public ResponseEntity<Map<String, String>> handleSQLResponse(SQLException e){
+		Map<String, String> error = new HashMap();
+		error.put("message", "서버에 문제가 발생했습니다.");
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(DataAccessException.class)
+	public ResponseEntity<Map<String, String>> handleSQLResponse(DataAccessException e){
+		Map<String, String> error = new HashMap();
+		error.put("message", "서버에 문제가 발생했습니다.");
 		return ResponseEntity.badRequest().body(error);
 	}
 

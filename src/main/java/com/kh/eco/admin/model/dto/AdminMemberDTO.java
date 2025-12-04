@@ -1,4 +1,4 @@
-package com.kh.eco.member.model.dto;
+package com.kh.eco.admin.model.dto;
 
 import java.sql.Date;
 
@@ -16,30 +16,21 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MemberLoginDTO {
+public class AdminMemberDTO {
+	
+	private int memberNo;
 	
 	@Pattern(regexp = "^[a-zA-Z0-9]*$", message = "아이디는 영어/숫자만 사용 가능합니다.")
-	@Size(min = 2, max = 40, message = "아이디 값은 2글자 이상 40글자 이하만 사용할 수 있습니다.")
+	@Size(min = 2, max = 20, message = "아이디 값은 2글자 이상 20글자 이하만 사용할 수 있습니다.")
 	@NotBlank(message = "아이디는 필수 입력사항입니다.")
 	private String memberId;
 	
-	@Pattern(regexp = "^[a-zA-Z0-9]*$", message = "비밀번호는 영어/숫자만 사용 가능합니다.")
-	@Size(min = 6, max = 20, message = "비밀번호 값은 6글자 이상 20글자 이하만 사용할 수 있습니다.")
-	@NotBlank(message = "비밀번호는 필수 입력사항입니다.")
-	private String memberPwd;
-	
-	
-	private int memberNo;
 	private String memberName;
 	private String phone;
 	private String email;
-	private int refRno;
-	private String memberImage;
 	private int memberPoint;
-	private Date enrollDate;
+	private String regionName;
 	private String status;
-	
 	private String role;
 	
-
 }
