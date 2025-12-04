@@ -16,11 +16,12 @@
 
     <resultMap id="attachmentResultMap" type="com.kh.eco.admin.model.dto.AttachmentDTO">
         <id property="fileNo" column="FILE_NO"/>
-        <result property="originName" column="ORIGINAL_FILE_NAME"/>
-        <result property="changeName" column="MODIFIED_FILE_NAME"/>
-        <result property="filePath" column="ATTACHMENT_PATH"/>
+        <result property="originalFileName" column="ORIGINAL_FILE_NAME"/>
+        <result property="modifiedFileName" column="MODIFIED_FILE_NAME"/>
+        <result property="attachmentPath" column="ATTACHMENT_PATH"/>
+        <result property="status" column="STATUS"/>
     </resultMap>
-
+    
     <select id="selectNoticeList" resultMap="adminBoardResultMap">
         SELECT 
                B.BOARD_NO
