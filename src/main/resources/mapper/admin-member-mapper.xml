@@ -15,6 +15,13 @@
        		   MEMBER_NO = #{memberNo}		
 	</sql>
 
+	<sql id="findMemberByMemberNo">
+		  FROM
+		       TB_MEMBER
+		 WHERE
+		       MEMBER_NO = #{memberNo}
+	</sql>
+	
 	<select id="findMemberById" resultType="AdminMemberDTO">
 		SELECT
        		   MEMBER_NO memberNo
@@ -81,6 +88,45 @@
 		       MEMBER_POINT = #{newPoint}
 		<include refid="updateMemberLower"/>		
 	</update>
+	
+	<select id="findStatus" resultType="AdminMemberDTO">
+		SELECT
+		       MEMBER_ID memberId
+		     , STATUS
+		<include refid="findMemberByMemberNo"/>
+	</select>
+	
+	<update id="updateStatusByAdmin" parameterType="UpdateStatusByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       STATUS = #{newStatus}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	<select id="findRole" resultType="AdminMemberDTO">
+		SELECT
+		       ROLE
+		<include refid="findMemberByMemberNo"/>		
+	</select>
+	
+	<update id="updateRoleByAdmin" parameterType="UpdateRoleByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       ROLE = #{newRole}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	<select id="findName">
+		SELECT
+		       MEMBER_NAME memberName
+		<include refid="findMemberByMemberNo"/>		
+	</select>
+	
+	<update id="updateNameByAdmin">
+		<include refid="updateMemberUpper" />
+		       MEMBER_NAME = #{newName}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	
 	
 
 </mapper>

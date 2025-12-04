@@ -1,5 +1,7 @@
 package com.kh.eco.admin.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.eco.admin.model.dto.AdminMemberDTO;
 import com.kh.eco.admin.model.dto.UpdateEmailByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdateIdByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdateNameByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdatePasswordByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdatePhoneByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdatePointByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdateRegionByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdateRoleByAdminDTO;
+import com.kh.eco.admin.model.dto.UpdateStatusByAdminDTO;
 import com.kh.eco.admin.model.service.AdminMemberService;
 
 import jakarta.validation.Valid;
@@ -50,9 +55,10 @@ public class AdminMemberController {
 	 */
 	
 	@PutMapping("id")
-	public ResponseEntity<?> updateMemberIdByAdmin(@RequestBody @Valid UpdateIdByAdminDTO member){
+	public ResponseEntity<UpdateIdByAdminDTO> updateMemberIdByAdmin(@RequestBody @Valid UpdateIdByAdminDTO member){
 		adminMemberService.updateMemberIdByAdmin(member);
-		return ResponseEntity.ok("ID변경 성공");
+		
+		return ResponseEntity.ok(member);
 	}
 	
 	@PutMapping("password")
@@ -85,9 +91,24 @@ public class AdminMemberController {
 		return ResponseEntity.ok("포인트 변경 성공");
 	}
 	
-	/*
 	@PutMapping("status")
+	public ResponseEntity<?> updateStatusByAdmin(@RequestBody @Valid UpdateStatusByAdminDTO member){
+		adminMemberService.updateStatusByAdmin(member);
+		return ResponseEntity.ok("회원 상태 변경 성공");
+	}
+	
 	@PutMapping("role")
-	*/
+	public ResponseEntity<?> updateRoleByAdmin(@RequestBody @Valid UpdateRoleByAdminDTO member){
+		adminMemberService.updateRoleByAdmin(member);
+		return ResponseEntity.ok("권한 변경 성공");
+	}
+	
+	@PutMapping("name")
+	public ResponseEntity<?> updateNameByAdmin(@RequestBody @Valid UpdateNameByAdminDTO member){
+		adminMemberService.updateNameByAdmin(member);
+		return ResponseEntity.ok("이름 변경 성공");
+	}
+	
+	
 	
 }

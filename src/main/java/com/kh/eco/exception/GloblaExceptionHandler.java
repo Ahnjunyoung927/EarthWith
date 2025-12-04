@@ -1,9 +1,11 @@
 package com.kh.eco.exception;
 
 import java.security.InvalidParameterException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -97,6 +99,20 @@ public class GloblaExceptionHandler {
 	public ResponseEntity<Map<String, String>> handleSQLResponse(SQLResponseException e){
 		Map<String, String> error = new HashMap();
 		error.put("message", e.getMessage());
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(SQLException.class)
+	public ResponseEntity<Map<String, String>> handleSQLResponse(SQLException e){
+		Map<String, String> error = new HashMap();
+		error.put("message", "서버에 문제가 발생했습니다.");
+		return ResponseEntity.badRequest().body(error);
+	}
+	
+	@ExceptionHandler(DataAccessException.class)
+	public ResponseEntity<Map<String, String>> handleSQLResponse(DataAccessException e){
+		Map<String, String> error = new HashMap();
+		error.put("message", "서버에 문제가 발생했습니다.");
 		return ResponseEntity.badRequest().body(error);
 	}
 
