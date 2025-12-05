@@ -21,6 +21,8 @@ public class CommentReportDTO {
 	@Min(value = 1, message = "잘못된 접근입니다.")
 	private Long commentReportNo;
 	
+	private int refMno;
+	
 	@Min(value = 1, message = "잘못된 접근입니다.")
 	private Long refCno;
 	
