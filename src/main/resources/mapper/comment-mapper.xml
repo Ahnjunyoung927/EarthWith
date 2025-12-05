@@ -31,6 +31,10 @@
 		SELECT
 			   C.COMMENT_NO commentNo
 			 , C.COMMENT_CONTENT commentContent
+			 , C.REF_MNO refMno
+			 , C.REF_BNO refBno
+			 , C.REG_DATE regDate
+			 , C.STATUS status
 			 , M.MEMBER_ID memberId
 			 , M.MEMBER_IMAGE memberImage
 	      FROM

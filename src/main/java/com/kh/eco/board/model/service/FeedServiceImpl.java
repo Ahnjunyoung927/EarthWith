@@ -202,6 +202,11 @@ public class FeedServiceImpl implements FeedService {
 		return result;
 	}
 	
+	@Override
+	public List<String> findAttachments(Long boardNo) {
+	    return feedMapper.selectAttachmentsByBoardNo(boardNo);
+	}
+	
 	/*
 public int updateFeed(Long boardNo, FeedBoardDTO feed, MultipartFile file, CustomUserDetails userDetails) {
 		

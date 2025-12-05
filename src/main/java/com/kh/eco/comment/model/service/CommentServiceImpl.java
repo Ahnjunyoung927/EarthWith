@@ -90,6 +90,7 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public boolean isOwner(Long commentNo, int mno) {
 		// 매퍼 파라미터 타입 불일치 이슈로 REF_MNO 형변환 (Integer -> Long)
+
 		Long memberNo = (long)mno;
 		boolean result = commentMapper.isOwner(commentNo, memberNo);
 		if(!result) {

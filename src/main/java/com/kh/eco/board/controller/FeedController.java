@@ -35,7 +35,7 @@ public class FeedController {
 	@GetMapping
 	public ResponseEntity<List<FeedBoardDTO>> selectFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
 			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
-			                                      @RequestParam(name = "limit", defaultValue = "3") Long limit) {
+			                                      @RequestParam(name = "limit", defaultValue = "15") Long limit) {
 		
 		log.info("GET /feeds 요청 - category={}, fetchOffset={}, limit={}",
                 category, fetchOffset, limit);
@@ -82,6 +82,11 @@ public class FeedController {
 		
 		feedService.updateFeed(boardNo, feed, files, userDetails);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+	
+	@GetMapping("/feeds/{boardNo}/attachments")
+	public List<String> findAttachments(@PathVariable(name = "boardNo") Long boardNo) {
+	    return feedService.findAttachments(boardNo);
 	}
 
 }

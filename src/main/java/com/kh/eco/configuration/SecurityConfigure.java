@@ -62,7 +62,7 @@ public class SecurityConfigure {
 							"/uploads/**", 
 							"/stats/**", 
 							"/api/**", 
-							"/feed/**",
+							"/feeds/**",
 							"/stats/today/**", 
 							"/api/boards/stats/**",
 							"/members/**" // Incoming 브랜치 반영
@@ -82,7 +82,8 @@ public class SecurityConfigure {
 					requests.requestMatchers(HttpMethod.PUT, 
 							"/members/**", 
 							"/boards/**",
-							"/feeds/**").authenticated();
+							"/feeds/**",
+							"/comments/**").authenticated();
 					
 					// DELETE: 회원 탈퇴, 게시글 삭제
 					requests.requestMatchers(HttpMethod.DELETE, 

@@ -23,11 +23,9 @@ public class CommentDTO {
 	private Long commentNo;
 	
 	@Min(value = 1, message = "회원 번호의 값이 1보다 작을 수 없습니다.")
-	@NotNull(message = "NULL 값이 올 수 없습니다.")
-	private Long refMno;
+	private Integer refMno;
 	
 	@Min(value = 1, message = "게시글 번호의 값이 1보다 작을 수 없습니다.")
-	@NotNull(message = "NULL 값이 올 수 없습니다.")
 	private Long refBno;
 	
 	@NotBlank(message = "내용을 입력해주세요.")
@@ -36,6 +34,11 @@ public class CommentDTO {
 	
 	private Date regDate;
 	private char status;
+	
+	// ▼ 댓글 조회용으로 추가
+	private String memberId;      // 작성자 아이디
+	private String memberImage;   // 작성자 프로필 이미지 경로
+
 
 
 }

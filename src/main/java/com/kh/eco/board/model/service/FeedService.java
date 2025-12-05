@@ -58,5 +58,5 @@ public interface FeedService {
 	 */
 	int updateFeed(Long boardNo, FeedBoardDTO feed, List<MultipartFile> files, CustomUserDetails userDetails);
 	
-	
+	List<String> findAttachments(Long boardNo);
 }

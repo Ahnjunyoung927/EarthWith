@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.comment.model.dto.CommentReportDTO;
+import com.kh.eco.comment.model.dto.CommentUpdateDTO;
 import com.kh.eco.comment.model.service.CommentService;
 import com.kh.eco.comment.model.vo.CommentVO;
 
@@ -43,7 +44,7 @@ public class CommentController {
 	 */
 	@PostMapping
 	public ResponseEntity<?> insertComment(@RequestBody CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
-		
+		comment.setRefMno(userDetails.getMemberNo());
 		CommentVO c = commentService.insertComment(comment, userDetails);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(c);
@@ -104,7 +105,7 @@ public class CommentController {
 	 * 댓글 수정
 	 */
 	@PutMapping("/{commentNo}")
-	public ResponseEntity<CommentDTO> updateComment(@PathVariable(name="commentNo") @Min(value = 1, message = "잘못된 접근입니다.") Long commentNo, @Valid CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	public ResponseEntity<CommentDTO> updateComment(@PathVariable(name="commentNo") @Min(value = 1, message = "잘못된 접근입니다.") Long commentNo, @RequestBody @Valid CommentUpdateDTO updateDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		// 댓글 존재여부
 		commentService.existById(commentNo);
 		
@@ -113,6 +114,11 @@ public class CommentController {
 		
 		// 본인 여부
 		commentService.isOwner(commentNo, mno);
+		
+		// CommentNo Set
+		CommentDTO comment = new CommentDTO();
+		comment.setCommentNo(commentNo);
+		comment.setCommentContent(updateDTO.getCommentContent());
 		
 		// 댓글 수정 요청
 		commentService.updateComment(comment);

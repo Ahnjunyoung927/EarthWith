@@ -63,4 +63,6 @@ public interface FeedMapper {
 	int updateFeed(FeedBoardDTO feed);
     
     int deleteAttachment(Long boardNo);
+    
+    List<String> selectAttachmentsByBoardNo(Long boardNo);
 }
