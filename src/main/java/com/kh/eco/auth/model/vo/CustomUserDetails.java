@@ -19,6 +19,7 @@ public class CustomUserDetails implements UserDetails {
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	// 앞단에서 회원정보 조회등에 사용하기 위해 추가로 가져가는 정보들
+	private String status;
 	private int memberNo;
 	private String memberName;
 	private String phone;

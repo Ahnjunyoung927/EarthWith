@@ -58,11 +58,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void signUp(MemberSignUpDTO member, MultipartFile profileImg) {
 
-		midc.idDuplicateCheck(member); // 아이디 중복검사
+		midc.idDuplicateCheck(member.getMemberId()); // 아이디 중복검사
 		
-		midc.phoneDuplicateCheck(member); // 폰 중복검사
+		midc.phoneDuplicateCheck(member.getPhone()); // 폰 중복검사
 		
-		midc.emailDuplicateCheck(member); // 이메일 중복검사
+		midc.emailDuplicateCheck(member.getEmail()); // 이메일 중복검사
 
         // 프로필 이미지 URL 변수
         String profileImgUrl = null;

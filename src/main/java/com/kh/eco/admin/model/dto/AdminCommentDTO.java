@@ -17,7 +17,7 @@ public class AdminCommentDTO {
 	
 	private Long commentNo;
 	private String commentContent;
-	private Date refDate;
+	private Date regDate;
 	private String status;
 	private int commentReportCount;
 	private String MemberId;

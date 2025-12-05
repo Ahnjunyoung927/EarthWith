@@ -24,7 +24,6 @@ import com.kh.eco.member.model.dto.UpdatePhoneDTO;
 import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.dto.UpdateRegionDTO;
 import com.kh.eco.member.model.service.MemberService;
-import com.kh.eco.member.model.vo.MemberVO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
