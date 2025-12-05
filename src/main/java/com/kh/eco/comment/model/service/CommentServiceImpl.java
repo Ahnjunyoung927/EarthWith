@@ -23,13 +23,20 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public int updateComment(CommentDTO comment, CustomUserDetails user) {
+        // comment.getCommentNo()는 Long
         CommentDTO original = commentMapper.selectComment(comment.getCommentNo());
         if(original == null) return 0;
         
-        int userNo = Integer.parseInt(user.getMemberNo());
+        // user.getMemberNo()는 int
+        int userNo = user.getMemberNo();
+        
+        // original.getRefMno()는 Long (CommentDTO 정의)
+        long writerNo = original.getRefMno();
+        
         boolean isAdmin = user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        if (original.getRefMno() == userNo || isAdmin) {
+        // int와 long 비교 (Java가 자동으로 처리)
+        if (writerNo == userNo || isAdmin) {
             return commentMapper.updateComment(comment);
         } else {
             throw new RuntimeException("수정 권한이 없습니다.");
@@ -38,14 +45,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public int deleteComment(int commentNo, CustomUserDetails user) {
+    public int deleteComment(Long commentNo, CustomUserDetails user) {
         CommentDTO original = commentMapper.selectComment(commentNo);
         if(original == null) return 0;
 
-        int userNo = Integer.parseInt(user.getMemberNo());
+        int userNo = user.getMemberNo();
+        long writerNo = original.getRefMno();
+
         boolean isAdmin = user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        if (original.getRefMno() == userNo || isAdmin) {
+        if (writerNo == userNo || isAdmin) {
             return commentMapper.deleteComment(commentNo);
         } else {
             throw new RuntimeException("삭제 권한이 없습니다.");
@@ -55,8 +64,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public int reportComment(CommentReportDTO report, CustomUserDetails user) {
-        int userNo = Integer.parseInt(user.getMemberNo());
-        report.setRefMno(userNo);
+        // [수정] CommentReportDTO.refMno는 int 타입임 (에러 이미지 기반)
+        // 따라서 (long) 형변환을 제거하고 int 그대로 전달
+        report.setRefMno(user.getMemberNo());
+        
         return commentMapper.insertCommentReport(report);
     }
 }

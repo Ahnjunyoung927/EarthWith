@@ -11,28 +11,31 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/comments") // 기본 URL 변경
+@RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService commentService;
 
-    // 1. 댓글 작성 (URL: POST /comments/board/{boardNo})
+    // 1. 댓글 작성
     @PostMapping("/board/{boardNo}")
-    public ResponseEntity<?> insertComment(@PathVariable("boardNo") int boardNo,
+    public ResponseEntity<?> insertComment(@PathVariable("boardNo") Long boardNo,
                                            @RequestBody CommentDTO comment,
                                            @AuthenticationPrincipal CustomUserDetails user) {
-        comment.setRefBno(boardNo);
-        comment.setRefMno(Integer.parseInt(user.getMemberNo()));
+        
+        // [수정] CommentDTO는 Long을 원함 -> (long) 형변환 필수
+        comment.setRefBno(boardNo); 
+        comment.setRefMno((long) user.getMemberNo()); 
+        
         int result = commentService.insertComment(comment);
         return result > 0 ? ResponseEntity.ok("댓글 등록 성공") : ResponseEntity.status(500).build();
     }
 
-    // 2. 댓글 수정 (URL: PUT /comments/{commentNo})
+    // 2. 댓글 수정
     @PutMapping("/{commentNo}")
-    public ResponseEntity<?> updateComment(@PathVariable("commentNo") int commentNo,
+    public ResponseEntity<?> updateComment(@PathVariable("commentNo") Long commentNo,
                                            @RequestBody CommentDTO comment,
                                            @AuthenticationPrincipal CustomUserDetails user) {
-        comment.setCommentNo(commentNo);
+        comment.setCommentNo(commentNo); // PathVariable이 Long이므로 그대로 세팅
         try {
             commentService.updateComment(comment, user);
             return ResponseEntity.ok("댓글 수정 성공");
@@ -41,9 +44,9 @@ public class CommentController {
         }
     }
 
-    // 3. 댓글 삭제 (URL: DELETE /comments/{commentNo})
+    // 3. 댓글 삭제
     @DeleteMapping("/{commentNo}")
-    public ResponseEntity<?> deleteComment(@PathVariable("commentNo") int commentNo,
+    public ResponseEntity<?> deleteComment(@PathVariable("commentNo") Long commentNo,
                                            @AuthenticationPrincipal CustomUserDetails user) {
         try {
             commentService.deleteComment(commentNo, user);
@@ -53,12 +56,16 @@ public class CommentController {
         }
     }
 
-    // 4. 댓글 신고 (URL: POST /comments/{commentNo}/reports)
+    // 4. 댓글 신고
     @PostMapping("/{commentNo}/reports")
-    public ResponseEntity<?> reportComment(@PathVariable("commentNo") int commentNo,
+    public ResponseEntity<?> reportComment(@PathVariable("commentNo") Long commentNo,
                                            @RequestBody CommentReportDTO report,
                                            @AuthenticationPrincipal CustomUserDetails user) {
-        report.setRefCno(commentNo);
+        
+        // [수정] CommentReportDTO.refCno는 Long 타입임 (에러 이미지 기반)
+        // 따라서 .intValue()를 제거하고 Long 그대로 전달
+        report.setRefCno(commentNo); 
+        
         int result = commentService.reportComment(report, user);
         return result > 0 ? ResponseEntity.ok("신고 완료") : ResponseEntity.status(500).build();
     }

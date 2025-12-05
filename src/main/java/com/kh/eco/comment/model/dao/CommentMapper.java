@@ -6,12 +6,12 @@ import com.kh.eco.comment.model.dto.CommentReportDTO;
 
 @Mapper
 public interface CommentMapper {
-    // 댓글 작성, 수정, 삭제, 조회
     int insertComment(CommentDTO comment);
     int updateComment(CommentDTO comment);
-    int deleteComment(int commentNo);
-    CommentDTO selectComment(int commentNo);
+    
+    // ID는 Long으로 받음
+    int deleteComment(Long commentNo);
+    CommentDTO selectComment(Long commentNo);
 
-    // 댓글 신고
     int insertCommentReport(CommentReportDTO report);
 }
