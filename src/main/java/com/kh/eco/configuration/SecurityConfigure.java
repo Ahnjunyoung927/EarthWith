@@ -71,6 +71,8 @@ public class SecurityConfigure {
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
+					// PUT: 수정 (HEAD, DEVELOP 통합)
+					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
 							"/boards", 
