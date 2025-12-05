@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
-public class GloblaExceptionHandler {
+public class GlobalExceptionHandler {
 
 	private ResponseEntity<Map<String, String>> createResponseEntity(RuntimeException e, HttpStatus status){
 		Map<String, String> error = new HashMap();

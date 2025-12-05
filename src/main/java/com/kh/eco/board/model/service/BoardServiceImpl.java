@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dao.BoardMapper;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
-
+import com.kh.eco.comment.model.dto.CommentDTO;
+import com.kh.eco.comment.model.dto.CommentReportDTO;
 import com.kh.eco.common.PageInfo;
 import com.kh.eco.common.Pagination;
 import com.kh.eco.file.FileService;
@@ -95,7 +97,7 @@ public class BoardServiceImpl implements BoardService {
             
             String originalName = file.getOriginalFilename();
             
-            String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+            String attachmentPath = "/uploads/" + changeName;
             
             Map<String, Object> fileMap = new HashMap<>();
             fileMap.put("refBno", board.getBoardNo());
@@ -122,7 +124,7 @@ public class BoardServiceImpl implements BoardService {
             
             String changeName = fileService.store(file);
             String originalName = file.getOriginalFilename();
-            String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+            String attachmentPath = "/uploads/" + changeName;
             
             Map<String, Object> fileMap = new HashMap<>();
             fileMap.put("refBno", board.getBoardNo());
@@ -156,8 +158,6 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return boardMapper.getBoardCountForParticipation();
 	}
-    
-    
 
 }
 

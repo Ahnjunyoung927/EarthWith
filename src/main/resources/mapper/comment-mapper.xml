@@ -1,118 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.kh.eco.comment.model.dao.CommentMapper">
-	
-	<insert id="insertComment" parameterType="CommentVO">
-		INSERT
-		  INTO
-		       TB_COMMENT
-		       (
-		       COMMENT_NO
-		     , REF_MNO
-		     , REF_BNO
-		     , COMMENT_CONTENT
-		     , REG_DATE
-		     , STATUS
-		       )
-		VALUES
-		       (
-		       SEQ_CNO.NEXTVAL
-		     , #{refMno}
-		     , #{refBno}
-		     , #{commentContent}
-		     , SYSDATE
-		     , DEFAULT  
-		       )
-	</insert>
-	
-	<select id="findAll" parameterType="Long" resultType="CommentDTO">
-		SELECT
-			   C.COMMENT_NO commentNo
-			 , C.COMMENT_CONTENT commentContent
-			 , M.MEMBER_ID memberId
-			 , M.MEMBER_IMAGE memberImage
-	      FROM
-	           TB_COMMENT C
-	      JOIN
-	           TB_MEMBER M ON C.REF_MNO = M.MEMBER_NO
-	     WHERE
-	           C.REF_BNO = #{boardNo}
-	       AND
-	           C.STATUS = 'Y'
-	     ORDER
-	        BY C.COMMENT_NO DESC                       		    
-	</select>
-	
-	<select id="existById" parameterType="Long" resultType="int">
-		SELECT
-		       COUNT(1)
-		  FROM
-		       TB_COMMENT
-		 WHERE
-		       COMMENT_NO = #{commentNo}
-		   AND
-		       STATUS = 'Y'                  
-	</select>
-	
-	<insert id="commentReport" parameterType="CommentReportDTO">
-		INSERT
-		  INTO
-		       TB_COMMENT_REPORT
-		       (
-		       COMMENT_REPORT_NO
-		     , REF_CNO
-			 , REF_RCNO
-             , REPORT_CONTENT
-             , REG_DATE
-             , STATUS
-		       )
-	    VALUES
-	           (
-	           SEQ_CRNO.NEXTVAL
-	         , #{refCno}
-	         , #{refRcno}
-	         , #{reportContent}
-	         , SYSDATE
-	         , DEFAULT
-	           )	       
-	</insert>
-	
-	<select id="isOwner" parameterType="Long" resultType="boolean">
-		SELECT
-		       COUNT(1)
-		  FROM
-		       TB_COMMENT
-		 WHERE
-		       COMMENT_NO = #{commentNo}
-		   AND
-		       REF_MNO = #{memberNo}
-		   AND
-		       STATUS = 'Y'                    
-	</select>
-	
-	<update id="deleteComment"> 
-		UPDATE
-		       TB_COMMENT
-		   SET
-		       STATUS = 'N'
-		 WHERE
-		       COMMENT_NO = #{commentNo}
-		   AND
-		       STATUS = 'Y'                     
-	</update>
-	
-	<update id="updateComment" parameterType="CommentDTO">
-		UPDATE
-		       TB_COMMENT
-		   SET
-		       COMMENT_CONTENT = #{commentContent}
-		 WHERE
-		       COMMENT_NO = #{commentNo}
-		   AND
-		       STATUS = 'Y'             
-	</update>
-	
-	
+
+    <insert id="insertComment" parameterType="com.kh.eco.comment.model.dto.CommentDTO">
+        INSERT INTO TB_COMMENT (COMMENT_NO, REF_MNO, REF_BNO, COMMENT_CONTENT, REG_DATE, STATUS)
+        VALUES (SEQ_CNO.NEXTVAL, #{refMno}, #{refBno}, #{commentContent}, SYSDATE, 'Y')
+    </insert>
+
+    <update id="updateComment" parameterType="com.kh.eco.comment.model.dto.CommentDTO">
+        UPDATE TB_COMMENT
+           SET COMMENT_CONTENT = #{commentContent}
+         WHERE COMMENT_NO = #{commentNo} AND STATUS = 'Y'
+    </update>
+
+    <update id="deleteComment" parameterType="_int">
+        UPDATE TB_COMMENT SET STATUS = 'N' WHERE COMMENT_NO = #{commentNo}
+    </update>
+    
+    <select id="selectComment" resultType="com.kh.eco.comment.model.dto.CommentDTO">
+        SELECT COMMENT_NO, REF_MNO FROM TB_COMMENT WHERE COMMENT_NO = #{commentNo}
+    </select>
+
+    <insert id="insertCommentReport" parameterType="com.kh.eco.comment.model.dto.CommentReportDTO">
+        INSERT INTO TB_COMMENT_REPORT (COMMENT_REPORT_NO, REF_MNO, REF_CNO, REF_RCNO, REPORT_CONTENT, REG_DATE, STATUS)
+        VALUES (SEQ_CRNO.NEXTVAL, #{refMno}, #{refCno}, #{refRcno}, #{reportContent}, SYSDATE, DEFAULT)
+    </insert>
+
 </mapper>
