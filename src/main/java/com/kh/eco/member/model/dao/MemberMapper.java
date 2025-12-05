@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.kh.eco.board.model.dto.FeedBoardDTO;
+import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.member.model.dto.MemberLoginDTO;
 import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.vo.MemberVO;
@@ -41,12 +42,31 @@ public interface MemberMapper {
 	
 	void updateRegion(Map<String, Object> changeRequest);
 
-//	List<FeedBoardDTO> selectMyPosts(@Param("memberId") int memberId,
-//									 @Param("offset") int offset, 
-//									 @Param("limit") int limit);
-//
-//	int countMyPosts(@Param("memberId") int memberId);
+	List<FeedBoardDTO> selectMyPosts(@Param("memberNo") long memberNo,
+									 @Param("offset") int offset, 
+									 @Param("limit") int limit);
 
+	int countMyPosts(@Param("memberNo") long memberNo);
+
+	List<CommentDTO> selectMyComments(@Param("memberNo")long memberNo, 
+									  @Param("offset")int offset, 
+									  @Param("limit")int limit);
+	
+
+	int countMyComments(@Param("memberNo") long memberNo);
+
+
+	List<FeedBoardDTO> selectMyLikes(@Param("memberNo") long memberNo, 
+								     @Param("offset") int offset, 
+								     @Param("limit") int boardLimit);
+
+	int countMyLikes(@Param("memberNo") long memberNo);
+
+	List<FeedBoardDTO> selectMyBookmarks(@Param("memberNo") long memberNo, 
+										 @Param("offset") int offset,
+										 @Param("limit") int boardLimit);
+
+	int countMyBookmarks(@Param("memberNo") long memberNo);
 	
 	
 
