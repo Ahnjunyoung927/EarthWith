@@ -2,13 +2,23 @@ package com.kh.eco.comment.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.comment.model.dto.CommentReportDTO;
 import com.kh.eco.comment.model.service.CommentService;
-import lombok.RequiredArgsConstructor;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comments")
@@ -21,8 +31,9 @@ public class CommentController {
     public ResponseEntity<?> insertComment(@PathVariable("boardNo") Long boardNo,
                                            @RequestBody CommentDTO comment,
                                            @AuthenticationPrincipal CustomUserDetails user) {
+    	log.info("가나다라마바사아자카{}", boardNo);
         
-        // [수정] CommentDTO는 Long을 원함 -> (long) 형변환 필수
+        // [수정] CommentDTO는 Long을 원하므로 (long) 형변환
         comment.setRefBno(boardNo); 
         comment.setRefMno((long) user.getMemberNo()); 
         
@@ -35,7 +46,7 @@ public class CommentController {
     public ResponseEntity<?> updateComment(@PathVariable("commentNo") Long commentNo,
                                            @RequestBody CommentDTO comment,
                                            @AuthenticationPrincipal CustomUserDetails user) {
-        comment.setCommentNo(commentNo); // PathVariable이 Long이므로 그대로 세팅
+        comment.setCommentNo(commentNo); 
         try {
             commentService.updateComment(comment, user);
             return ResponseEntity.ok("댓글 수정 성공");
@@ -62,9 +73,9 @@ public class CommentController {
                                            @RequestBody CommentReportDTO report,
                                            @AuthenticationPrincipal CustomUserDetails user) {
         
-        // [수정] CommentReportDTO.refCno는 Long 타입임 (에러 이미지 기반)
-        // 따라서 .intValue()를 제거하고 Long 그대로 전달
-        report.setRefCno(commentNo); 
+        // [수정] CommentReportDTO.refCno가 Long이면 그대로, int면 .intValue()
+        // 에러 로그(image_de94a0)상 Long을 원하므로 그대로 둡니다.
+        report.setRefCno(commentNo);
         
         int result = commentService.reportComment(report, user);
         return result > 0 ? ResponseEntity.ok("신고 완료") : ResponseEntity.status(500).build();

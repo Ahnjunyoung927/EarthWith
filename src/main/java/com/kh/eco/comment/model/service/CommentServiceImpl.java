@@ -23,19 +23,16 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public int updateComment(CommentDTO comment, CustomUserDetails user) {
-        // comment.getCommentNo()는 Long
+        // [수정] Mapper는 int를 원할 수도 있음. 안전하게 .intValue() 사용 고려
+        // 하지만 Mapper 인터페이스를 Long으로 바꿨다면 그대로 둠.
         CommentDTO original = commentMapper.selectComment(comment.getCommentNo());
         if(original == null) return 0;
         
-        // user.getMemberNo()는 int
         int userNo = user.getMemberNo();
-        
-        // original.getRefMno()는 Long (CommentDTO 정의)
-        long writerNo = original.getRefMno();
+        long writerNo = original.getRefMno(); // CommentDTO는 Long
         
         boolean isAdmin = user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        // int와 long 비교 (Java가 자동으로 처리)
         if (writerNo == userNo || isAdmin) {
             return commentMapper.updateComment(comment);
         } else {
@@ -64,8 +61,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public int reportComment(CommentReportDTO report, CustomUserDetails user) {
-        // [수정] CommentReportDTO.refMno는 int 타입임 (에러 이미지 기반)
-        // 따라서 (long) 형변환을 제거하고 int 그대로 전달
+        // [핵심 수정] 에러 로그(image_e97360)상 refMno는 int를 원함
+        // (long)을 제거하고 int 그대로 대입
         report.setRefMno(user.getMemberNo());
         
         return commentMapper.insertCommentReport(report);

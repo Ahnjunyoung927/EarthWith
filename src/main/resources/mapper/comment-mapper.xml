@@ -14,11 +14,11 @@
          WHERE COMMENT_NO = #{commentNo} AND STATUS = 'Y'
     </update>
 
-    <update id="deleteComment" parameterType="_int">
+    <update id="deleteComment" parameterType="_long">
         UPDATE TB_COMMENT SET STATUS = 'N' WHERE COMMENT_NO = #{commentNo}
     </update>
     
-    <select id="selectComment" resultType="com.kh.eco.comment.model.dto.CommentDTO">
+    <select id="selectComment" parameterType="_long" resultType="com.kh.eco.comment.model.dto.CommentDTO">
         SELECT COMMENT_NO, REF_MNO FROM TB_COMMENT WHERE COMMENT_NO = #{commentNo}
     </select>
 

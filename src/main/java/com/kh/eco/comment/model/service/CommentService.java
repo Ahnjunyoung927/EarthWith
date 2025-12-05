@@ -7,6 +7,9 @@ import com.kh.eco.comment.model.dto.CommentReportDTO;
 public interface CommentService {
     int insertComment(CommentDTO comment);
     int updateComment(CommentDTO comment, CustomUserDetails user);
-    int deleteComment(Long commentNo, CustomUserDetails user); // Long 확인
+    
+    // [핵심] int -> Long 으로 변경
+    int deleteComment(Long commentNo, CustomUserDetails user);
+    
     int reportComment(CommentReportDTO report, CustomUserDetails user);
 }
