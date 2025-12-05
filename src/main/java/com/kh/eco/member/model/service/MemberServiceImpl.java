@@ -2,6 +2,7 @@ package com.kh.eco.member.model.service;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -296,6 +297,23 @@ public class MemberServiceImpl implements MemberService {
         PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
         
         List<FeedBoardDTO> posts = memberMapper.selectMyPosts(memberNo, pageInfo.getOffset(), boardLimit);
+       
+        List<FeedBoardDTO> postDTOs = posts.stream()
+                .map(board -> new FeedBoardDTO(
+                    board.getBoardNo(),
+                    board.getBoardTitle(),
+                    board.getBoardContent(),
+                    board.getCategoryName(),
+                    uploadPath, board.getBoardAuthor(),
+                    board.getMemberId(),
+                    board.getMemberImage(),
+                    board.getAttachmentPath(),
+                    board.getRegionNo(),
+                    board.getRegionName(),
+                    board.getRegDate(),
+                    board.getLikeCount()
+                ))
+                .collect(Collectors.toList());
         
         Map<String, Object> response = new HashMap<>();
         response.put("pageInfo", pageInfo);
