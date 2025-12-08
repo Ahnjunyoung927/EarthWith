@@ -305,15 +305,17 @@ public class MemberServiceImpl implements MemberService {
                     board.getBoardNo(),
                     board.getBoardTitle(),
                     board.getBoardContent(),
+                    board.getBoardCategory(),
                     board.getCategoryName(),
-                    uploadPath, board.getBoardAuthor(),
+                    board.getBoardAuthor(),
                     board.getMemberId(),
                     board.getMemberImage(),
                     board.getAttachmentPath(),
                     board.getRegionNo(),
                     board.getRegionName(),
                     board.getRegDate(),
-                    board.getLikeCount()
+                    board.getLikeCount(),
+                    board.getCommentCount()
                 ))
                 .collect(Collectors.toList());
         

@@ -304,9 +304,7 @@
 		   AND TRUNC(REG_DATE) = TRUNC(SYSDATE)         
 	</select>
 
-	<!-- -->
-	
-	
+	<!-- 피드 첨부 파일 업로드 -->
 	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
     INSERT INTO TB_ATTACHMENT (
           FILE_NO fileNo
@@ -323,8 +321,7 @@
     )
 </insert>
 	
-	
-	
+	<!-- 게시글 조회수 -->
 	<sql id="countBoard">
 		SELECT COUNT(*)
 		  FROM TB_BOARD 

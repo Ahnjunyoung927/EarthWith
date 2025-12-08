@@ -1,5 +1,7 @@
 package com.kh.eco.board.model.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.kh.eco.board.model.dao.BoardMapper;
@@ -46,5 +48,7 @@ public class BoardReportServiceImpl implements BoardReportService {
 			throw new PageNotFoundException("게시글이 존재하지 않습니다.");
 		} return b;
 	}
+	
+	
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.service.FeedService;
-import com.kh.eco.exception.UsenameNotFoundException;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -35,7 +35,7 @@ public class FeedController {
 	@GetMapping
 	public ResponseEntity<List<FeedBoardDTO>> selectFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
 			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
-			                                      @RequestParam(name = "limit", defaultValue = "3") Long limit) {
+			                                      @RequestParam(name = "limit", defaultValue = "10") Long limit) {
 		
 		log.info("GET /feeds 요청 - category={}, fetchOffset={}, limit={}",
                 category, fetchOffset, limit);
@@ -52,7 +52,7 @@ public class FeedController {
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<?> insertFeed(@Valid FeedBoardDTO feed, @RequestParam(name="file", required=false) MultipartFile file, 
+	public ResponseEntity<?> insertFeed(@Valid FeedBoardDTO feed, @RequestParam(name="files", required=false) List<MultipartFile> files, 
 			                          @AuthenticationPrincipal CustomUserDetails userDetails) {
 		
 		int memberNo = userDetails.getMemberNo();
@@ -61,7 +61,7 @@ public class FeedController {
 		feed.setBoardAuthor(memberNo);
 		
 		// INSERT 요청
-		feedService.insertFeed(feed, file);
+		feedService.insertFeed(feed, files);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -72,6 +72,21 @@ public class FeedController {
 	public ResponseEntity<?> deleteFeed(@PathVariable(name = "boardNo") @Min(value = 1, message = "게시글이 존재하지 않습니다.") int boardNo, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		feedService.deleteFeed(boardNo, userDetails);
 		return ResponseEntity.ok("게시글이 성공적으로 삭제됐습니다.");
+	}
+	
+	@PutMapping("/{boardNo}")
+	public ResponseEntity<?> updateFeed(@PathVariable(name = "boardNo") Long boardNo, 
+									    @Valid FeedBoardDTO feed,
+									    @RequestParam(name="files", required=false) List<MultipartFile> files,
+									    @AuthenticationPrincipal CustomUserDetails userDetails) {
+		
+		feedService.updateFeed(boardNo, feed, files, userDetails);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+	
+	@GetMapping("/feeds/{boardNo}/attachments")
+	public List<String> findAttachments(@PathVariable(name = "boardNo") Long boardNo) {
+	    return feedService.findAttachments(boardNo);
 	}
 
 }

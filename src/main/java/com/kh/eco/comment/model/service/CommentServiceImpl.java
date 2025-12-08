@@ -1,6 +1,5 @@
 package com.kh.eco.comment.model.service;
 
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+
 	private final BoardService boardService;
 	private final FeedService feedService;
 	private final CommentMapper commentMapper;
@@ -90,6 +90,7 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public boolean isOwner(Long commentNo, int mno) {
 		// 매퍼 파라미터 타입 불일치 이슈로 REF_MNO 형변환 (Integer -> Long)
+
 		Long memberNo = (long)mno;
 		boolean result = commentMapper.isOwner(commentNo, memberNo);
 		if(!result) {
@@ -133,3 +134,4 @@ public class CommentServiceImpl implements CommentService {
 	
 	
 }
+

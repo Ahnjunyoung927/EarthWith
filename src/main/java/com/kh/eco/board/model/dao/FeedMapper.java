@@ -1,6 +1,7 @@
 package com.kh.eco.board.model.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -56,4 +57,12 @@ public interface FeedMapper {
 	 * @return
 	 */
 	int isOwner(@Param("boardNo")int boardNo, @Param("memberNo")int memberNo);
+	
+	int saveAttachment(Map<String, Object> fileMap);
+	
+	int updateFeed(FeedBoardDTO feed);
+    
+    int deleteAttachment(Long boardNo);
+    
+    List<String> selectAttachmentsByBoardNo(Long boardNo);
 }
