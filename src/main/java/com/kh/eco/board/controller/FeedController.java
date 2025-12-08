@@ -35,7 +35,7 @@ public class FeedController {
 	@GetMapping
 	public ResponseEntity<List<FeedBoardDTO>> selectFeedList(@RequestParam(name = "category", defaultValue = "C") String category,
 			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
-			                                      @RequestParam(name = "limit", defaultValue = "15") Long limit) {
+			                                      @RequestParam(name = "limit", defaultValue = "10") Long limit) {
 		
 		log.info("GET /feeds 요청 - category={}, fetchOffset={}, limit={}",
                 category, fetchOffset, limit);
