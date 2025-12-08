@@ -10,7 +10,7 @@ import lombok.Value;
 public class CommentVO {
 
 	private Long commentNo;
-	private Long refMno;
+	private Integer refMno;
 	private Long refBno;
 	private String commentContent;
 	private Date regDate;

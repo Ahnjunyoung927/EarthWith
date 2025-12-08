@@ -62,7 +62,7 @@ public class SecurityConfigure {
 							"/uploads/**", 
 							"/stats/**", 
 							"/api/**", 
-							"/feed/**",
+							"/feeds/**",
 							"/stats/today/**", 
 							"/api/boards/stats/**",
 							"/members/**",
@@ -84,12 +84,15 @@ public class SecurityConfigure {
 					// (/members/** 와일드카드가 password, email 등을 모두 포함하므로 통합)
 					requests.requestMatchers(HttpMethod.PUT, 
 							"/members/**", 
-							"/boards/**").authenticated();
+							"/boards/**",
+							"/feeds/**",
+							"/comments/**").authenticated();
 					
 					// DELETE: 회원 탈퇴, 게시글 삭제
 					requests.requestMatchers(HttpMethod.DELETE, 
 							"/members/**", 
-							"/boards/**").authenticated();
+							"/boards/**",
+							"/feeds/**").authenticated();
 					
 					// [3] 관리자 전용
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");

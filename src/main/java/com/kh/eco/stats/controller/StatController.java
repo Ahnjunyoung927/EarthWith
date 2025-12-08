@@ -66,7 +66,7 @@ public class StatController {
 		
 		Map<String, Object> result = new HashMap<>();
 		result.put("category", category);
-		result.put("todayParticipants", result);
+		result.put("todayParticipants", count);
 		
 		
 		return ResponseEntity.ok(result);
