@@ -233,7 +233,7 @@ public class MemberServiceImpl implements MemberService {
 	private String uploadPath;
 	
 	@Override
-	public void updateProfile(UpdateProfileDTO profile) {
+	public String updateProfile(UpdateProfileDTO profile) {
         System.out.println("=== Service 시작 ===");
         System.out.println("받은 profile: " + profile);
         System.out.println("memberId: " + profile.getMemberId());
@@ -280,7 +280,9 @@ public class MemberServiceImpl implements MemberService {
             System.err.println("파일 업로드 실패: " + e.getMessage());
             throw new RuntimeException("파일 업로드 실패", e);
         }
+        return profile.getImagePath();
     }
+	
 
 //	@Override
 //	public List<FeedBoardDTO> getMyPosts(String memberId, int page) {

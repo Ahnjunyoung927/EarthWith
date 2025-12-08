@@ -36,6 +36,6 @@ public class CommentDTO {
 	
 	private Date regDate;
 	private char status;
-
-
+	private String memberName;
+	private String boardTitle;
 }

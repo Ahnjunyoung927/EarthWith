@@ -242,24 +242,19 @@
 	</select>
 	
 	<select id="selectMyComments" resultType="CommentDTO">
-		<![CDATA[
-        SELECT *
-        FROM (
-            SELECT 
-                A.*,
-                ROWNUM AS RNUM
-            FROM (
-                SELECT *
-                FROM TB_COMMENT
-                WHERE REF_MNO = #{memberNo}
-                ORDER BY REG_DATE DESC
-            ) A
-            WHERE ROWNUM <= (#{offset} + #{limit})
-        )
-        WHERE RNUM > #{offset}
-        ]]>
-		
+	    SELECT 
+	        C.COMMENT_NO as commentNo,
+	        C.COMMENT_CONTENT as commentContent,
+	        C.REF_BNO as refBno,
+	        C.REG_DATE as regDate,
+	        C.REF_MNO as refMno
+	    FROM TB_COMMENT C
+	    WHERE C.REF_MNO = #{memberNo} 
+	      AND C.STATUS = 'Y'
+	    ORDER BY C.REG_DATE DESC
+	    LIMIT #{limit} OFFSET #{offset}
 	</select>
+	
 	<select id="countMyComments" resultType="int">
 		SELECT
 		       COUNT(*)
