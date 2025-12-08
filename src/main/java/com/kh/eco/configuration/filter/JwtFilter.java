@@ -45,6 +45,8 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
+		
+		
 		String uri = request.getRequestURI();
 
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -62,6 +64,15 @@ public class JwtFilter extends OncePerRequestFilter {
 			String username = claims.getSubject();
 			CustomUserDetails user = (CustomUserDetails)userDetailsService.loadUserByUsername(username);
 			
+            if ("N".equals(user.getStatus())) {
+                log.info("정지된 계정 접근 시도: {}", username);
+
+                SecurityContextHolder.clearContext();
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 접근권한으로 인해 거절이므로 403 반환
+                response.getWriter().write("정지된 계정입니다.");
+                return;
+            }
+			
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			
@@ -72,7 +83,6 @@ public class JwtFilter extends OncePerRequestFilter {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().write("토큰만료");
 			return;
-
 		} catch(JwtException e) {
 			log.info("서버에서 만들어진 토큰이 아님");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

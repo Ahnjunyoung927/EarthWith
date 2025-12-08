@@ -37,6 +37,7 @@ public class MemberLoginDTO {
 	private String memberImage;
 	private int memberPoint;
 	private Date enrollDate;
+	private String status;
 	
 	private String role;
 	

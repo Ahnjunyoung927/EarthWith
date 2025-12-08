@@ -46,6 +46,7 @@
 		     , DEFAULT
 		       )
 	</insert>
+	
 	<select id="countByMemberId" parameterType="string">
 		<include refid="countMember" />
 		    MEMBER_ID = #{memberId}
@@ -75,6 +76,7 @@
 		     , MEMBER_IMAGE memberImage
 		     , MEMBER_POINT memberPoint
 		     , ENROLL_DATE enrollDate
+		     , STATUS status
 		  FROM
 			   TB_MEMBER
 		 WHERE
@@ -193,8 +195,9 @@
 	  		   MEMBER_ID = #{memberId}
 	</update>
 	
-	<!-- <select id="selectMyPosts" resultType="FeedBoardDTO" parameterType="map">
-		SELECT *
+	<select id="selectMyPosts" resultType="FeedBoardDTO">
+        <![CDATA[
+        SELECT *
         FROM (
             SELECT 
                 A.*,
@@ -202,29 +205,119 @@
             FROM (
                 SELECT *
                 FROM TB_BOARD
-                WHERE REF_MNO = #{memberId}
+                WHERE REF_MNO = #{memberNo}
                 ORDER BY REG_DATE DESC
             ) A
-            WHERE ROWNUM &lt;= (#{offset} + #{limit})
+            WHERE ROWNUM <= (#{offset} + #{limit})
         )
-        WHERE RNUM &gt; #{offset}
-	</select>
+        WHERE RNUM > #{offset}
+        ]]>
+    </select>
 	
-	<select id="countMyPosts" parameterType="int" resultType="int">
+	<select id="countMyPosts" resultType="int">
 		SELECT
 		       COUNT(*)
 		  FROM
 		       TB_BOARD
 		 WHERE
-		       REF_MNO = #{memberId, jdbcType=INTEGER}
-	</select> -->
+		       REF_MNO = #{memberNo}
+	</select>
+	
+	<select id="selectMyComments" resultType="CommentDTO">
+		<![CDATA[
+        SELECT *
+        FROM (
+            SELECT 
+                A.*,
+                ROWNUM AS RNUM
+            FROM (
+                SELECT *
+                FROM TB_COMMENT
+                WHERE REF_MNO = #{memberNo}
+                ORDER BY REG_DATE DESC
+            ) A
+            WHERE ROWNUM <= (#{offset} + #{limit})
+        )
+        WHERE RNUM > #{offset}
+        ]]>
+		
+	</select>
+	<select id="countMyComments" resultType="int">
+		SELECT
+		       COUNT(*)
+		  FROM
+		       TB_COMMENT
+		 WHERE
+		       REF_MNO = #{memberNo}		
+	</select>
+	
+    <select id="selectMyLikes" resultType="FeedBoardDTO">
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT
+                A.*,
+                ROWNUM AS RNUM
+            FROM (
+                SELECT 
+                    B.*
+                FROM TB_BOARD B
+                JOIN TB_BOARD_LIKE L ON B.BOARD_NO = L.REF_BNO
+                WHERE L.REF_MNO = #{memberNo}
+                ORDER BY L.REG_DATE DESC
+            ) A
+            WHERE ROWNUM <= (#{offset} + #{limit})
+        )
+        WHERE RNUM > #{offset}
+        ]]>
+    </select>
+    
+	<select id="countMyLikes" resultType="int">
+        SELECT 
+        	   COUNT(*)
+          FROM 
+          	   TB_BOARD_LIKE
+         WHERE 
+               REF_MNO = #{memberNo}
+    </select>
+	
+	<select id="selectMyBookmarks" resultType="FeedBoardDTO">
+		<![CDATA[
+        SELECT *
+        FROM (
+            SELECT
+                A.*,
+                ROWNUM AS RNUM
+            FROM (
+                SELECT 
+                    B.*
+                FROM TB_BOARD B
+                JOIN TB_BOOKMARK BM ON B.BOARD_NO = BM.REF_BNO
+                WHERE BM.REF_MNO = #{memberNo}
+                ORDER BY BM.REG_DATE DESC
+            ) A
+            WHERE ROWNUM <= (#{offset} + #{limit})
+        )
+        WHERE RNUM > #{offset}
+        ]]>
+		
+	</select>
+	
+	<select id="countMyBookmarks" resultType="int">
+        SELECT 
+        	   COUNT(*)
+          FROM 
+          	   TB_BOOKMARK
+         WHERE 
+               REF_MNO = #{memberNo}
+    </select>	
 	
 	<select id="getActiveMemberCount" resultType="long">
 		<include refid="countMember" />
                STATUS = 'Y'
     </select>
     
-    	<select id="getMemberRank" resultType="map">
+    <select id="getMemberRank" resultType="map">
         SELECT
         	  ROWNUM as "rank"
         	 , MEMBER_ID memberId
@@ -239,6 +332,4 @@
          FETCH  
                FIRST 10 ROWS ONLY
     </select>
-
-	
 </mapper>

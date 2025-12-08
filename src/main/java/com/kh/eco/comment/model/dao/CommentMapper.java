@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.http.ResponseEntity;
 
 import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.comment.model.dto.CommentReportDTO;
@@ -12,7 +11,6 @@ import com.kh.eco.comment.model.vo.CommentVO;
 
 @Mapper
 public interface CommentMapper {
-
 	/**
 	 * 댓글 작성
 	 * DTO -> VO 로 가공된 값(댓글)
@@ -49,4 +47,5 @@ public interface CommentMapper {
 	 * 댓글 수정
 	 */
 	int updateComment(CommentDTO comment);
+
 }

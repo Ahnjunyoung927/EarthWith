@@ -30,6 +30,7 @@ public class FeedBoardDTO {
 	private String memberImage;      // TB_MEMBER 프로필 사진
 	
 	private String attachmentPath;   // TB_ATTACHMENT 첨부파일 (선택)
+	
 
     private int regionNo;			 // TB_MEMBER 지역번호
 	private String regionName;       // TB_REGION 지역이름  ("사용자 지역")
@@ -37,4 +38,5 @@ public class FeedBoardDTO {
 	private Date regDate;            // TB_BOARD 작성일자
 	
 	private Integer likeCount; // 좋아요 개수
+	private Integer commentCount;
 }

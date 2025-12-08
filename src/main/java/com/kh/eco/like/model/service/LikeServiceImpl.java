@@ -64,9 +64,6 @@ public class LikeServiceImpl implements LikeService {
 		
 		boolean isLiked;
 		
-		// 댓글 존재 여부
-		commentService.existById(commentNo);
-		
 		// 좋아요 중복 여부
 		int result = likeMapper.existsCommentLike(commentNo, memberNo);
 		

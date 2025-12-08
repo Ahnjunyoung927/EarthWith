@@ -4,7 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.board.model.dao.BoardMapper">
 
-    <!-- BoardDTO 매핑 -->
     <resultMap id="boardResultMap" type="BoardDTO">
         <id property="boardNo" column="BOARD_NO"/>
         <result property="boardTitle" column="BOARD_TITLE"/>
@@ -16,7 +15,6 @@
         <result property="likeCount" column="LIKE_COUNT"/>
     </resultMap>
 
-    <!-- 댓글 매핑 -->
     <resultMap id="commentResultMap" type="com.kh.eco.comment.model.dto.CommentDTO">
         <id property="commentNo" column="COMMENT_NO"/>
         <result property="commentContent" column="COMMENT_CONTENT"/>
@@ -24,7 +22,6 @@
         <result property="regDate" column="COMMENT_DATE"/>
     </resultMap>
 
-    <!-- 상세 조회용 매핑 -->
     <resultMap id="boardDetailResultMap" type="com.kh.eco.board.model.dto.BoardDetailDTO" extends="boardResultMap">
         <result property="attachmentPath" column="ATTACHMENT_PATH"/>
         <collection property="commentList" resultMap="commentResultMap"/>
@@ -32,17 +29,35 @@
 
     <sql id="commonCondition">
         WHERE B.STATUS = 'Y'
-          AND (B.BOARD_CATEGORY LIKE 'A%' OR B.BOARD_CATEGORY LIKE 'B%')
+        <choose>
+            <when test="type == 'A'">
+                AND B.BOARD_CATEGORY LIKE 'A%'
+            </when>
+            
+            <when test="type == 'C'">
+                AND B.BOARD_CATEGORY LIKE 'B%'
+            </when>
+            
+            <otherwise>
+                AND (B.BOARD_CATEGORY LIKE 'A%' OR B.BOARD_CATEGORY LIKE 'B%')
+            </otherwise>
+        </choose>
+        
+        <if test="keyword != null and keyword != ''">
+            AND B.BOARD_TITLE LIKE '%' || #{keyword} || '%'
+        </if>
+        
+        <if test="category != null and category != ''">
+            AND B.BOARD_CATEGORY = #{category}
+        </if>
     </sql>
 
-    <!-- 1. 전체 게시물 수 조회 -->
     <select id="selectListCount" resultType="_int">
         SELECT COUNT(*)
           FROM TB_BOARD B
         <include refid="commonCondition"/>
     </select>
 
-    <!-- 2. 조회수 상위 3개 -->
     <select id="selectTopBoardList" resultMap="boardResultMap">
         SELECT *
           FROM (
@@ -62,7 +77,6 @@
          WHERE ROWNUM &lt;= 3
     </select>
 
-    <!-- 3. 일반 리스트 조회 -->
     <select id="selectBoardList" resultMap="boardResultMap">
         SELECT * FROM (
               SELECT ROWNUM RNUM, A.*
@@ -84,7 +98,6 @@
          WHERE RNUM BETWEEN #{startRow} AND #{endRow}
     </select>
     
-    <!-- 4. 조회수 증가 -->
     <update id="increaseViewCount">
         UPDATE TB_BOARD
            SET VIEW_COUNT = VIEW_COUNT + 1
@@ -92,7 +105,6 @@
            AND STATUS = 'Y'
     </update>
 
-    <!-- 5. 상세 조회 -->
     <select id="selectBoardDetail" resultMap="boardDetailResultMap">
         SELECT 
                B.BOARD_NO
@@ -124,7 +136,6 @@
          ORDER BY C.REG_DATE ASC 
     </select>
     
-    <!-- 6. 게시글 작성 (일반) -->
     <insert id="insertBoard" parameterType="BoardDTO">
         <selectKey keyProperty="boardNo" resultType="long" order="BEFORE">
             SELECT SEQ_BNO.NEXTVAL FROM DUAL
@@ -154,7 +165,6 @@
         )
     </insert>
 
-    <!-- 7. 첨부파일 등록 -->
     <insert id="insertAttachment" parameterType="map">
         INSERT INTO TB_ATTACHMENT
         (
@@ -178,7 +188,6 @@
         )
     </insert>
     
-    <!-- 8. 게시글 수정 -->
     <update id="updateBoard" parameterType="BoardDTO">
         UPDATE TB_BOARD
            SET BOARD_TITLE = #{boardTitle}
@@ -188,7 +197,6 @@
            AND REF_MNO = (SELECT MEMBER_NO FROM TB_MEMBER WHERE MEMBER_ID = #{boardWriter})
     </update>
     
-    <!-- 9. 첨부파일 수정 -->
     <update id="updateAttachment" parameterType="map">
         UPDATE TB_ATTACHMENT
            SET ATTACHMENT_PATH = #{attachmentPath}
@@ -199,7 +207,6 @@
            AND STATUS = 'Y'
     </update>
     
-    <!-- 10. 게시글 삭제 -->
     <update id="deleteBoard" parameterType="map">
         UPDATE TB_BOARD
            SET STATUS = 'N'
@@ -207,7 +214,6 @@
            AND REF_MNO = (SELECT MEMBER_NO FROM TB_MEMBER WHERE MEMBER_ID = #{userId})
     </update>
 
-	<!-- 피드 관련 -->
 	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
 		SELECT *
         FROM (
@@ -294,21 +300,21 @@
 		   AND TRUNC(REG_DATE) = TRUNC(SYSDATE)         
 	</select>
 
-	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
-    INSERT INTO TB_ATTACHMENT (
-          FILE_NO fileNo
-        , REF_BNO refBno
-        , ATTACHMENT_PATH attachmentPath
-        , REG_DATE regDate
-        , STATUS 
-    ) VALUES (
-          SEQ_FNO.NEXTVAL
-        , #{boardNo}
-        , #{file}
-        , SYSDATE
-        , 'Y'
-    )
-</insert>
+    <insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
+	    INSERT INTO TB_ATTACHMENT (
+	          FILE_NO 
+	        , REF_BNO 
+	        , ATTACHMENT_PATH 
+	        , REG_DATE 
+	        , STATUS 
+	    ) VALUES (
+	          SEQ_FNO.NEXTVAL
+	        , #{boardNo}
+	        , #{file}
+	        , SYSDATE
+	        , 'Y'
+	    )
+	</insert>
 	
 	<sql id="countBoard">
 		SELECT COUNT(*)
@@ -322,7 +328,6 @@
 	</select>
 	
 
-	<!-- 게시글 신고하기 -->
 	<insert id="boardReport" parameterType="BoardReportDTO">
 		INSERT
 		  INTO
@@ -346,7 +351,6 @@
 	           )	           
 	</insert>
 	
-	<!-- 신고된 게시글 존재여부 조회용 -->
 	<select id="selectBoardOne" resultType="BoardDTO">
 		SELECT
 		       BOARD_NO boardNo
@@ -360,5 +364,4 @@
 		       STATUS = 'Y'              
 	</select>
 	
-</mapper>  
-
+</mapper>

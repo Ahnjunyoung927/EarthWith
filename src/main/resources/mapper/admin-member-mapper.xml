@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.eco.admin.model.dao.AdminMemberMapper">
+	
+	<sql id="updateMemberUpper">
+		UPDATE
+       		   TB_MEMBER
+   		   SET 		
+	</sql>
+	
+	<sql id="updateMemberLower">
+ 		 WHERE
+       		   MEMBER_NO = #{memberNo}		
+	</sql>
+
+	<sql id="findMemberByMemberNo">
+		  FROM
+		       TB_MEMBER
+		 WHERE
+		       MEMBER_NO = #{memberNo}
+	</sql>
+	
+	<select id="findMemberById" resultType="AdminMemberDTO">
+		SELECT
+       		   MEMBER_NO memberNo
+     		 , CASE WHEN LENGTH(MEMBER_NAME) >= 2 THEN SUBSTR(MEMBER_NAME, 1, 1) || '*' || SUBSTR(MEMBER_NAME, 3)
+  	   		   ELSE MEMBER_NAME END AS memberName
+     		 , MEMBER_ID memberId
+     		 , REGEXP_SUBSTR(PHONE, '^\d{2,3}') 
+     		   || '-' || RPAD('*', LENGTH(REGEXP_SUBSTR(PHONE, '^\d{2,3}-(\d+)-', 1, 1, NULL, 1)), '*')
+               || '-' || REGEXP_SUBSTR(PHONE, '\d{4}$') AS phone
+     		 , REGEXP_REPLACE(EMAIL,'(^..)(.*)(...@.*)','\1**\3') AS email
+     		 , MEMBER_POINT memberPoint
+     		 , REGION_NAME regionName
+     		 , STATUS status
+     		 , ROLE role
+		  FROM 
+       		   TB_MEMBER
+          JOIN
+               TB_REGION ON REF_RNO = REGION_NO
+		 WHERE
+       		   MEMBER_ID = #{memberId}
+	</select>
+	
+	<update id="updateMemberIdByAdmin" parameterType="UpdateIdByAdminDTO">
+		<include refid="updateMemberUpper" />
+       		   MEMBER_ID = #{newId}
+		<include refid="updateMemberLower" />
+	</update>
+	
+	<update id="updatePasswordByAdmin" parameterType="UpdatePasswordByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       MEMBER_PWD = #{newPwd}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	<update id="updatePhoneByAdmin" parameterType="UpdatePhoneByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       PHONE = #{newPhone}
+		<include refid="updateMemberLower"/>		
+	</update>
+	
+	<update id="updateEmailByAdmin" parameterType="UpdateEmailByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       EMAIL = #{newEmail}
+		<include refid="updateMemberLower"/>		
+	</update>
+	
+	<select id="findRegionNo" resultType="UpdateRegionByAdminDTO">
+		SELECT
+		       REGION_NO regionNo
+		  FROM
+		       TB_REGION 
+		 WHERE
+		       REGION_NAME = #{newRegion}
+	</select>
+	
+	<update id="updateRegionByAdmin" parameterType="UpdateRegionByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       REF_RNO = #{regionNo}
+		<include refid="updateMemberLower"/>		
+	</update>
+	
+	<update id="updatePointByAdmin" parameterType="UpdatePointByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       MEMBER_POINT = #{newPoint}
+		<include refid="updateMemberLower"/>		
+	</update>
+	
+	<select id="findStatus" resultType="AdminMemberDTO">
+		SELECT
+		       MEMBER_ID memberId
+		     , STATUS
+		<include refid="findMemberByMemberNo"/>
+	</select>
+	
+	<update id="updateStatusByAdmin" parameterType="UpdateStatusByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       STATUS = #{newStatus}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	<select id="findRole" resultType="AdminMemberDTO">
+		SELECT
+		       ROLE
+		<include refid="findMemberByMemberNo"/>		
+	</select>
+	
+	<update id="updateRoleByAdmin" parameterType="UpdateRoleByAdminDTO">
+		<include refid="updateMemberUpper" />
+		       ROLE = #{newRole}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	<select id="findName">
+		SELECT
+		       MEMBER_NAME memberName
+		<include refid="findMemberByMemberNo"/>		
+	</select>
+	
+	<update id="updateNameByAdmin">
+		<include refid="updateMemberUpper" />
+		       MEMBER_NAME = #{newName}
+		<include refid="updateMemberLower"/>
+	</update>
+	
+	
+	
+
+</mapper>

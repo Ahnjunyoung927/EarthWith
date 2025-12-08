@@ -61,9 +61,9 @@ public class SecurityConfigure {
 							"/boards/**", 
 							"/comments/**", 
 							"/uploads/**", 
-							"/stats/landing",    // [수정] Landing 통계는 전체 허용
+							"/stats/landing",   
 							"/api/**", 
-							"/feed/**",
+							"/feeds/**",
 							"/api/boards/stats/**",
 							"/members/**",
 							"/admin/notices/**"
@@ -71,11 +71,15 @@ public class SecurityConfigure {
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
+
 					// GET: 통계(Dashboard, Mainpage) - 기능별 분리
 					requests.requestMatchers(HttpMethod.GET,
 							"/stats/dashboard", 
 							"/stats/mainpage"    
 					).authenticated();
+
+					// PUT: 수정 (HEAD, DEVELOP 통합)
+					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
 
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
@@ -87,12 +91,15 @@ public class SecurityConfigure {
 					// PUT: 회원 정보 수정, 게시글 수정
 					requests.requestMatchers(HttpMethod.PUT, 
 							"/members/**", 
-							"/boards/**").authenticated();
+							"/boards/**",
+							"/feeds/**",
+							"/comments/**").authenticated();
 					
 					// DELETE: 회원 탈퇴, 게시글 삭제
 					requests.requestMatchers(HttpMethod.DELETE, 
 							"/members/**", 
-							"/boards/**").authenticated();
+							"/boards/**",
+							"/feeds/**").authenticated();
 					
 					// [3] 관리자 전용
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");

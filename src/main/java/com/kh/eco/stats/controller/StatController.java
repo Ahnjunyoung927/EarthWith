@@ -22,8 +22,9 @@ public class StatController {
 	public ResponseEntity<Map<String, Object>> getLandingStats() {
 		
 		Map<String, Object> stats = statService.getLandingStats();
-		
+	
 		return ResponseEntity.ok(stats);
+
 	}
 	
     @GetMapping("/dashboard")

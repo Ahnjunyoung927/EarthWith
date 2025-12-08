@@ -4,16 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
 import com.kh.eco.board.model.dto.BoardReportDTO;
-
-
-import com.kh.eco.board.model.dto.BoardDTO;
-import com.kh.eco.board.model.dto.BoardDetailDTO;
+import com.kh.eco.comment.model.dto.CommentDTO;
+import com.kh.eco.comment.model.dto.CommentReportDTO;
 
 
 @Mapper
@@ -102,9 +99,10 @@ public interface BoardMapper {
     int deleteBoard(Map<String, Object> map);
 
 
-    //첨부파일 
+    //첨부파일 업로드
     int insertAttachment(Map<String, Object> fileMap);
     
+    // 첨부파일 수정 
     int updateAttachment(Map<String, Object> fileMap);
-    
+
 }

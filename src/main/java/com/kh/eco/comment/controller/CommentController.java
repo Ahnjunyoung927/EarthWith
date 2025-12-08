@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.comment.model.dto.CommentReportDTO;
+import com.kh.eco.comment.model.dto.CommentUpdateDTO;
 import com.kh.eco.comment.model.service.CommentService;
 import com.kh.eco.comment.model.vo.CommentVO;
 
@@ -29,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("comments")
 @RequiredArgsConstructor
+@RequestMapping("/comments")
 public class CommentController {
 
 	private final CommentService commentService;
@@ -43,7 +44,7 @@ public class CommentController {
 	 */
 	@PostMapping
 	public ResponseEntity<?> insertComment(@RequestBody CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
-		
+		comment.setRefMno(userDetails.getMemberNo());
 		CommentVO c = commentService.insertComment(comment, userDetails);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(c);
@@ -104,7 +105,7 @@ public class CommentController {
 	 * 댓글 수정
 	 */
 	@PutMapping("/{commentNo}")
-	public ResponseEntity<CommentDTO> updateComment(@PathVariable(name="commentNo") @Min(value = 1, message = "잘못된 접근입니다.") Long commentNo, @Valid CommentDTO comment, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	public ResponseEntity<CommentDTO> updateComment(@PathVariable(name="commentNo") @Min(value = 1, message = "잘못된 접근입니다.") Long commentNo, @RequestBody @Valid CommentUpdateDTO updateDTO, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		// 댓글 존재여부
 		commentService.existById(commentNo);
 		
@@ -114,6 +115,11 @@ public class CommentController {
 		// 본인 여부
 		commentService.isOwner(commentNo, mno);
 		
+		// CommentNo Set
+		CommentDTO comment = new CommentDTO();
+		comment.setCommentNo(commentNo);
+		comment.setCommentContent(updateDTO.getCommentContent());
+		
 		// 댓글 수정 요청
 		commentService.updateComment(comment);
 		
@@ -122,3 +128,62 @@ public class CommentController {
 	
 	
 }
+//=======
+//    private final CommentService commentService;
+//
+//    // 1. 댓글 작성
+//    @PostMapping("/board/{boardNo}")
+//    public ResponseEntity<?> insertComment(@PathVariable("boardNo") Long boardNo,
+//                                           @RequestBody CommentDTO comment,
+//                                           @AuthenticationPrincipal CustomUserDetails user) {
+//    	log.info("가나다라마바사아자카{}", boardNo);
+//        
+//        // [수정] CommentDTO는 Long을 원하므로 (long) 형변환
+//        comment.setRefBno(boardNo); 
+//        comment.setRefMno((long) user.getMemberNo()); 
+//        
+//        int result = commentService.insertComment(comment);
+//        return result > 0 ? ResponseEntity.ok("댓글 등록 성공") : ResponseEntity.status(500).build();
+//    }
+//
+//    // 2. 댓글 수정
+//    @PutMapping("/{commentNo}")
+//    public ResponseEntity<?> updateComment(@PathVariable("commentNo") Long commentNo,
+//                                           @RequestBody CommentDTO comment,
+//                                           @AuthenticationPrincipal CustomUserDetails user) {
+//        comment.setCommentNo(commentNo); 
+//        try {
+//            commentService.updateComment(comment, user);
+//            return ResponseEntity.ok("댓글 수정 성공");
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(403).body(e.getMessage());
+//        }
+//    }
+//
+//    // 3. 댓글 삭제
+//    @DeleteMapping("/{commentNo}")
+//    public ResponseEntity<?> deleteComment(@PathVariable("commentNo") Long commentNo,
+//                                           @AuthenticationPrincipal CustomUserDetails user) {
+//        try {
+//            commentService.deleteComment(commentNo, user);
+//            return ResponseEntity.ok("댓글 삭제 성공");
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(403).body(e.getMessage());
+//        }
+//    }
+//
+//    // 4. 댓글 신고
+//    @PostMapping("/{commentNo}/reports")
+//    public ResponseEntity<?> reportComment(@PathVariable("commentNo") Long commentNo,
+//                                           @RequestBody CommentReportDTO report,
+//                                           @AuthenticationPrincipal CustomUserDetails user) {
+//        
+//        // [수정] CommentReportDTO.refCno가 Long이면 그대로, int면 .intValue()
+//        // 에러 로그(image_de94a0)상 Long을 원하므로 그대로 둡니다.
+//        report.setRefCno(commentNo);
+//        
+//        int result = commentService.reportComment(report, user);
+//        return result > 0 ? ResponseEntity.ok("신고 완료") : ResponseEntity.status(500).build();
+//    }
+//}
+//>>>>>>> c2e92f2495841b37f3624a9a533f7c6288c95541

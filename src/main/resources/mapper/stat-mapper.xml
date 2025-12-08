@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.stats.model.dao.StatMapper">
 
-    <!-- 1. 랜딩 페이지 통계 (단일 행 -> Map) -->
+    <!-- 1. 랜딩 페이지 통계  -->
     <select id="selectLandingStats" resultType="map">
         SELECT 
             (SELECT COUNT(*) FROM TB_MEMBER WHERE STATUS = 'Y') AS "memberCount",

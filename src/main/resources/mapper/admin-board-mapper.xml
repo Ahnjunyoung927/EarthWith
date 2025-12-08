@@ -9,6 +9,7 @@
                B.BOARD_NO boardNo
              , B.BOARD_TITLE boardTitle
              , B.REG_DATE regDate
+             , B.BOARD_CONTENT boardContent
              , B.STATUS status
              , COUNT(CASE WHEN BR.STATUS = 'Y' THEN 1 END) AS boardReportCount
              , M.MEMBER_ID memberId
@@ -26,6 +27,7 @@
             BY
                B.BOARD_NO
              , B.BOARD_TITLE
+             , B.BOARD_CONTENT
              , B.REG_DATE
              , B.STATUS
              , M.MEMBER_ID		
