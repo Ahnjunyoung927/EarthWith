@@ -5,7 +5,7 @@
 <mapper namespace="com.kh.eco.admin.model.dao.AdminCommentMapper">
 	
 	<sql id="findAdminCommentDTO">
-				SELECT
+		SELECT
        		   C.COMMENT_NO commentNo
      		 , C.COMMENT_CONTENT commentContent
      		 , C.REG_DATE regDate

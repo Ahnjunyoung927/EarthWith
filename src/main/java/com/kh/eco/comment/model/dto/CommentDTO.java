@@ -1,6 +1,6 @@
 package com.kh.eco.comment.model.dto;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -32,13 +32,14 @@ public class CommentDTO {
 	@NotNull(message = "NULL 값이 올 수 없습니다.")
 	private String commentContent;
 	
-	private Date regDate;
+	private Timestamp regDate;
 	private char status;
 	
-	// ▼ 댓글 조회용으로 추가
+	// 댓글 조회용으로 추가
 	private String memberId;      // 작성자 아이디
 	private String memberImage;   // 작성자 프로필 이미지 경로
 
 
+	private String memberName;
 
 }

@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
+import com.kh.eco.comment.model.dto.CommentDTO;
 import com.kh.eco.common.PageInfo;
 import com.kh.eco.common.Pagination;
 import com.kh.eco.exception.CustomAuthenticationException;
@@ -57,11 +58,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void signUp(MemberSignUpDTO member, MultipartFile profileImg) {
 
-		midc.idDuplicateCheck(member); // 아이디 중복검사
+		midc.idDuplicateCheck(member.getMemberId()); // 아이디 중복검사
 		
-		midc.phoneDuplicateCheck(member); // 폰 중복검사
+		midc.phoneDuplicateCheck(member.getPhone()); // 폰 중복검사
 		
-		midc.emailDuplicateCheck(member); // 이메일 중복검사
+		midc.emailDuplicateCheck(member.getEmail()); // 이메일 중복검사
 
         // 프로필 이미지 URL 변수
         String profileImgUrl = null;
@@ -286,36 +287,74 @@ public class MemberServiceImpl implements MemberService {
 //		return memberMapper.selectMyPosts(memberId, offset, 10);
 //	}
 	
-//	@Override
-//	public Map<String, Object> getMyPosts(String memberIdStr, int currentPage) {
-//		if (memberIdStr == null || memberIdStr.trim().isEmpty() || !memberIdStr.trim().matches("\\d+")) {
-//	        throw new IllegalArgumentException("memberId must be numeric");
-//	    }
-//		
-//		int memberId;
-//		
-//		 try {
-//		        memberId = Integer.parseInt(memberIdStr.trim());
-//		    } catch (NumberFormatException e) {
-//		        throw new IllegalArgumentException("memberId는 숫자이여야 함", e);
-//		    }
-//
-//		int boardLimit = 10;
-//		int pageLimit = 5;
-//		
-//		int listCount = memberMapper.countMyPosts(memberId);
-//		
-//		PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-//	
-//		List<FeedBoardDTO> posts = memberMapper.selectMyPosts(memberId, pageInfo.getOffset(), boardLimit);
-//	
-//		Map<String, Object> response = new HashMap<>();
-//		response.put("pageInfo", pageInfo);
-//		response.put("list", posts);
-//		
-//		return response;
-//	}
-//	
+    @Override
+    public Map<String, Object> getMyPosts(long memberNo, int currentPage) {
+        int boardLimit = 10;
+        int pageLimit = 5;
+        
+        int listCount = memberMapper.countMyPosts(memberNo);
+        PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+        
+        List<FeedBoardDTO> posts = memberMapper.selectMyPosts(memberNo, pageInfo.getOffset(), boardLimit);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("pageInfo", pageInfo);
+        response.put("list", posts);
+        
+        return response;
+    }
+    
+    @Override
+    public Map<String, Object> getMyComments(long memberNo, int currentPage) {
+    	int boardLimit = 10;
+    	int pageLimit = 5;
+    	
+    	int listCount = memberMapper.countMyComments(memberNo);
+    	PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	List<CommentDTO> comment = memberMapper.selectMyComments(memberNo, pageInfo.getOffset(), boardLimit);
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	response.put("pageInfo", pageInfo);
+    	response.put("list", comment);
+    	
+    	return response;
+    }
+    
+    @Override
+    public Map<String, Object> getMyLikes(long memberNo, int currentPage) {
+    	int boardLimit = 10;
+    	int pageLimit = 5;
+    	
+    	int listCount = memberMapper.countMyLikes(memberNo);
+    	PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	List<FeedBoardDTO> likes = memberMapper.selectMyLikes(memberNo, pageInfo.getOffset(), boardLimit);
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	response.put("pageInfo", pageInfo);
+    	response.put("list", likes);
+    	
+    	return response;
+    }
+    
+    @Override
+    public Map<String, Object> getMyBookmarks(long memberNo, int currentPage) {
+    	int boardLimit = 10;
+    	int pageLimit = 5;
+    	
+    	int listCount = memberMapper.countMyBookmarks(memberNo);
+    	PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+    	
+    	List<FeedBoardDTO> bookmarks = memberMapper.selectMyBookmarks(memberNo, pageInfo.getOffset(), boardLimit);
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	response.put("pageInfo", pageInfo);
+    	response.put("list", bookmarks);
+    	
+    	return response;
+    }
+    
     @Override
     public long getActiveMemberCount() {
         try {

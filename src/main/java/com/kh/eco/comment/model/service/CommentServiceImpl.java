@@ -1,6 +1,5 @@
 package com.kh.eco.comment.model.service;
 
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+
 	private final BoardService boardService;
 	private final FeedService feedService;
 	private final CommentMapper commentMapper;
@@ -134,3 +134,4 @@ public class CommentServiceImpl implements CommentService {
 	
 	
 }
+
