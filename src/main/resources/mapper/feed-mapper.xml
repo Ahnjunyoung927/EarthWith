@@ -4,60 +4,54 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.board.model.dao.FeedMapper">
 
-	<select id="selectFeedList" resultType="FeedBoardDTO">
-        SELECT *
-          FROM (
-                SELECT
-                       B.BOARD_NO        AS boardNo
-                     , B.BOARD_TITLE     AS boardTitle
-                     , B.BOARD_CONTENT   AS boardContent
-                     , B.BOARD_CATEGORY  AS boardCategory
-                     , C.CATEGORY_NAME   AS categoryName
-                     , B.REF_MNO         AS boardAuthor
-                     , M.MEMBER_ID       AS memberId
-                     , M.MEMBER_IMAGE    AS memberImage
-                     , A.ATTACHMENT_PATH AS attachmentPath
-                     , R.REGION_NO       AS regionNo
-                     , R.REGION_NAME     AS regionName
-                     , B.REG_DATE        AS regDate
-                     , NVL(L.LIKE_COUNT, 0)     AS likeCount
-                     , NVL(CM.COMMENT_COUNT, 0) AS commentCount
-                     , ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) AS RN
-                  FROM TB_BOARD B
-                  JOIN TB_MEMBER M
-                    ON B.REF_MNO = M.MEMBER_NO
-                  JOIN TB_CATEGORY C
-                    ON B.BOARD_CATEGORY = C.CATEGORY_NO
-                  LEFT JOIN TB_REGION R
-                    ON M.REF_RNO = R.REGION_NO
-                  LEFT JOIN TB_LIKE_COUNT L
-                    ON L.REF_NO = B.BOARD_NO
-                  LEFT JOIN (
-                       SELECT
-                              REF_BNO
-                            , COUNT(*) AS COMMENT_COUNT
-                         FROM TB_COMMENT
-                        WHERE STATUS = 'Y'
-                        GROUP BY REF_BNO
-                  ) CM
-                    ON CM.REF_BNO = B.BOARD_NO
-                  LEFT JOIN (
-                       SELECT
-                              REF_BNO
-                            , MIN(ATTACHMENT_PATH) AS ATTACHMENT_PATH
-                         FROM TB_ATTACHMENT
-                        WHERE STATUS = 'Y'
-                        GROUP BY REF_BNO
-                  ) A
-                    ON A.REF_BNO = B.BOARD_NO
-                 WHERE B.STATUS = 'Y'
-                   AND B.BOARD_CATEGORY LIKE #{category}
-                 <if test="fetchOffset != null">
-                   AND B.BOARD_NO &lt; #{fetchOffset}
-                 </if>
-          )
-         WHERE RN &lt;= #{limit}
-    </select>
+	<select id="selectFeedList" resultType="com.kh.eco.board.model.dto.FeedBoardDTO">
+    SELECT *
+    FROM (
+        SELECT
+           	    B.BOARD_NO       boardNo
+             ,  B.BOARD_TITLE    boardTitle
+             ,  B.BOARD_CONTENT  boardContent
+             ,  B.BOARD_CATEGORY boardCategory
+             ,  C.CATEGORY_NAME  categoryName
+             ,  B.REF_MNO        boardAuthor
+             ,  M.MEMBER_ID      memberId
+             ,  M.MEMBER_IMAGE   memberImage
+             ,  A.ATTACHMENT_PATH attachmentPath
+             ,  R.REGION_NO      regionNo
+             ,  R.REGION_NAME    regionName
+             ,  B.REG_DATE       regDate
+             , NVL(L.LIKE_COUNT, 0) likeCount
+             , ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) RN
+          FROM TB_BOARD B
+          JOIN TB_MEMBER M
+            ON B.REF_MNO = M.MEMBER_NO
+          JOIN TB_CATEGORY C
+            ON B.BOARD_CATEGORY = C.CATEGORY_NO
+          LEFT JOIN TB_REGION R
+            ON M.REF_RNO = R.REGION_NO
+          LEFT JOIN (
+               SELECT
+		              REF_BNO
+		            , MIN(ATTACHMENT_PATH) AS ATTACHMENT_PATH
+                 FROM TB_ATTACHMENT
+                WHERE STATUS = 'Y'
+                GROUP
+                   BY REF_BNO
+		         ) A
+		           ON A.REF_BNO = B.BOARD_NO
+		
+		       
+		         LEFT JOIN TB_LIKE_COUNT L
+		           ON L.REF_NO = B.BOARD_NO
+		
+		        WHERE B.STATUS = 'Y'
+		          AND B.BOARD_CATEGORY LIKE #{category}
+		        <if test="fetchOffset != null">
+		          AND B.BOARD_NO &lt; #{fetchOffset}
+		        </if>
+		    )
+		        WHERE RN &lt;= #{limit}
+</select>
 
 	<insert id="insertFeed" parameterType="BoardVO">
 		<selectKey keyProperty="boardNo" resultType="long" order="BEFORE">
