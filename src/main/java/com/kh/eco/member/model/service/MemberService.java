@@ -32,7 +32,7 @@ public interface MemberService {
 
 	void updateMemberPhone(UpdatePhoneDTO phone);
 
-	void updateProfile(UpdateProfileDTO profile);
+	String updateProfile(UpdateProfileDTO profile);
 
 	void updateMemberRegion(UpdateRegionDTO region);
 

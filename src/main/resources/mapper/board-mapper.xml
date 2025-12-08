@@ -4,6 +4,8 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.eco.board.model.dao.BoardMapper">
 
+
+
     <!-- BoardDTO 매핑 -->
     <resultMap id="boardResultMap" type="BoardDTO">
         <id property="boardNo" column="BOARD_NO"/>
@@ -14,7 +16,11 @@
         <result property="viewCount" column="VIEW_COUNT"/>
         <result property="memberName" column="MEMBER_NAME"/>
         <result property="likeCount" column="LIKE_COUNT"/>
+        <result property="attachmentPath" column="ATTACHMENT_PATH"/>
+        <result property="boardWriter" column="BOARD_WRITER"/>
     </resultMap>
+
+
 
     <!-- 댓글 매핑 -->
     <resultMap id="commentResultMap" type="com.kh.eco.comment.model.dto.CommentDTO">
@@ -26,8 +32,12 @@
 
     <!-- 상세 조회용 매핑 -->
     <resultMap id="boardDetailResultMap" type="com.kh.eco.board.model.dto.BoardDetailDTO" extends="boardResultMap">
-        <result property="attachmentPath" column="ATTACHMENT_PATH"/>
-        <collection property="commentList" resultMap="commentResultMap"/>
+        <collection property="commentList" ofType="com.kh.eco.comment.model.dto.CommentDTO">
+            <id property="commentNo" column="COMMENT_NO"/>
+            <result property="commentContent" column="COMMENT_CONTENT"/>
+            <result property="regDate" column="COMMENT_DATE"/>
+            <result property="memberName" column="COMMENT_WRITER"/>
+        </collection>
     </resultMap>
 
     <sql id="commonCondition">

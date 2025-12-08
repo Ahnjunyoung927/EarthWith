@@ -34,12 +34,11 @@ public class CommentDTO {
 	
 	private Timestamp regDate;
 	private char status;
+	private String memberName;
+	private String boardTitle;
 	
 	// 댓글 조회용으로 추가
 	private String memberId;      // 작성자 아이디
 	private String memberImage;   // 작성자 프로필 이미지 경로
-
-
-	private String memberName;
 
 }
