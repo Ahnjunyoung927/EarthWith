@@ -53,23 +53,30 @@ public class SecurityConfigure {
 							"/auth/refresh", 
 							"/auth/logout", 
 							"/members/profile", 
-							"/members/**").permitAll(); 
+							"/members/**"
+							).permitAll(); 
 					
-					// GET: 게시글/댓글 조회, 파일, 통계, 피드 등 비회원 접근 가능
+					// GET: (관리자)게시글/댓글 조회, 파일, 통계(Landing), 피드 등 비회원 접근 가능
 					requests.requestMatchers(HttpMethod.GET, 
 							"/boards/**", 
 							"/comments/**", 
 							"/uploads/**", 
-							"/stats/**", 
+							"/stats/landing",    // [수정] Landing 통계는 전체 허용
 							"/api/**", 
 							"/feed/**",
-							"/stats/today/**", 
 							"/api/boards/stats/**",
-							"/members/**" // Incoming 브랜치 반영
+							"/members/**",
+							"/admin/notices/**"
 					).permitAll(); 
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
+					// GET: 통계(Dashboard, Mainpage) - 기능별 분리
+					requests.requestMatchers(HttpMethod.GET,
+							"/stats/dashboard", 
+							"/stats/mainpage"    
+					).authenticated();
+
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
 							"/boards", 
@@ -78,7 +85,6 @@ public class SecurityConfigure {
 							"/feeds").authenticated();
 					
 					// PUT: 회원 정보 수정, 게시글 수정
-					// (/members/** 와일드카드가 password, email 등을 모두 포함하므로 통합)
 					requests.requestMatchers(HttpMethod.PUT, 
 							"/members/**", 
 							"/boards/**").authenticated();
@@ -104,7 +110,7 @@ public class SecurityConfigure {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		
-		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA) - HEAD 설정 유지 (더 포괄적)
+		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA)
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));

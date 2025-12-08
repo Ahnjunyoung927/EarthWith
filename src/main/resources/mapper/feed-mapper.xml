@@ -101,20 +101,23 @@
 	
 	
 	
-	<insert id="saveAttachment" parameterType="com.kh.eco.board.model.dto.FeedBoardDTO">
-    INSERT INTO TB_ATTACHMENT (
-          FILE_NO fileNo
-        , REF_BNO refBno
-        , ATTACHMENT_PATH attachmentPath
-        , REG_DATE regDate
-        , STATUS 
-    ) VALUES (
-          SEQ_FNO.NEXTVAL
-        , #{boardNo}
-        , #{file}
-        , SYSDATE
-        , 'Y'
-    )
+	<insert id="saveAttachment" parameterType="FeedBoardDTO">
+    INSERT INTO 
+      		    TB_ATTACHMENT
+      		    (
+		        FILE_NO fileNo
+		      , REF_BNO refBno
+		      , ATTACHMENT_PATH attachmentPath
+		      , REG_DATE regDate
+		      , STATUS 
+    			) 
+    	VALUES  (
+         		SEQ_FNO.NEXTVAL
+		      , #{boardNo}
+		      , #{attachmentPath}
+		      , SYSDATE
+		      , 'Y'
+		    )
 </insert>
 	
 	
@@ -126,7 +129,30 @@
 		       TB_BOARD 
 		 WHERE 
 	</sql>
-
+	
+	<update id="deleteFeed" parameterType="int">
+		UPDATE
+		       TB_BOARD
+		   SET
+		       STATUS = 'N'
+		 WHERE
+		       BOARD_NO = #{boardNo}
+		   AND
+		       STATUS = 'Y'                    
+	</update>
+	
+	<select id="isOwner" resultType="int">
+		SELECT
+		       COUNT(1)
+		  FROM
+		       TB_BOARD
+		 WHERE
+		       BOARD_NO = #{boardNo}
+		   AND
+		       REF_MNO = #{memberNo}
+		   AND
+		       STATUS = 'Y'                    
+	</select>
 	
 	
 	
