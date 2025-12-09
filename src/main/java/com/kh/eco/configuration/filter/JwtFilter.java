@@ -3,6 +3,7 @@ package com.kh.eco.configuration.filter;
 import java.io.IOException;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -50,8 +51,8 @@ public class JwtFilter extends OncePerRequestFilter {
 		String uri = request.getRequestURI();
 
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-		if(authorization == null || uri.equals("/auth/login")) {
+		
+		if(authorization == null || uri.equals("/auth/login") ) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -65,8 +66,8 @@ public class JwtFilter extends OncePerRequestFilter {
 			CustomUserDetails user = (CustomUserDetails)userDetailsService.loadUserByUsername(username);
 			
             if ("N".equals(user.getStatus())) {
-                log.info("정지된 계정 접근 시도: {}", username);
-
+                // log.info("정지계정 잡히니? : {}", username);
+            	
                 SecurityContextHolder.clearContext();
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 접근권한으로 인해 거절이므로 403 반환
                 response.getWriter().write("정지된 계정입니다.");

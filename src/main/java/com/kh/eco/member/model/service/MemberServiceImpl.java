@@ -2,6 +2,7 @@ package com.kh.eco.member.model.service;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -232,7 +233,7 @@ public class MemberServiceImpl implements MemberService {
 	private String uploadPath;
 	
 	@Override
-	public void updateProfile(UpdateProfileDTO profile) {
+	public String updateProfile(UpdateProfileDTO profile) {
         System.out.println("=== Service 시작 ===");
         System.out.println("받은 profile: " + profile);
         System.out.println("memberId: " + profile.getMemberId());
@@ -279,7 +280,9 @@ public class MemberServiceImpl implements MemberService {
             System.err.println("파일 업로드 실패: " + e.getMessage());
             throw new RuntimeException("파일 업로드 실패", e);
         }
+        return profile.getImagePath();
     }
+	
 
 //	@Override
 //	public List<FeedBoardDTO> getMyPosts(String memberId, int page) {
@@ -296,6 +299,25 @@ public class MemberServiceImpl implements MemberService {
         PageInfo pageInfo = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
         
         List<FeedBoardDTO> posts = memberMapper.selectMyPosts(memberNo, pageInfo.getOffset(), boardLimit);
+       
+        List<FeedBoardDTO> postDTOs = posts.stream()
+                .map(board -> new FeedBoardDTO(
+                    board.getBoardNo(),
+                    board.getBoardTitle(),
+                    board.getBoardContent(),
+                    board.getBoardCategory(),
+                    board.getCategoryName(),
+                    board.getBoardAuthor(),
+                    board.getMemberId(),
+                    board.getMemberImage(),
+                    board.getAttachmentPath(),
+                    board.getRegionNo(),
+                    board.getRegionName(),
+                    board.getRegDate(),
+                    board.getLikeCount(),
+                    board.getCommentCount()
+                ))
+                .collect(Collectors.toList());
         
         Map<String, Object> response = new HashMap<>();
         response.put("pageInfo", pageInfo);

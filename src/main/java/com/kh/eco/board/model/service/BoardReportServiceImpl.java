@@ -33,8 +33,6 @@ public class BoardReportServiceImpl implements BoardReportService {
 		return boardMapper.boardReport(reportDTO);
 		
 		
-		
-
 	}
 	
 	/**
