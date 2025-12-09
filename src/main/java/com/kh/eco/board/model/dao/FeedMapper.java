@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.vo.BoardVO;
 
@@ -65,4 +66,9 @@ public interface FeedMapper {
     int deleteAttachment(Long boardNo);
     
     List<String> selectAttachmentsByBoardNo(Long boardNo);
+ 
+	List<BoardDTO> selectPopularFeed(@Param("category")String category,
+            @Param("fetchOffset")Long fetchOffset,
+            @Param("limit")Long limit);
+	
 }

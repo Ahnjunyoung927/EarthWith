@@ -80,18 +80,71 @@ public class BoardServiceImpl implements BoardService {
     public int insertBoard(BoardDTO board, MultipartFile file, String userId) {
         board.setBoardWriter(userId);
         int result = boardMapper.insertBoard(board);
+
+        
+        // 파일 처리 로직
+        if(file != null && !file.isEmpty()) {
+            
+            String changeName = fileService.store(file); 
+            
+            String originalName = file.getOriginalFilename();
+            
+            String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+            
+            Map<String, Object> fileMap = new HashMap<>();
+            fileMap.put("refBno", board.getBoardNo());
+            fileMap.put("originName", originalName); 
+            fileMap.put("changeName", changeName);   
+            fileMap.put("attachmentPath", attachmentPath); 
+            
+            boardMapper.insertAttachment(fileMap);
+        }
+        
+        return result;
+    }
+    
+    // 4. 게시글 수정 
+    @Transactional
+    @Override
+    public int updateBoard(@Valid BoardDTO board, MultipartFile file, String userId) {
+        
+        board.setBoardWriter(userId);
+        
+        int result = boardMapper.updateBoard(board);
+        
+        if(file != null && !file.isEmpty()) {
+            
+            String changeName = fileService.store(file);
+            String originalName = file.getOriginalFilename();
+            String attachmentPath = "/uploads/" + changeName;
+            
+            Map<String, Object> fileMap = new HashMap<>();
+            fileMap.put("refBno", board.getBoardNo());
+            fileMap.put("originName", originalName);
+            fileMap.put("changeName", changeName);
+            fileMap.put("attachmentPath", attachmentPath);
+            
+            int updateCount = boardMapper.updateAttachment(fileMap);
+            
+            if(updateCount == 0) {
+                boardMapper.insertAttachment(fileMap);
+            }
+        }
+        
+
         if(result > 0) saveFile(file, board.getBoardNo(), false);
+
         return result;
     }
 
-    @Override
-    @Transactional
-    public int updateBoard(BoardDTO board, MultipartFile file, String userId) {
-        board.setBoardWriter(userId);
-        int result = boardMapper.updateBoard(board);
-        if(result > 0) saveFile(file, board.getBoardNo(), true);
-        return result;
-    }
+//    @Override
+//    @Transactional
+//    public int updateBoard(BoardDTO board, MultipartFile file, String userId) {
+//        board.setBoardWriter(userId);
+//        int result = boardMapper.updateBoard(board);
+//        if(result > 0) saveFile(file, board.getBoardNo(), true);
+//        return result;
+//    }
 
     @Override
     @Transactional

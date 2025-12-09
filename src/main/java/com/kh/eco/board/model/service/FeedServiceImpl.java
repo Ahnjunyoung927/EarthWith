@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dao.FeedMapper;
+import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.vo.BoardVO;
 import com.kh.eco.exception.PageNotFoundException;
@@ -205,6 +206,15 @@ public class FeedServiceImpl implements FeedService {
 	@Override
 	public List<String> findAttachments(Long boardNo) {
 	    return feedMapper.selectAttachmentsByBoardNo(boardNo);
+	}
+	
+	@Override
+	public List<BoardDTO> selectPopularFeed(String category, Long fetchOffset, Long limit) {
+		if("C".equals(category)) {
+			category = "C%";
+		}
+		
+		return feedMapper.selectPopularFeed(category, fetchOffset, limit);
 	}
 	
 	/*
