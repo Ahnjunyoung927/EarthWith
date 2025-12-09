@@ -363,19 +363,17 @@
                STATUS = 'Y'
     </select>
     
-    <select id="getMemberRank" resultType="map">
-        SELECT
-        	  ROWNUM as "rank"
-        	 , MEMBER_ID memberId
-             , MEMBER_POINT memberPoint
-          FROM
-               TB_MEMBER
-         WHERE
-               STATUS = 'Y'
-         ORDER 
-            by 
-               MEMBER_POINT desc
-         FETCH  
-               FIRST 10 ROWS ONLY
-    </select>
+<select id="getMemberRank" resultType="map">
+    SELECT
+        ROWNUM as rank,
+        A.MEMBER_ID as memberId,
+        A.MEMBER_POINT as memberPoint
+    FROM (
+        SELECT MEMBER_ID, MEMBER_POINT
+        FROM TB_MEMBER
+        WHERE STATUS = 'Y'
+        ORDER BY MEMBER_POINT DESC
+    ) A
+    WHERE ROWNUM &lt;= 10
+</select>
 </mapper>
