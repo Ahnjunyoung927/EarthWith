@@ -1,7 +1,6 @@
 package com.kh.eco.configuration;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,26 +35,27 @@ public class SecurityConfigure {
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring()
-				.requestMatchers("/upload/**"); // 정적 리소스는 Security 필터 적용 안 함
+				.requestMatchers("/upload/**")
+				.requestMatchers("/uploads/**");
 	}
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		
 		return httpSecurity
-				.formLogin(AbstractHttpConfigurer::disable) 	// Form Login 비활성화
-				.csrf(AbstractHttpConfigurer::disable) 	 	    // CSRF 비활성화
-				.cors(Customizer.withDefaults()) 		 	    // CORS 설정 적용
+				.formLogin(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(Customizer.withDefaults())
 				.sessionManagement(manager -> 
-					manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 미사용 (JWT)
+					manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				
+
 				.authorizeHttpRequests(requests -> {
-					
 					// [1] 누구나 접근 가능한 기능 (PermitAll)
 					
 					// POST: 로그인, 회원가입, 토큰 갱신, 로그아웃
 					requests.requestMatchers(HttpMethod.POST,
-							"/members", 
+							"/members",
 							"/auth/login", 
 							"/auth/refresh", 
 							"/auth/logout", 
@@ -66,11 +66,16 @@ public class SecurityConfigure {
 					requests.requestMatchers(HttpMethod.GET, 
 							"/boards/**", 
 							"/comments/**", 
-							"/uploads/**", 
-							"/stats/**", 
+							"/upload/**",
+							"/uploads/**",
 							"/api/**", 
 							"/feeds/**",
-							"/stats/today/**", 
+							"/stats/dashboard",
+							"/stats/landing", 
+							"/stats/mainpage", 
+							"/stats/ranking",
+							"/stats/today", 
+							"/stats/todayPost", 
 							"/api/boards/stats/**",
 							"/members/**",
 							"/admin/notices/**"
@@ -78,8 +83,9 @@ public class SecurityConfigure {
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
-					// PUT: 수정 (HEAD, DEVELOP 통합)
+					// PUT: 수정
 					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
+					
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
 							"/boards", 
@@ -88,7 +94,6 @@ public class SecurityConfigure {
 							"/feeds").authenticated();
 					
 					// PUT: 회원 정보 수정, 게시글 수정
-					// (/members/** 와일드카드가 password, email 등을 모두 포함하므로 통합)
 					requests.requestMatchers(HttpMethod.PUT, 
 							"/members/**", 
 							"/boards/**",
@@ -108,7 +113,7 @@ public class SecurityConfigure {
 					requests.anyRequest().authenticated();
 				})
 				
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 적용
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 
 	}
@@ -117,7 +122,7 @@ public class SecurityConfigure {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		
-		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA) - HEAD 설정 유지 (더 포괄적)
+		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA)
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));

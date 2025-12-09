@@ -31,6 +31,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			throw new UsenameNotFoundException("아이디가 존재하지 않습니다.");
 		}
 		
+		if ("N".equals(user.getStatus())) {
+		    throw new UsenameNotFoundException("정지된 계정입니다.");
+		}
+		
 		return CustomUserDetails.builder().username(user.getMemberId())
 				  						  .password(user.getMemberPwd())
 				  						  .memberName(user.getMemberName())

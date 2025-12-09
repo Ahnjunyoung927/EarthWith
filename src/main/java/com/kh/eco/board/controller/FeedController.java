@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
+import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.service.FeedService;
 
@@ -89,4 +90,12 @@ public class FeedController {
 	    return feedService.findAttachments(boardNo);
 	}
 
+	@GetMapping("/popular")
+	public ResponseEntity<List<BoardDTO>> selectPopularFeed(@RequestParam(name = "category", defaultValue = "C") String category,
+			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
+			                                      @RequestParam(name = "limit", defaultValue = "10") Long limit) {
+		
+		return ResponseEntity.ok(feedService.selectPopularFeed(category, fetchOffset, limit));
+		
+	}
 }

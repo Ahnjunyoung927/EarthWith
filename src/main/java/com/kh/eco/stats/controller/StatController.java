@@ -10,55 +10,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.eco.board.model.service.BoardService;
-import com.kh.eco.board.model.service.FeedService;
 import com.kh.eco.member.model.service.MemberService;
 import com.kh.eco.stats.model.service.StatService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-@RestController //@Controller + @ResponseBody
+
+@RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/stats")
 public class StatController {
 	
-	private final MemberService memberService;
-	private final BoardService boardService;
-	private final FeedService feedService;
 	private final StatService statService;
+	private final MemberService memberservice;
+
+	@GetMapping("/landing")
+	public ResponseEntity<Map<String, Object>> getLandingStats() {
+		
+		Map<String, Object> stats = statService.getLandingStats();
 	
-	@GetMapping("/member-count")
-	public ResponseEntity<Map<String, Object>> getMemberCount(){
-		
-		//
-		long memberCount = memberService.getActiveMemberCount();
-		
-		Map<String, Object> response = new HashMap<>();
-        response.put("memberCount", memberCount);
-		
-		
-        return ResponseEntity.ok(response);
+		return ResponseEntity.ok(stats);
+
 	}
 	
-    @GetMapping("/member-rank-10")
+    @GetMapping("/dashboard")
+    public ResponseEntity<Map<String, Object>> getDashboardStats() {
+        
+        Map<String, Object> stats = statService.getDashboardStats();
+        
+        return ResponseEntity.ok(stats);
+    }
+    
+    @GetMapping("/mainpage")
+    public ResponseEntity<Map<String, Object>> getMethodName() {
+        Map<String, Object> main = statService.getMainpage();
+        return ResponseEntity.ok(main);
+    }
+    
+    @GetMapping("/ranking")
     public ResponseEntity<List<Map<String, Object>>> getMemberRankList() { 
-    	List<Map<String, Object>> rankList = memberService.getMemberRank(); 
+    	List<Map<String, Object>> rankList = memberservice.getMemberRank(); 
 
     	return ResponseEntity.ok(rankList);
     }
     
-    @GetMapping("/boards-join")
-    public ResponseEntity<Map<String, Object>> getBoardCountForParticipation(){
-    	
-    	long boardParticipationCount  = boardService.getBoardCountForParticipation();
-    	
-		Map<String, Object> response = new HashMap<>();
-        response.put("boardParticipationCount", boardParticipationCount);
-    	
-        return ResponseEntity.ok(response);
-    }
-    
-   // 오늘의 참여태그 수
+    // 오늘의 참여태그 수
     @GetMapping("/today")
 	public ResponseEntity<Map<String, Object>> todayParticipants(@RequestParam(name="category") String category) {
 		
@@ -84,7 +82,5 @@ public class StatController {
 		
 		return ResponseEntity.ok(result);
 	}
-    
-    
     
 }

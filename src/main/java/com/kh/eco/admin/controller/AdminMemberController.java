@@ -1,7 +1,5 @@
 package com.kh.eco.admin.controller;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -108,8 +106,6 @@ public class AdminMemberController {
 		adminMemberService.updateNameByAdmin(member);
 		return ResponseEntity.ok("이름 변경 성공");
 	}
-	
-	
-	
+
 	
 }
