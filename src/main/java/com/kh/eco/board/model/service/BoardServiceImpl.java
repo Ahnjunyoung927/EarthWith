@@ -97,7 +97,7 @@ public class BoardServiceImpl implements BoardService {
             
             String originalName = file.getOriginalFilename();
             
-            String attachmentPath = "/uploads/" + changeName;
+            String attachmentPath = "http://localhost:8081/uploads/" + changeName;
             
             Map<String, Object> fileMap = new HashMap<>();
             fileMap.put("refBno", board.getBoardNo());

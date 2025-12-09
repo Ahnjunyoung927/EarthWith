@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
+import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 
 public interface FeedService {
@@ -59,4 +60,6 @@ public interface FeedService {
 	int updateFeed(Long boardNo, FeedBoardDTO feed, List<MultipartFile> files, CustomUserDetails userDetails);
 	
 	List<String> findAttachments(Long boardNo);
+	
+	List<BoardDTO> selectPopularFeed(String category, Long fetchOffset, Long limit);
 }
