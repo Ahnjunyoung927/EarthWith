@@ -37,6 +37,7 @@
 			 , C.STATUS status
 			 , M.MEMBER_ID memberId
 			 , M.MEMBER_IMAGE memberImage
+			 , M.MEMBER_NAME memberName
 	      FROM
 	           TB_COMMENT C
 	      JOIN

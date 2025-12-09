@@ -196,23 +196,41 @@
 	</update>
 	
 	<select id="selectMyPosts" resultType="FeedBoardDTO">
-        <![CDATA[
-        SELECT *
-        FROM (
-            SELECT 
-                A.*,
-                ROWNUM AS RNUM
-            FROM (
-                SELECT *
-                FROM TB_BOARD
-                WHERE REF_MNO = #{memberNo}
-                ORDER BY REG_DATE DESC
-            ) A
-            WHERE ROWNUM <= (#{offset} + #{limit})
-        )
-        WHERE RNUM > #{offset}
-        ]]>
-    </select>
+	    <![CDATA[
+	    SELECT *
+	    FROM (
+	        SELECT 
+	            A.*,
+	            ROWNUM AS RNUM
+	        FROM (
+	            SELECT 
+	                B.BOARD_NO as boardNo,
+	                B.BOARD_TITLE as boardTitle,
+	                B.BOARD_CONTENT as boardContent,
+	                B.BOARD_CATEGORY as boardCategory,
+	                C.CATEGORY_NAME as categoryName,
+	                B.REF_MNO as boardAuthor,
+	                M.MEMBER_ID as memberId,
+	                M.MEMBER_IMAGE as memberImage,
+	                A.ATTACHMENT_PATH as attachmentPath,
+	                M.REF_RNO as regionNo,
+	                R.REGION_NAME as regionName,
+	                B.REG_DATE as regDate,
+	                (SELECT COUNT(*) FROM TB_BOARD_LIKE WHERE REF_BNO = B.BOARD_NO AND STATUS = 'Y') as likeCount
+	            FROM TB_BOARD B
+	            LEFT JOIN TB_MEMBER M ON B.REF_MNO = M.MEMBER_NO
+	            LEFT JOIN TB_CATEGORY C ON B.BOARD_CATEGORY = C.CATEGORY_NO
+	            LEFT JOIN TB_REGION R ON M.REF_RNO = R.REGION_NO
+	            LEFT JOIN TB_ATTACHMENT A ON B.BOARD_NO = A.REF_BNO AND A.STATUS = 'Y'
+	            WHERE B.REF_MNO = #{memberNo}
+	              AND B.STATUS = 'Y'
+	            ORDER BY B.REG_DATE DESC
+	        ) A
+	        WHERE ROWNUM <= (#{offset} + #{limit})
+	    )
+	    WHERE RNUM > #{offset}
+	    ]]>
+	</select>
 	
 	<select id="countMyPosts" resultType="int">
 		SELECT
@@ -224,24 +242,19 @@
 	</select>
 	
 	<select id="selectMyComments" resultType="CommentDTO">
-		<![CDATA[
-        SELECT *
-        FROM (
-            SELECT 
-                A.*,
-                ROWNUM AS RNUM
-            FROM (
-                SELECT *
-                FROM TB_COMMENT
-                WHERE REF_MNO = #{memberNo}
-                ORDER BY REG_DATE DESC
-            ) A
-            WHERE ROWNUM <= (#{offset} + #{limit})
-        )
-        WHERE RNUM > #{offset}
-        ]]>
-		
+	    SELECT 
+	        C.COMMENT_NO as commentNo,
+	        C.COMMENT_CONTENT as commentContent,
+	        C.REF_BNO as refBno,
+	        C.REG_DATE as regDate,
+	        C.REF_MNO as refMno
+	    FROM TB_COMMENT C
+	    WHERE C.REF_MNO = #{memberNo} 
+	      AND C.STATUS = 'Y'
+	    ORDER BY C.REG_DATE DESC
+	    LIMIT #{limit} OFFSET #{offset}
 	</select>
+	
 	<select id="countMyComments" resultType="int">
 		SELECT
 		       COUNT(*)
@@ -252,25 +265,42 @@
 	</select>
 	
     <select id="selectMyLikes" resultType="FeedBoardDTO">
-        <![CDATA[
-        SELECT *
-        FROM (
-            SELECT
-                A.*,
-                ROWNUM AS RNUM
-            FROM (
-                SELECT 
-                    B.*
-                FROM TB_BOARD B
-                JOIN TB_BOARD_LIKE L ON B.BOARD_NO = L.REF_BNO
-                WHERE L.REF_MNO = #{memberNo}
-                ORDER BY L.REG_DATE DESC
-            ) A
-            WHERE ROWNUM <= (#{offset} + #{limit})
-        )
-        WHERE RNUM > #{offset}
-        ]]>
-    </select>
+	    <![CDATA[
+	    SELECT *
+	    FROM (
+	        SELECT
+	            A.*,
+	            ROWNUM AS RNUM
+	        FROM (
+	            SELECT 
+	                B.BOARD_NO as boardNo,
+	                B.BOARD_TITLE as boardTitle,
+	                B.BOARD_CONTENT as boardContent,
+	                B.BOARD_CATEGORY as boardCategory,
+	                C.CATEGORY_NAME as categoryName,
+	                B.REF_MNO as boardAuthor,
+	                M.MEMBER_ID as memberId,
+	                M.MEMBER_IMAGE as memberImage,
+	                A.ATTACHMENT_PATH as attachmentPath,
+	                M.REF_RNO as regionNo,
+	                R.REGION_NAME as regionName,
+	                B.REG_DATE as regDate,
+	                (SELECT COUNT(*) FROM TB_BOARD_LIKE WHERE REF_BNO = B.BOARD_NO AND STATUS = 'Y') as likeCount
+	            FROM TB_BOARD B
+	            JOIN TB_BOARD_LIKE L ON B.BOARD_NO = L.REF_BNO AND L.STATUS = 'Y'
+	            LEFT JOIN TB_MEMBER M ON B.REF_MNO = M.MEMBER_NO
+	            LEFT JOIN TB_CATEGORY C ON B.BOARD_CATEGORY = C.CATEGORY_NO
+	            LEFT JOIN TB_REGION R ON M.REF_RNO = R.REGION_NO
+	            LEFT JOIN TB_ATTACHMENT A ON B.BOARD_NO = A.REF_BNO AND A.STATUS = 'Y'
+	            WHERE L.REF_MNO = #{memberNo}
+	              AND B.STATUS = 'Y'
+	            ORDER BY L.REG_DATE DESC
+	        ) A
+	        WHERE ROWNUM <= (#{offset} + #{limit})
+	    )
+	    WHERE RNUM > #{offset}
+	    ]]>
+	</select>
     
 	<select id="countMyLikes" resultType="int">
         SELECT 
@@ -282,25 +312,41 @@
     </select>
 	
 	<select id="selectMyBookmarks" resultType="FeedBoardDTO">
-		<![CDATA[
-        SELECT *
-        FROM (
-            SELECT
-                A.*,
-                ROWNUM AS RNUM
-            FROM (
-                SELECT 
-                    B.*
-                FROM TB_BOARD B
-                JOIN TB_BOOKMARK BM ON B.BOARD_NO = BM.REF_BNO
-                WHERE BM.REF_MNO = #{memberNo}
-                ORDER BY BM.REG_DATE DESC
-            ) A
-            WHERE ROWNUM <= (#{offset} + #{limit})
-        )
-        WHERE RNUM > #{offset}
-        ]]>
-		
+	    <![CDATA[
+	    SELECT *
+	    FROM (
+	        SELECT
+	            A.*,
+	            ROWNUM AS RNUM
+	        FROM (
+	            SELECT 
+	                B.BOARD_NO as boardNo,
+	                B.BOARD_TITLE as boardTitle,
+	                B.BOARD_CONTENT as boardContent,
+	                B.BOARD_CATEGORY as boardCategory,
+	                C.CATEGORY_NAME as categoryName,
+	                B.REF_MNO as boardAuthor,
+	                M.MEMBER_ID as memberId,
+	                M.MEMBER_IMAGE as memberImage,
+	                A.ATTACHMENT_PATH as attachmentPath,
+	                M.REF_RNO as regionNo,
+	                R.REGION_NAME as regionName,
+	                B.REG_DATE as regDate,
+	                (SELECT COUNT(*) FROM TB_BOARD_LIKE WHERE REF_BNO = B.BOARD_NO AND STATUS = 'Y') as likeCount
+	            FROM TB_BOARD B
+	            JOIN TB_BOOKMARK BM ON B.BOARD_NO = BM.REF_BNO AND BM.STATUS = 'Y'
+	            LEFT JOIN TB_MEMBER M ON B.REF_MNO = M.MEMBER_NO
+	            LEFT JOIN TB_CATEGORY C ON B.BOARD_CATEGORY = C.CATEGORY_NO
+	            LEFT JOIN TB_REGION R ON M.REF_RNO = R.REGION_NO
+	            LEFT JOIN TB_ATTACHMENT A ON B.BOARD_NO = A.REF_BNO AND A.STATUS = 'Y'
+	            WHERE BM.REF_MNO = #{memberNo}
+	              AND B.STATUS = 'Y'
+	            ORDER BY BM.REG_DATE DESC
+	        ) A
+	        WHERE ROWNUM <= (#{offset} + #{limit})
+	    )
+	    WHERE RNUM > #{offset}
+	    ]]>
 	</select>
 	
 	<select id="countMyBookmarks" resultType="int">
@@ -317,19 +363,17 @@
                STATUS = 'Y'
     </select>
     
-    <select id="getMemberRank" resultType="map">
-        SELECT
-        	  ROWNUM as "rank"
-        	 , MEMBER_ID memberId
-             , MEMBER_POINT memberPoint
-          FROM
-               TB_MEMBER
-         WHERE
-               STATUS = 'Y'
-         ORDER 
-            by 
-               MEMBER_POINT desc
-         FETCH  
-               FIRST 10 ROWS ONLY
-    </select>
+<select id="getMemberRank" resultType="map">
+    SELECT
+        ROWNUM as rank,
+        A.MEMBER_ID as memberId,
+        A.MEMBER_POINT as memberPoint
+    FROM (
+        SELECT MEMBER_ID, MEMBER_POINT
+        FROM TB_MEMBER
+        WHERE STATUS = 'Y'
+        ORDER BY MEMBER_POINT DESC
+    ) A
+    WHERE ROWNUM &lt;= 10
+</select>
 </mapper>

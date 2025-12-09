@@ -1,7 +1,6 @@
 package com.kh.eco.configuration;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,14 +33,21 @@ public class SecurityConfigure {
 	private final JwtFilter jwtFilter;
 
 	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring()
+				.requestMatchers("/upload/**")
+				.requestMatchers("/uploads/**");
+	}
+	
+	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		
 		return httpSecurity
-				.formLogin(AbstractHttpConfigurer::disable) 	// Form Login 비활성화
-				.csrf(AbstractHttpConfigurer::disable) 	 	    // CSRF 비활성화
-				.cors(Customizer.withDefaults()) 		 	    // CORS 설정 적용
+				.formLogin(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(Customizer.withDefaults())
 				.sessionManagement(manager -> 
-					manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 미사용 (JWT)
+					manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				
 				.authorizeHttpRequests(requests -> {
 					
@@ -53,17 +60,21 @@ public class SecurityConfigure {
 							"/auth/refresh", 
 							"/auth/logout", 
 							"/members/profile", 
-							"/members/**"
-							).permitAll(); 
+							"/members/**").permitAll(); 
 					
-					// GET: (관리자)게시글/댓글 조회, 파일, 통계(Landing), 피드 등 비회원 접근 가능
+					// GET: (관리자)게시글/댓글 조회, 파일, 통계, 피드 등 비회원 접근 가능
 					requests.requestMatchers(HttpMethod.GET, 
 							"/boards/**", 
 							"/comments/**", 
-							"/uploads/**", 
-							"/stats/landing",   
+							"/upload/**",
+							"/uploads/**",
 							"/api/**", 
 							"/feeds/**",
+							"/stats/landing", 
+							"/stats/mainpage", 
+							"/stats/ranking",
+							"/stats/today", 
+							"/stats/todayPost", 
 							"/api/boards/stats/**",
 							"/members/**",
 							"/admin/notices/**"
@@ -71,16 +82,9 @@ public class SecurityConfigure {
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
-
-					// GET: 통계(Dashboard, Mainpage) - 기능별 분리
-					requests.requestMatchers(HttpMethod.GET,
-							"/stats/dashboard", 
-							"/stats/mainpage"    
-					).authenticated();
-
-					// PUT: 수정 (HEAD, DEVELOP 통합)
+					// PUT: 수정
 					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
-
+					
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
 							"/boards", 
@@ -108,7 +112,7 @@ public class SecurityConfigure {
 					requests.anyRequest().authenticated();
 				})
 				
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 적용
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 
 	}

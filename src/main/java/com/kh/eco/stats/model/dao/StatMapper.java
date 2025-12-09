@@ -13,4 +13,9 @@ public interface StatMapper {
 	Map<String, Object> selectMainpage();
 
 	List<Map<String, Object>> getRankingStats();
+
+	int todayParticipants(String category);
+	
+	int todayPost(String category);
+	
 }
