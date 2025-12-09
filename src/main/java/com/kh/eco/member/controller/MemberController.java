@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -125,6 +126,13 @@ public class MemberController {
 	public ResponseEntity<?> changeRegion(@Valid @RequestBody UpdateRegionDTO region) {
 		memberService.updateMemberRegion(region);
 		return ResponseEntity.ok("지역 변경 완료");
+	}
+	
+	@DeleteMapping
+	public ResponseEntity<?> deleteByPassword(@RequestBody Map<String, String> request) {
+		log.info("이게 오나? {}", request);
+		memberService.deleteByPassword(request.get("memberPwd"));
+		return ResponseEntity.ok("삭제 완료");
 	}
 	
     @GetMapping("/posts")

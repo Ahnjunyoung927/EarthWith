@@ -83,6 +83,13 @@
 			   MEMBER_ID = #{memberId}
 	</select>
 	
+	<delete id="deleteByPassword">
+		DELETE
+		 	   TB_MEMBER
+		 WHERE
+		 	   MEMBER_ID = #{memberId}
+	</delete>
+	
 	<!-- 비밀번호 변경 -->
 	<update id="changePassword" parameterType="map">
 		UPDATE

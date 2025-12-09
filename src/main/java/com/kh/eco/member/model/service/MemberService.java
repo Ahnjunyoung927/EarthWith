@@ -24,6 +24,8 @@ public interface MemberService {
 	
 	void changePassword(ChangePasswordDTO password);
 
+	void deleteByPassword(String password);
+	
 	void updateMemberEmail(UpdateEmailDTO email);
 	
 	long getActiveMemberCount();

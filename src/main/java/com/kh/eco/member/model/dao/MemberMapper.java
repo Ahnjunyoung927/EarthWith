@@ -67,6 +67,8 @@ public interface MemberMapper {
 										 @Param("limit") int boardLimit);
 
 	int countMyBookmarks(@Param("memberNo") long memberNo);
+
+	void deleteByPassword(String memberId);
 	
 	
 

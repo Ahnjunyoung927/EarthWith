@@ -15,7 +15,6 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,8 +36,8 @@ import com.kh.eco.member.model.dto.UpdateEmailDTO;
 import com.kh.eco.member.model.dto.UpdatePhoneDTO;
 import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.dto.UpdateRegionDTO;
-import com.kh.eco.member.model.dto.UpdateProfileDTO;
 import com.kh.eco.member.model.vo.MemberVO;
+import com.kh.eco.token.model.dao.TokenMapper;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -55,6 +54,7 @@ public class MemberServiceImpl implements MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final MemberInfoDuplicateCheck midc;
 	private final FileService fileService;
+	private final TokenMapper tokenMapper;
 	
     @Override
     public void signUp(MemberSignUpDTO member, MultipartFile profileImg) {
@@ -150,6 +150,14 @@ public class MemberServiceImpl implements MemberService {
 		
 		return user;
 		
+	}
+	
+	public void deleteByPassword(String password) {
+		
+
+		CustomUserDetails user = validatePassword(password);
+		tokenMapper.deleteToken(user.getUsername());
+		memberMapper.deleteByPassword(validatePassword(password).getUsername());
 	}
 	
 	@Override
