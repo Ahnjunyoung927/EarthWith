@@ -48,14 +48,12 @@ public class SecurityConfigure {
 				.cors(Customizer.withDefaults()) 		 	    // CORS 설정 적용
 				.sessionManagement(manager -> 
 					manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 미사용 (JWT)
-				
 				.authorizeHttpRequests(requests -> {
-					
 					// [1] 누구나 접근 가능한 기능 (PermitAll)
 					
 					// POST: 로그인, 회원가입, 토큰 갱신, 로그아웃
 					requests.requestMatchers(HttpMethod.POST,
-							"/members", 
+							"/members",
 							"/auth/login", 
 							"/auth/refresh", 
 							"/auth/logout", 
