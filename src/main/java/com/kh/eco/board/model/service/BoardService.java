@@ -8,12 +8,16 @@ import jakarta.validation.Valid;
 
 public interface BoardService {
     
-    // [중요] int -> Map으로 변경된 부분
+
     Map<String, Object> selectBoardList(Map<String, Object> map);
 
     BoardDetailDTO selectBoardDetail(Long boardNo);
+    
     int insertBoard(@Valid BoardDTO board, MultipartFile file, String userId);
+    
     int updateBoard(@Valid BoardDTO board, MultipartFile file, String userId);
+    
     int deleteBoard(Long boardNo, String userId);
+    
     long getBoardCountForParticipation();
 }
