@@ -22,7 +22,6 @@
              ,  B.REG_DATE       regDate
              , NVL(L.LIKE_COUNT, 0) likeCount
              , ROW_NUMBER() OVER (ORDER BY B.BOARD_NO DESC) RN
-               
           FROM TB_BOARD B
           JOIN TB_MEMBER M
             ON B.REF_MNO = M.MEMBER_NO
@@ -41,7 +40,7 @@
 		         ) A
 		           ON A.REF_BNO = B.BOARD_NO
 		
-		        
+		       
 		         LEFT JOIN TB_LIKE_COUNT L
 		           ON L.REF_NO = B.BOARD_NO
 		
@@ -54,13 +53,11 @@
 		        WHERE RN &lt;= #{limit}
 </select>
 
-	<insert id="insertFeed" parameterType="com.kh.eco.board.model.vo.BoardVO">
-		
-		<!-- INSERT 하기 전에 boardNo 뽑아오려는 용도
-		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
-			SELECT SEQ_BNO.NEXTVAL FROM DUAL
-		</selectKey> -->
-		
+	<insert id="insertFeed" parameterType="BoardVO">
+		<selectKey keyProperty="boardNo" resultType="long" order="BEFORE">
+            SELECT SEQ_BNO.NEXTVAL FROM DUAL
+        </selectKey>
+
 		INSERT
 		  INTO
 		       TB_BOARD 
@@ -75,7 +72,7 @@
 		       )
 		VALUES
 		       (
-		       SEQ_BNO.NEXTVAL
+		       #{boardNo}
 		     , #{refMno}
 		     , #{boardCategory}
 		     , #{boardTitle}
@@ -101,24 +98,62 @@
 	
 	
 	
-	<insert id="saveAttachment" parameterType="FeedBoardDTO">
-    INSERT INTO 
-      		    TB_ATTACHMENT
-      		    (
-		        FILE_NO fileNo
-		      , REF_BNO refBno
-		      , ATTACHMENT_PATH attachmentPath
-		      , REG_DATE regDate
-		      , STATUS 
-    			) 
-    	VALUES  (
-         		SEQ_FNO.NEXTVAL
-		      , #{boardNo}
-		      , #{attachmentPath}
-		      , SYSDATE
-		      , 'Y'
-		    )
-</insert>
+	<insert id="saveAttachment" parameterType="map">
+       	INSERT INTO TB_ATTACHMENT
+        (
+            FILE_NO,
+            REF_BNO,
+            ORIGINAL_FILE_NAME,
+            MODIFIED_FILE_NAME,
+            ATTACHMENT_PATH,
+            REG_DATE,
+            STATUS
+        )
+        VALUES
+        (
+            SEQ_FNO.NEXTVAL,
+            #{refBno},
+            #{originName},   
+            #{changeName},  
+            #{attachmentPath}, 
+            SYSDATE,
+            'Y'
+        )
+    </insert>
+    
+    <!-- 피드 수정하기 -->
+    <update id="updateFeed" parameterType="FeedBoardDTO"> 
+		UPDATE
+		       TB_BOARD
+		   SET
+		       BOARD_TITLE = #{boardTitle}
+		     , BOARD_CONTENT = #{boardContent}
+		     , BOARD_CATEGORY = #{boardCategory}
+		 WHERE
+		       BOARD_NO = #{boardNo}
+		   AND
+		       REF_MNO = #{boardAuthor}
+		   AND
+		       STATUS = 'Y'     
+	</update>
+	
+	<delete id="deleteAttachment">
+		DELETE
+		       TB_ATTACHMENT
+		 WHERE
+		       REF_BNO = #{boardNo}
+	</delete>
+    
+    <!-- 9. 첨부파일 수정 -->
+    <update id="updateAttachment" parameterType="map">
+        UPDATE TB_ATTACHMENT
+           SET ATTACHMENT_PATH = #{attachmentPath}
+             , ORIGINAL_FILE_NAME = #{originName} 
+             , MODIFIED_FILE_NAME = #{changeName} 
+             , REG_DATE = SYSDATE               
+         WHERE REF_BNO = #{refBno}
+           AND STATUS = 'Y'
+    </update>
 	
 	
 	

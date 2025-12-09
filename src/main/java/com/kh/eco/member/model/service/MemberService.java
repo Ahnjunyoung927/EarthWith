@@ -32,11 +32,17 @@ public interface MemberService {
 
 	void updateMemberPhone(UpdatePhoneDTO phone);
 
-	void updateProfile(UpdateProfileDTO profile);
+	String updateProfile(UpdateProfileDTO profile);
 
 	void updateMemberRegion(UpdateRegionDTO region);
 
-//	Map<String, Object> getMyPosts(String memberId, int currentPage);
+	Map<String, Object> getMyPosts(long memberNo, int currentPage);
+
+	Map<String, Object> getMyComments(long memberNo, int currentPage);
+
+	Map<String, Object> getMyLikes(long memberNo, int currentPage);
+
+	Map<String, Object> getMyBookmarks(long memberNo, int currentPage);
 	
 	
 

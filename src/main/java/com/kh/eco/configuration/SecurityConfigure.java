@@ -11,6 +11,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,6 +33,12 @@ public class SecurityConfigure {
 	
 	private final JwtFilter jwtFilter;
 
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring()
+				.requestMatchers("/upload/**"); // 정적 리소스는 Security 필터 적용 안 함
+	}
+	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		
@@ -60,7 +67,7 @@ public class SecurityConfigure {
 							"/uploads/**", 
 							"/stats/**", 
 							"/api/**", 
-							"/feed/**",
+							"/feeds/**",
 							"/stats/today/**", 
 							"/api/boards/stats/**",
 							"/members/**",
@@ -69,6 +76,8 @@ public class SecurityConfigure {
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
+					// PUT: 수정 (HEAD, DEVELOP 통합)
+					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
 							"/boards", 
@@ -80,12 +89,15 @@ public class SecurityConfigure {
 					// (/members/** 와일드카드가 password, email 등을 모두 포함하므로 통합)
 					requests.requestMatchers(HttpMethod.PUT, 
 							"/members/**", 
-							"/boards/**").authenticated();
+							"/boards/**",
+							"/feeds/**",
+							"/comments/**").authenticated();
 					
 					// DELETE: 회원 탈퇴, 게시글 삭제
 					requests.requestMatchers(HttpMethod.DELETE, 
 							"/members/**", 
-							"/boards/**").authenticated();
+							"/boards/**",
+							"/feeds/**").authenticated();
 					
 					// [3] 관리자 전용
 					requests.requestMatchers("/admin/**").hasRole("ADMIN");

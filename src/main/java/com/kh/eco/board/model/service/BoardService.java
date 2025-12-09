@@ -1,12 +1,14 @@
 package com.kh.eco.board.model.service;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
+import com.kh.eco.comment.model.dto.CommentDTO;
+import com.kh.eco.comment.model.dto.CommentReportDTO;
 
 import jakarta.validation.Valid;
 
@@ -49,5 +51,4 @@ public interface BoardService {
 	int deleteBoard(Long boardNo, String userId);
 
 	long getBoardCountForParticipation();
-
 }

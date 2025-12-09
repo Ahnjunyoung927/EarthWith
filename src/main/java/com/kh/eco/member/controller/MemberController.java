@@ -1,6 +1,7 @@
 package com.kh.eco.member.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,8 +109,12 @@ public class MemberController {
 	    System.out.println("imagePath: " + profile.getImagePath());
 	    System.out.println("============================");
 	    
-		memberService.updateProfile(profile);
-        return ResponseEntity.ok("프로필 이미지 변경 완료");
+		String newImagePath = memberService.updateProfile(profile);
+		Map<String, String> response = new HashMap<>();
+	    response.put("message", "프로필 이미지 변경 완료");
+	    response.put("imagePath", newImagePath);
+	    
+	    return ResponseEntity.ok(response);
     }
 	
 	
@@ -121,18 +126,39 @@ public class MemberController {
 		memberService.updateMemberRegion(region);
 		return ResponseEntity.ok("지역 변경 완료");
 	}
-//	
-//	@GetMapping("posts")
-//	public ResponseEntity<?> getMyPosts(@RequestParam (value="memberId") String memberId,
-//										@RequestParam (value="page", defaultValue = "1") int page) {
-//		
-//		System.out.println("========== Controller 도달 ==========");
-//        System.out.println("memberId: " + memberId);
-//        System.out.println("page: " + page);
-//		
-//        Map<String, Object> response = memberService.getMyPosts(memberId, page);
-//		return ResponseEntity.ok(response);
-//	}
 	
+    @GetMapping("/posts")
+    public ResponseEntity<?> getMyPosts(
+            @RequestParam(value = "memberNo") long memberNo,
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        Map<String, Object> response = memberService.getMyPosts(memberNo, page);
+        return ResponseEntity.ok(response);
+    }
+
+	@GetMapping("/comments")
+	public ResponseEntity<?> getMyComments(
+			@RequestParam(value = "memberNo") long memberNo,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+		
+		Map<String, Object> response = memberService.getMyComments(memberNo, page);
+		return ResponseEntity.ok(response);
+	}
 	
+	@GetMapping("/likes")
+	public ResponseEntity<?> getMyLikes(
+			@RequestParam(value = "memberNo") long memberNo,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+		
+		Map<String, Object> response = memberService.getMyLikes(memberNo, page);
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/bookmarks")
+	public ResponseEntity<?> getMyBookmarks(
+			@RequestParam(value = "memberNo") long memberNo,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+		
+		Map<String, Object> response = memberService.getMyBookmarks(memberNo, page);
+		return ResponseEntity.ok(response);
+	}
 }
