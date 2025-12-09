@@ -16,6 +16,6 @@ import lombok.ToString;
 public class AdminBoardDetailDTO {
 	
 	private AdminBoardDTO board;
-	private List<AttachmentDTO> attchment;
+	private List<AttachmentDTO> attachment;
 
 }
