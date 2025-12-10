@@ -27,6 +27,8 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardMapper boardMapper;
     private final FileService fileService;
+    
+    private static final String UPLOAD_PATH = "/uploads/";
 
     @Override
     public Map<String, Object> selectBoardList(Map<String, Object> map) {
@@ -81,42 +83,24 @@ public class BoardServiceImpl implements BoardService {
         board.setBoardWriter(userId);
         int result = boardMapper.insertBoard(board);
 
-        
         // 파일 처리 로직
         if(file != null && !file.isEmpty()) {
-            
-            String changeName = fileService.store(file); 
-            
-            String originalName = file.getOriginalFilename();
-            
-            String attachmentPath = "http://localhost:8081/uploads/" + changeName;
-            
-            Map<String, Object> fileMap = new HashMap<>();
-            fileMap.put("refBno", board.getBoardNo());
-            fileMap.put("originName", originalName); 
-            fileMap.put("changeName", changeName);   
-            fileMap.put("attachmentPath", attachmentPath); 
-            
-            boardMapper.insertAttachment(fileMap);
+            saveAttachment(board.getBoardNo(), file);
         }
         
         return result;
     }
     
-    // 4. 게시글 수정 
     @Transactional
     @Override
     public int updateBoard(@Valid BoardDTO board, MultipartFile file, String userId) {
-        
         board.setBoardWriter(userId);
-        
         int result = boardMapper.updateBoard(board);
         
         if(file != null && !file.isEmpty()) {
-            
             String changeName = fileService.store(file);
             String originalName = file.getOriginalFilename();
-            String attachmentPath = "/uploads/" + changeName;
+            String attachmentPath = UPLOAD_PATH + changeName;
             
             Map<String, Object> fileMap = new HashMap<>();
             fileMap.put("refBno", board.getBoardNo());
@@ -130,21 +114,9 @@ public class BoardServiceImpl implements BoardService {
                 boardMapper.insertAttachment(fileMap);
             }
         }
-        
-
-        if(result > 0) saveFile(file, board.getBoardNo(), false);
 
         return result;
     }
-
-//    @Override
-//    @Transactional
-//    public int updateBoard(BoardDTO board, MultipartFile file, String userId) {
-//        board.setBoardWriter(userId);
-//        int result = boardMapper.updateBoard(board);
-//        if(result > 0) saveFile(file, board.getBoardNo(), true);
-//        return result;
-//    }
 
     @Override
     @Transactional
@@ -160,20 +132,23 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.getBoardCountForParticipation();
     }
 
-    private void saveFile(MultipartFile file, Long boardNo, boolean isUpdate) {
+    /**
+     * 파일 첨부 저장 (공통 메서드)
+     * insertBoard, updateBoard에서 사용
+     */
+    private void saveAttachment(Long boardNo, MultipartFile file) {
         if(file == null || file.isEmpty()) return;
         
-        String changeName = fileService.store(file); 
+        String changeName = fileService.store(file);
+        String originalName = file.getOriginalFilename();
+        String attachmentPath = UPLOAD_PATH + changeName;
+        
         Map<String, Object> fileMap = new HashMap<>();
         fileMap.put("refBno", boardNo);
-        fileMap.put("originName", file.getOriginalFilename());
+        fileMap.put("originName", originalName);
         fileMap.put("changeName", changeName);
-        fileMap.put("attachmentPath", "/uploads/" + changeName);
-
-        if(isUpdate) {
-            if(boardMapper.updateAttachment(fileMap) == 0) boardMapper.insertAttachment(fileMap);
-        } else {
-            boardMapper.insertAttachment(fileMap);
-        }
+        fileMap.put("attachmentPath", attachmentPath);
+        
+        boardMapper.insertAttachment(fileMap);
     }
 }

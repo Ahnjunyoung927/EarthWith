@@ -33,13 +33,6 @@ public class SecurityConfigure {
 	private final JwtFilter jwtFilter;
 
 	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.ignoring()
-				.requestMatchers("/upload/**")
-				.requestMatchers("/uploads/**");
-	}
-	
-	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		
 		return httpSecurity
@@ -66,7 +59,6 @@ public class SecurityConfigure {
 					requests.requestMatchers(HttpMethod.GET, 
 							"/boards/**", 
 							"/comments/**", 
-							"/upload/**",
 							"/uploads/**",
 							"/api/**", 
 							"/feeds/**",
