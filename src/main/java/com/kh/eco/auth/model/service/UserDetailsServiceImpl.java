@@ -25,16 +25,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		MemberLoginDTO user = mapper.loadUser(username);
-		// log.info("이거 오나요 : {}", user);
-		
+		// log.info("유저정보 조회결과 : {}", user);
 		if(user == null) {
 			throw new UsenameNotFoundException("아이디가 존재하지 않습니다.");
-		}
-		
-		if ("N".equals(user.getStatus())) {
+		} else if ("N".equals(user.getStatus())) {
 		    throw new UsenameNotFoundException("정지된 계정입니다.");
 		}
-		
 		return CustomUserDetails.builder().username(user.getMemberId())
 				  						  .password(user.getMemberPwd())
 				  						  .memberName(user.getMemberName())

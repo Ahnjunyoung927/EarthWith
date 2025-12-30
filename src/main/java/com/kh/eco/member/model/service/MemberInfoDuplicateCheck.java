@@ -24,14 +24,14 @@ public class MemberInfoDuplicateCheck {
 	public void phoneDuplicateCheck(String phone) {
 		int count = memberMapper.countByPhone(phone);
 		if(1 <= count) {
-			throw new MemberInfoDuplicatedException("사용 불가능한 휴대전화 번호입니다.");
+			throw new MemberInfoDuplicatedException("이미 존재하는 휴대전화 번호입니다.");
 		} 
 	}
 	
 	public void emailDuplicateCheck(String email) {
 		int count = memberMapper.countByEmail(email);
 		if(1 <= count) {
-			throw new MemberInfoDuplicatedException("사용 불가능한 이메일입니다.");
+			throw new MemberInfoDuplicatedException("이미 존재하는 이메일입니다.");
 		} 
 	}
 	

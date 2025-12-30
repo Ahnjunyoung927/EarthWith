@@ -8,15 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dao.BoardMapper;
 import com.kh.eco.board.model.dto.BoardDTO;
 import com.kh.eco.board.model.dto.BoardDetailDTO;
-import com.kh.eco.comment.model.dto.CommentDTO;
-import com.kh.eco.comment.model.dto.CommentReportDTO;
 import com.kh.eco.common.PageInfo;
 import com.kh.eco.common.Pagination;
 import com.kh.eco.file.FileService;
+import com.kh.eco.file.service.S3Service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +28,7 @@ public class BoardServiceImpl implements BoardService {
     private final BoardMapper boardMapper;
     private final FileService fileService;
     private final Pagination pagination;
+    private final S3Service s3Service;
 
     // 1. 게시글 목록 조회
 	@Override
@@ -88,7 +87,6 @@ public class BoardServiceImpl implements BoardService {
         
         board.setBoardWriter(userId);
         
-        int result = boardMapper.insertBoard(board);
         
         // 파일 처리 로직
         if(file != null && !file.isEmpty()) {
@@ -97,16 +95,20 @@ public class BoardServiceImpl implements BoardService {
             
             String originalName = file.getOriginalFilename();
             
-            String attachmentPath = "/uploads/" + changeName;
+            // String attachmentPath = "/uploads/" + changeName;
+            
+            String fileUrl = s3Service.fileSave(file, changeName);
             
             Map<String, Object> fileMap = new HashMap<>();
             fileMap.put("refBno", board.getBoardNo());
             fileMap.put("originName", originalName); 
             fileMap.put("changeName", changeName);   
-            fileMap.put("attachmentPath", attachmentPath); 
+            fileMap.put("attachmentPath", fileUrl); 
             
             boardMapper.insertAttachment(fileMap);
         }
+        
+        int result = boardMapper.insertBoard(board);
         
         return result;
     }

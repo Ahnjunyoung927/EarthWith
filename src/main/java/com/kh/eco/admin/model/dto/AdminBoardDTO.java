@@ -30,3 +30,4 @@ public class AdminBoardDTO {
 	private String memberName;
 
 }
+

@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("comments")
+@RequestMapping("eco/comments")
 public class CommentLikeController {
 	
 	private final LikeService likeService;

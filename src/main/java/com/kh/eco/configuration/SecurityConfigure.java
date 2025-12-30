@@ -1,8 +1,8 @@
 package com.kh.eco.configuration;
 
 import java.util.Arrays;
-import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,17 +26,21 @@ import com.kh.eco.configuration.filter.JwtFilter;
 
 import lombok.RequiredArgsConstructor;
 
+
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfigure {
 	
 	private final JwtFilter jwtFilter;
+	
+	@Value("${app.server.url}")
+	private String serverUrl;
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring()
-				.requestMatchers("/upload/**"); // 정적 리소스는 Security 필터 적용 안 함
+				.requestMatchers("eco/upload/**"); // 정적 리소스는 Security 필터 적용 안 함
 	}
 	
 	@Bean
@@ -53,54 +57,54 @@ public class SecurityConfigure {
 					
 					// POST: 로그인, 회원가입, 토큰 갱신, 로그아웃
 					requests.requestMatchers(HttpMethod.POST,
-							"/members",
-							"/auth/login", 
-							"/auth/refresh", 
-							"/auth/logout", 
-							"/members/profile", 
-							"/members/**").permitAll(); 
+							"/eco/members",
+							"/eco/auth/login", 
+							"/eco/auth/refresh", 
+							"/eco/auth/logout", 
+							"/eco/members/profile", 
+							"/eco/members/**").permitAll();
 					
 					// GET: (관리자)게시글/댓글 조회, 파일, 통계, 피드 등 비회원 접근 가능
 					requests.requestMatchers(HttpMethod.GET, 
-							"/boards/**", 
-							"/comments/**", 
-							"/uploads/**", 
-							"/stats/**", 
-							"/api/**", 
-							"/feeds/**",
-							"/stats/today/**", 
-							"/api/boards/stats/**",
-							"/members/**",
-							"/admin/notices/**"
+							"/eco/boards/**", 
+							"/eco/comments/**", 
+							"/eco/uploads/**", 
+							"/eco/stats/**", 
+							"/eco/api/**", 
+							"/eco/feeds/**",
+							"/eco/stats/today/**", 
+							"/eco/api/boards/stats/**",
+							"/eco/members/**",
+							"/eco/admin/notices/**"
 					).permitAll(); 
 					
 					// [2] 인증(로그인)이 필요한 기능 (Authenticated)
 					
 					// PUT: 수정 (HEAD, DEVELOP 통합)
-					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**", "/members/**").authenticated();
+					requests.requestMatchers(HttpMethod.PUT, "eco/members", "eco/boards/**", "eco/members/**").authenticated();
 					// POST: 게시글 작성, 댓글 작성, 피드 작성
 					requests.requestMatchers(HttpMethod.POST, 
-							"/boards", 
-							"/comments", 
-							"/api/boards/**", 
-							"/feeds").authenticated();
+							"/eco/boards", 
+							"/eco/comments", 
+							"/eco/api/boards/**", 
+							"/eco/feeds").authenticated();
 					
 					// PUT: 회원 정보 수정, 게시글 수정
 					// (/members/** 와일드카드가 password, email 등을 모두 포함하므로 통합)
 					requests.requestMatchers(HttpMethod.PUT, 
-							"/members/**", 
-							"/boards/**",
-							"/feeds/**",
-							"/comments/**").authenticated();
+							"/eco/members/**", 
+							"/eco/boards/**",
+							"/eco/feeds/**",
+							"/eco/comments/**").authenticated();
 					
 					// DELETE: 회원 탈퇴, 게시글 삭제
 					requests.requestMatchers(HttpMethod.DELETE, 
-							"/members/**", 
-							"/boards/**",
-							"/feeds/**").authenticated();
+							"/eco/members/**", 
+							"/eco/boards/**",
+							"/eco/feeds/**").authenticated();
 					
 					// [3] 관리자 전용
-					requests.requestMatchers("/admin/**").hasRole("ADMIN");
+					requests.requestMatchers("/eco/admin/**").hasRole("ADMIN");
 					
 					// [4] 그 외 모든 요청은 인증 필요
 					requests.anyRequest().authenticated();
@@ -116,7 +120,7 @@ public class SecurityConfigure {
 		CorsConfiguration configuration = new CorsConfiguration();
 		
 		// 리액트 개발 서버 포트 허용 (5173: Vite, 3000: CRA) - HEAD 설정 유지 (더 포괄적)
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+		configuration.setAllowedOrigins(Arrays.asList(serverUrl , "http://localhost:5173" /* ,"http://" + serverUrl + ":3000"*/));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
 		configuration.setAllowCredentials(true);

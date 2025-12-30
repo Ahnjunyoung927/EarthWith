@@ -15,10 +15,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // ⭐ /upload/** 경로를 실제 파일 시스템 경로로 매핑
-        registry.addResourceHandler("/upload/**")
+        registry.addResourceHandler("eco/upload/**")
                 .addResourceLocations("file:///" + uploadPath + "/");
         
-        System.out.println("✅ 정적 리소스 매핑: /upload/** -> file:///" + uploadPath + "/");
+        System.out.println("✅ 정적 리소스 매핑: eco/upload/** -> file:///" + uploadPath + "/");
     }
 
     @Override

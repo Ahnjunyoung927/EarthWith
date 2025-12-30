@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping({"boards", "feeds"})
+@RequestMapping({"eco/boards", "eco/feeds"})
 public class BookmarkController {
 	
 	private final BookmarkService bookmarkService;

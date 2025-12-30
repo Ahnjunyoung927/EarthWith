@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.kh.eco.board.model.dto.AttachDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.vo.BoardVO;
 
@@ -65,4 +66,6 @@ public interface FeedMapper {
     int deleteAttachment(Long boardNo);
     
     List<String> selectAttachmentsByBoardNo(Long boardNo);
+    
+    AttachDTO selectModifiedFileName(int boardNo);
 }

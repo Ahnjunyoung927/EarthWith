@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/boards")
+@RequestMapping("eco/boards")
 public class BoardController {
 
 	private final BoardService boardService;

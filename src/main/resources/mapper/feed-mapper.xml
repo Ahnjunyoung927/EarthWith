@@ -189,6 +189,16 @@
 		       STATUS = 'Y'                    
 	</select>
 	
+	<select id="selectModifiedFileName" resultType="AttachDTO">
+		SELECT
+		       MODIFIED_FILE_NAME modifiedFileName
+		     , ATTACHMENT_PATH attachmentPath
+		  FROM
+		       TB_ATTACHMENT
+		 WHERE
+		       REF_BNO = #{boardNo}
+	</select>
+	
 	
 	
 </mapper>  

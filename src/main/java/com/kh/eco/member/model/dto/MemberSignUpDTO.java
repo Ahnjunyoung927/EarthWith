@@ -18,7 +18,7 @@ import lombok.ToString;
 @ToString
 public class MemberSignUpDTO {
 	
-	@Pattern(regexp = "^[a-z가-힣]*$", message = "이름은 영어, 한글만 사용 가능합니다.")
+	@Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "이름은 영어, 한글만 사용 가능합니다.")
 	@Size(min = 2, max = 40, message = "이름은 2글자 이상 40글자 이하만 사용할 수 있습니다.")
 	@NotBlank(message = "이름은 필수 입력사항입니다.")
 	private String memberName;

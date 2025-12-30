@@ -131,8 +131,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 	@Override
 	public void updateRoleByAdmin(UpdateRoleByAdminDTO member) {
 		AdminMemberDTO roleChecker = adminMemberMapper.findRole(member.getMemberNo());
-		log.info("기존 회원 권한값 : {}", roleChecker.getRole());
-		log.info("요청들어온 회원 권한값 : {}", member.getNewRole());
+		// log.info("기존 회원 권한값 : {}", roleChecker.getRole());
+		// log.info("요청들어온 회원 권한값 : {}", member.getNewRole());
 		if(roleChecker.getRole().equals(member.getNewRole())) {
 			throw new MemberInfoDuplicatedException("요청이 이미 반영되어 있습니다.");
 		}
@@ -146,8 +146,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 	@Override
 	public void updateNameByAdmin(UpdateNameByAdminDTO member) {
 		AdminMemberDTO nameChecker = adminMemberMapper.findName(member.getMemberNo());
-		log.info("기존 회원 이름값 : {}", nameChecker.getMemberName());
-		log.info("요청들어온 회원 이름값 : {}", member.getNewName());	
+		// log.info("기존 회원 이름값 : {}", nameChecker.getMemberName());
+		// log.info("요청들어온 회원 이름값 : {}", member.getNewName());	
 		if(nameChecker.getMemberName().equals(member.getNewName())) {
 			throw new MemberInfoDuplicatedException("요청이 이미 반영되어 있습니다.");
 		}

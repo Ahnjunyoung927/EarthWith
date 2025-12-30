@@ -95,6 +95,7 @@
 		     , STATUS
 		<include refid="findMemberByMemberNo"/>
 	</select>
+
 	
 	<update id="updateStatusByAdmin" parameterType="UpdateStatusByAdminDTO">
 		<include refid="updateMemberUpper" />

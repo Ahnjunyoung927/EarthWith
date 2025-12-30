@@ -1,5 +1,8 @@
 package com.kh.eco.admin.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import com.kh.eco.admin.model.dto.UpdateRegionByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdateRoleByAdminDTO;
 import com.kh.eco.admin.model.dto.UpdateStatusByAdminDTO;
 import com.kh.eco.admin.model.service.AdminMemberService;
+import com.kh.eco.common.responseData.SuccessResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +32,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @Validated
-@RequestMapping("admin/members")
+@RequestMapping("eco/admin/members")
 @RequiredArgsConstructor
 public class AdminMemberController {
 	
 	private final AdminMemberService adminMemberService;
 	
 	@GetMapping() // 회원정보 조회
-	public ResponseEntity<AdminMemberDTO> findMemberById(@RequestParam(value="keyword") @Valid String memberId){
+	public ResponseEntity<SuccessResponse<AdminMemberDTO>> findMemberById(@RequestParam(value="keyword") @Valid String memberId){
 		AdminMemberDTO member = adminMemberService.findMemberById(memberId);
-		return ResponseEntity.ok(member);
+		return SuccessResponse.ok(member);
 	}
 	
 	/*
@@ -53,58 +57,59 @@ public class AdminMemberController {
 	 */
 	
 	@PutMapping("id")
-	public ResponseEntity<UpdateIdByAdminDTO> updateMemberIdByAdmin(@RequestBody @Valid UpdateIdByAdminDTO member){
+	public ResponseEntity<SuccessResponse<UpdateIdByAdminDTO>> updateMemberIdByAdmin(@RequestBody @Valid UpdateIdByAdminDTO member){
 		adminMemberService.updateMemberIdByAdmin(member);
 		
-		return ResponseEntity.ok(member);
+		return SuccessResponse.ok(member);
 	}
 	
 	@PutMapping("password")
-	public ResponseEntity<?> updatePasswordByAdmin(@RequestBody @Valid UpdatePasswordByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updatePasswordByAdmin(@RequestBody @Valid UpdatePasswordByAdminDTO member){
 		adminMemberService.updatePasswordByAdmin(member);
-		return ResponseEntity.ok("비밀번호 변경 성공");
+		return SuccessResponse.noContent("비밀번호 변경 성공");
 	}
 	
 	@PutMapping("phone")
-	public ResponseEntity<?> updatePhoneByAdmin(@RequestBody @Valid UpdatePhoneByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updatePhoneByAdmin(@RequestBody @Valid UpdatePhoneByAdminDTO member){
 		adminMemberService.updatePhoneByAdmin(member);
-		return ResponseEntity.ok("전화번호 변경 성공");
+		return SuccessResponse.noContent("전화번호 변경 성공");
 	}
 	
 	@PutMapping("email")
-	public ResponseEntity<?> updateEmailByAdmin(@RequestBody @Valid UpdateEmailByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updateEmailByAdmin(@RequestBody @Valid UpdateEmailByAdminDTO member){
 		adminMemberService.updateEmailByAdmin(member);
-		return ResponseEntity.ok("이메일 변경 성공");
+		return SuccessResponse.noContent("이메일 변경 성공");
 	}
 	
 	@PutMapping("region")
-	public ResponseEntity<?> updateRegionByAdmin(@RequestBody @Valid UpdateRegionByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updateRegionByAdmin(@RequestBody @Valid UpdateRegionByAdminDTO member){
 		adminMemberService.updateRegionByAdmin(member);
-		return ResponseEntity.ok("지역 변경 성공");
+		return SuccessResponse.noContent("지역 변경 성공");
 	}
 	
 	@PutMapping("point")
-	public ResponseEntity<?> updatePointByAdmin(@RequestBody @Valid UpdatePointByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updatePointByAdmin(@RequestBody @Valid UpdatePointByAdminDTO member){
 		adminMemberService.updatePointByAdmin(member);
-		return ResponseEntity.ok("포인트 변경 성공");
+		return SuccessResponse.noContent("포인트 변경 성공");
 	}
 	
 	@PutMapping("status")
-	public ResponseEntity<?> updateStatusByAdmin(@RequestBody @Valid UpdateStatusByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updateStatusByAdmin(@RequestBody @Valid UpdateStatusByAdminDTO member){
 		adminMemberService.updateStatusByAdmin(member);
-		return ResponseEntity.ok("회원 상태 변경 성공");
+
+		return SuccessResponse.noContent("회원상태 변경 성공");
 	}
 	
 	@PutMapping("role")
-	public ResponseEntity<?> updateRoleByAdmin(@RequestBody @Valid UpdateRoleByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updateRoleByAdmin(@RequestBody @Valid UpdateRoleByAdminDTO member){
 		adminMemberService.updateRoleByAdmin(member);
-		return ResponseEntity.ok("권한 변경 성공");
+		return SuccessResponse.noContent("권한 변경 성공");
 	}
 	
 	@PutMapping("name")
-	public ResponseEntity<?> updateNameByAdmin(@RequestBody @Valid UpdateNameByAdminDTO member){
+	public ResponseEntity<SuccessResponse<String>> updateNameByAdmin(@RequestBody @Valid UpdateNameByAdminDTO member){
 		adminMemberService.updateNameByAdmin(member);
-		return ResponseEntity.ok("이름 변경 성공");
+		return SuccessResponse.noContent("이름 변경 성공");
 	}
 
 	

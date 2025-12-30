@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController //@Controller + @ResponseBody
 @RequiredArgsConstructor
-@RequestMapping("/stats")
+@RequestMapping("eco/stats")
 public class StatController {
 	
 	private final MemberService memberService;

@@ -49,3 +49,5 @@ replay_pid*
 *~
 .*.swp
 .*.swo
+
+application-private.yml

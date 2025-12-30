@@ -10,11 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.eco.auth.model.vo.CustomUserDetails;
 import com.kh.eco.board.model.dao.FeedMapper;
+import com.kh.eco.board.model.dto.AttachDTO;
 import com.kh.eco.board.model.dto.FeedBoardDTO;
 import com.kh.eco.board.model.vo.BoardVO;
 import com.kh.eco.exception.PageNotFoundException;
 import com.kh.eco.file.FileService;
 import com.kh.eco.file.MyRenamePolicy;
+import com.kh.eco.file.service.S3Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class FeedServiceImpl implements FeedService {
 	private final FileService fileService;
 	private final MyRenamePolicy myRenamePolicy;
 	private final BoardReportService boardReportService;
+	private final S3Service s3Service;
 
 	/**
 	 * 피드 게시글 조회하기
@@ -60,7 +63,7 @@ public class FeedServiceImpl implements FeedService {
 	@Transactional
 	public int insertFeed(FeedBoardDTO feed, List<MultipartFile> files) {
 		BoardVO b = null;
-	  //  String filePath = fileService.store(file);
+		    // String filePath = fileService.store(file);
 			log.info("카테고리 값 : {}", feed.getBoardCategory());
 			b = BoardVO.builder()//.boardNo(feed.getBoardNo())
 					             .refMno(feed.getBoardAuthor())
@@ -83,7 +86,8 @@ public class FeedServiceImpl implements FeedService {
 					if(file != null && !file.isEmpty()) {
 						String changeName = fileService.store(file);
 						String originName = file.getOriginalFilename();
-						String attachmentPath = "http://localhost:8081/uploads/" + changeName;
+						String attachmentPath = s3Service.fileSave(file, changeName);
+						// String attachmentPath = "http://localhost:8081/uploads/" + changeName;
 						
 						Map<String, Object> fileMap = new HashMap<>();
 						fileMap.put("refBno", b.getBoardNo());
@@ -95,21 +99,14 @@ public class FeedServiceImpl implements FeedService {
 				    }
 				}
 			}
-			
-			
 
 		    return result;
 	}
 	
 	/*
- 
-  
-            
             boardMapper.insertAttachment(fileMap);
         }
-        
         return result; 
-	 
 	 */
 	
 	/**
@@ -123,6 +120,8 @@ public class FeedServiceImpl implements FeedService {
 	/**
 	 * 게시글 삭제하기
 	 */
+	@Override
+	@Transactional
 	public int deleteFeed(int boardNo, CustomUserDetails userDetails) {
 		// 본인여부 검증용
 		
@@ -131,10 +130,20 @@ public class FeedServiceImpl implements FeedService {
 		// 게시글 존재 여부 검증
 		boardReportService.selectBoardOne(boardNo);
 		
+		// 첨부파일 URL 필요
+		AttachDTO attach = feedMapper.selectModifiedFileName(boardNo);
+		
+		feedMapper.deleteAttachment(Long.valueOf(boardNo));
 		int result = feedMapper.deleteFeed(boardNo);
 		if(result == 0) {
 			throw new PageNotFoundException("게시글이 존재하지 않습니다.");
-		} 
+		}
+		
+		log.info("=============파일명 잘 넘어감? {}==============", attach.getAttachmentPath());
+		
+		if(attach.getAttachmentPath() != null && !attach.getAttachmentPath().isEmpty()) {
+			s3Service.deleteFile(attach.getAttachmentPath());
+		}
 		
 		return result;
 	}
@@ -175,8 +184,8 @@ public class FeedServiceImpl implements FeedService {
 		   if(files != null) {
 			// 게시글 삭제하기 -- 0행이든 N행이든 삭제는 성공한다.
 			    feedMapper.deleteAttachment(boardNo);
+			    
 		   for(MultipartFile file : files) {
-			
 		
 			if(file == null || file.isEmpty()) {
 				continue;
@@ -196,6 +205,7 @@ public class FeedServiceImpl implements FeedService {
 			if(isOk <= 0) {
 				throw new RuntimeException("게시글 수정에 실패했습니다.");
 			}
+			
 		}
 		}
 		   

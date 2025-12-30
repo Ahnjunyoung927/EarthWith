@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("feeds")
+@RequestMapping("eco/feeds")
 public class FeedController {
 	
 	private final FeedService feedService;
@@ -37,8 +37,7 @@ public class FeedController {
 			                                      @RequestParam(name = "fetchOffset", required = false) Long fetchOffset,
 			                                      @RequestParam(name = "limit", defaultValue = "10") Long limit) {
 		
-		log.info("GET /feeds 요청 - category={}, fetchOffset={}, limit={}",
-                category, fetchOffset, limit);
+		log.info("GET /feeds 요청 - category={}, fetchOffset={}, limit={}", category, fetchOffset, limit);
 		
 		return ResponseEntity.ok(feedService.selectFeedList(category, fetchOffset, limit));
 		
@@ -65,8 +64,6 @@ public class FeedController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	
-	
 	
 	@DeleteMapping("/{boardNo}/delete")
 	public ResponseEntity<?> deleteFeed(@PathVariable(name = "boardNo") @Min(value = 1, message = "게시글이 존재하지 않습니다.") int boardNo, @AuthenticationPrincipal CustomUserDetails userDetails) {
